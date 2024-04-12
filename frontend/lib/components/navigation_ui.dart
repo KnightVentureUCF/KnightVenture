@@ -1,5 +1,16 @@
+import "dart:ffi";
+
 import "package:flutter/material.dart";
+import "package:frontend/components/ucf_details.dart";
 import "package:google_maps_flutter/google_maps_flutter.dart";
+
+// TODO: 
+    // DONE - Figure out how to import this from env file
+    // Center map over UCF
+    // Enable navigation
+    // Enable custom locations
+    // Create firebase with locations
+    // Create API to get locations
 
 class NavigationUI extends StatefulWidget {
   const NavigationUI({super.key});
@@ -11,7 +22,7 @@ class NavigationUI extends StatefulWidget {
 class _NavigationUIState extends State<NavigationUI> {
   late GoogleMapController mapController;
 
-  final LatLng _center = const LatLng(45.521563, -122.677433);
+  final LatLng _center = UCFDetails.location;
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
@@ -23,7 +34,7 @@ class _NavigationUIState extends State<NavigationUI> {
       onMapCreated: _onMapCreated,
       initialCameraPosition: CameraPosition(
         target: _center,
-        zoom: 11.0,
+        zoom: 18.0,
       ),
     );
   }

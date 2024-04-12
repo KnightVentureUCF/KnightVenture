@@ -14,7 +14,7 @@ import flutter_config
     // TODO: 
     // Get Initial Map Working
     // Figure out how to import this from env file
-    // GMSServices.provideAPIKey(FlutterConfigPlugin.env(for: "GOOGLE_MAPS_KEY"))
+    GMSServices.provideAPIKey("AIzaSyBUlNW4NphAsVsZTtOeRoFSE9-MdN1jXWA")
 
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }

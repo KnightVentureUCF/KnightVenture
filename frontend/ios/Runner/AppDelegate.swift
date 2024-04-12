@@ -12,9 +12,13 @@ import flutter_config
     GeneratedPluginRegistrant.register(with: self)
 
     // TODO: 
-    // Get Initial Map Working
     // Figure out how to import this from env file
-    GMSServices.provideAPIKey("AIzaSyBUlNW4NphAsVsZTtOeRoFSE9-MdN1jXWA")
+    // Center map over UCF
+    // Enable navigation
+    // Enable custom locations
+    // Create firebase with locations
+    // Create API to get locations
+    GMSServices.provideAPIKey(flutter_config.FlutterConfigPlugin.env(for: "GOOGLE_MAPS_KEY"))
 
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }

@@ -6,9 +6,10 @@ import "package:google_maps_flutter/google_maps_flutter.dart";
 
 // TODO: 
     // DONE - Figure out how to import this from env file
-    // Center map over UCF
-    // Enable navigation
+    // DONE - Center map over UCF
+    // Enable following user location
     // Enable custom locations
+    // Enable point to point navigation
     // Create firebase with locations
     // Create API to get locations
 

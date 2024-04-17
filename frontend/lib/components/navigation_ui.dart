@@ -24,13 +24,14 @@ class NavigationUI extends StatefulWidget {
 
 class _NavigationUIState extends State<NavigationUI> {
   late GoogleMapController _mapController;
-  // late LatLng _userLocation;
 
+  // Initial camera position if user location unavailable
   static var _initialCameraPosition = const CameraPosition(
     target: ucfCoords,
     zoom: 18.0,
   );
 
+  // TODO: Make this change to the user's current location immediately using set state
   void _onMapCreated(GoogleMapController controller) {
     _mapController = controller;
     _getCurrentLocation().then((value) => {
@@ -41,6 +42,7 @@ class _NavigationUIState extends State<NavigationUI> {
     );
   }
 
+  // Asks for the user's location and returns error if unavailable.
   Future<Position> _getCurrentLocation() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {

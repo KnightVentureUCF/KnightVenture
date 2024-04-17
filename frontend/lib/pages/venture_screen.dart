@@ -9,7 +9,7 @@ class VentureScreen extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
         useMaterial3: true,
-        colorSchemeSeed: Colors.green[700],
+        primaryColor: const Color.fromARGB(255, 255, 201, 4),
       ),
       home: Scaffold(
         appBar: AppBar(

@@ -8,12 +8,13 @@ import "package:geolocator/geolocator.dart";
 // TODO:
 // DONE - Figure out how to import this from env file
 // DONE - Center map over UCF
-// Enable custom locations
-// Enable following user location
-// Let team know to add center button to Figma
+// DONE - Enable following user location
+// Have user location update automatically and live
+// Add custom locations
 // Enable point to point navigation
-// Create firebase with locations
+// Create S3 Bucket with locations
 // Create API to get locations
+// Set all initial API calls to occur on the loading page
 
 class NavigationUI extends StatefulWidget {
   const NavigationUI({super.key});

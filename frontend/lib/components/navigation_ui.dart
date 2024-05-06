@@ -10,12 +10,16 @@ import "package:geolocator/geolocator.dart";
 // DONE - Center map over UCF
 // DONE - Enable following user location
 // DONE - Have user location update automatically
-// Have user location update live
+// DONE - Have user location update live
+// Add an icon on user location
 // Add custom locations
 // Enable point to point navigation
 // Create S3 Bucket with locations
 // Create API to get locations
 // Set all initial API calls to occur on the loading page
+
+const mapZoom = 18.0;
+const userLocationUpdateDistance = 100;
 
 class NavigationUI extends StatefulWidget {
   const NavigationUI({super.key});
@@ -28,7 +32,7 @@ class _NavigationUIState extends State<NavigationUI> {
   late GoogleMapController _mapController;
   CameraPosition _initialCameraPosition = const CameraPosition(
     target: ucfCoords,
-    zoom: 18.0,
+    zoom: mapZoom,
   );
   bool _isLoading = true;
 
@@ -40,10 +44,14 @@ class _NavigationUIState extends State<NavigationUI> {
   }
 
   void _loadInitialUserLocation() async {
-    final userloc = await _getCurrentLocation();
+    final position = await _getCurrentLocation();
+    _updateCameraPosition(position);
+  }
+
+  void _updateCameraPosition(Position position) {
     setState(() {
       _initialCameraPosition = CameraPosition(
-          target: LatLng(userloc.latitude, userloc.longitude), zoom: 18.0);
+          target: LatLng(position.latitude, position.longitude), zoom: mapZoom);
       _isLoading = false;
     });
     _mapController
@@ -53,6 +61,7 @@ class _NavigationUIState extends State<NavigationUI> {
   // TODO: Make this change to the user's current location immediately using set state
   void _onMapCreated(GoogleMapController controller) {
     _mapController = controller;
+    _getLiveLocation();
   }
 
   // Asks for the user's location and returns error if unavailable.
@@ -77,6 +86,18 @@ class _NavigationUIState extends State<NavigationUI> {
     }
 
     return await Geolocator.getCurrentPosition();
+  }
+
+  void _getLiveLocation() {
+    LocationSettings locationSettings = const LocationSettings(
+      accuracy: LocationAccuracy.high,
+      distanceFilter: userLocationUpdateDistance,
+    );
+
+    Geolocator.getPositionStream(locationSettings: locationSettings)
+        .listen((Position position) {
+      _updateCameraPosition(position);
+    });
   }
 
   @override

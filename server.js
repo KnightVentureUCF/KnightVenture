@@ -14,7 +14,7 @@ AWS.config.update({
 
 // Create Cognito Client
 const client = new AWS.CognitoIdentityServiceProvider({
-    apiVersion: '2016-04-18',
+    apiVersion: '2024-05-06',
     region: process.env.REGION
 });
 
@@ -23,7 +23,7 @@ app.use(bodyParser.json());
 
 // Register endpoint
 app.post('/register', (req, res) => {
-    const { username, email, password } = req.body; // Collect username, email, and password from request body
+    const { username, email, password } = req.body;
     const params = {
         ClientId: process.env.CLIENT_ID,
         Password: password,
@@ -80,7 +80,7 @@ app.post('/login', (req, res) => {
 
 // Forgot Password endpoint
 app.post('/forgot-password', (req, res) => {
-    const { username } = req.body; // Collect username from request body
+    const { username } = req.body;
     const params = {
         ClientId: process.env.CLIENT_ID,
         Username: username,
@@ -97,7 +97,7 @@ app.post('/forgot-password', (req, res) => {
 
 // Confirm Password Reset endpoint
 app.post('/confirm-password-reset', (req, res) => {
-    const { username, code, newPassword } = req.body; // Collect username, code, and new password from request body
+    const { username, code, newPassword } = req.body;
     const params = {
         ClientId: process.env.CLIENT_ID,
         ConfirmationCode: code,

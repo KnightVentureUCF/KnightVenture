@@ -9,7 +9,8 @@ import "package:geolocator/geolocator.dart";
 // DONE - Figure out how to import this from env file
 // DONE - Center map over UCF
 // DONE - Enable following user location
-// Have user location update automatically and live
+// DONE - Have user location update automatically
+// Have user location update live
 // Add custom locations
 // Enable point to point navigation
 // Create S3 Bucket with locations
@@ -25,22 +26,33 @@ class NavigationUI extends StatefulWidget {
 
 class _NavigationUIState extends State<NavigationUI> {
   late GoogleMapController _mapController;
-
-  // Initial camera position if user location unavailable
-  static var _initialCameraPosition = const CameraPosition(
+  CameraPosition _initialCameraPosition = const CameraPosition(
     target: ucfCoords,
     zoom: 18.0,
   );
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _loadInitialUserLocation();
+  }
+
+  void _loadInitialUserLocation() async {
+    final userloc = await _getCurrentLocation();
+    setState(() {
+      _initialCameraPosition = CameraPosition(
+          target: LatLng(userloc.latitude, userloc.longitude), zoom: 18.0);
+      _isLoading = false;
+    });
+    _mapController
+        .animateCamera(CameraUpdate.newCameraPosition(_initialCameraPosition));
+  }
 
   // TODO: Make this change to the user's current location immediately using set state
   void _onMapCreated(GoogleMapController controller) {
     _mapController = controller;
-    _getCurrentLocation().then((value) => {
-      _initialCameraPosition = CameraPosition(target: LatLng(value.latitude, value.longitude), zoom: 18.0)
-    });
-    _mapController.animateCamera(
-          CameraUpdate.newCameraPosition(_initialCameraPosition),
-    );
   }
 
   // Asks for the user's location and returns error if unavailable.
@@ -60,7 +72,8 @@ class _NavigationUIState extends State<NavigationUI> {
     }
 
     if (permission == LocationPermission.deniedForever) {
-      return Future.error('Location permissions are permanently denied, we cannot request your location');
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request your location');
     }
 
     return await Geolocator.getCurrentPosition();
@@ -68,14 +81,20 @@ class _NavigationUIState extends State<NavigationUI> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      // Creates the map
-      body: GoogleMap(
+    // TODO: change loading widget to loading screen
+    Widget content = const Center(child: CircularProgressIndicator());
+    if (_isLoading == false) {
+      content = GoogleMap(
         onMapCreated: _onMapCreated,
         myLocationButtonEnabled: false,
         zoomControlsEnabled: false,
         initialCameraPosition: _initialCameraPosition,
-      ),
+      );
+    }
+
+    return Scaffold(
+      // Creates the map
+      body: content,
 
       // Creates a button to return screen to user's location
       floatingActionButton: FloatingActionButton(

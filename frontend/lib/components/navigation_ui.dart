@@ -13,12 +13,13 @@ import "package:frontend/models/caches.dart" as caches;
 // DONE - Have user location update automatically
 // DONE - Have user location update live
 // DONE - Add custom locations and markers
-// DONE - Setup firebase to store custom locations
-// Enable point to point navigation
-// Create API to get locations
-// Set all initial API calls to occur on the loading page
-// Setup loading page
-// Comment
+// - Set a marker on user location
+// - Enable point to point navigation
+// - Setup firebase to store custom locations
+// - Create API to get locations
+// - Set all initial API calls to occur on the loading page
+// - Setup loading page
+// - Comment
 
 const mapZoom = 10.0;
 const userLocationUpdateDistance = 100;
@@ -58,6 +59,8 @@ class _NavigationUIState extends State<NavigationUI> {
           position: LatLng(cache.lat, cache.lng),
           infoWindow: InfoWindow(
             title: cache.name,
+            // TODO: Add more to this info window and change the location.
+            // TODO: set a custom icon.
           ),
         );
         _cacheMarkers[cache.name] = marker;

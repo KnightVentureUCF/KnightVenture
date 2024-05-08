@@ -4,7 +4,7 @@ import "package:flutter/material.dart";
 import "package:frontend/components/markers.dart";
 import "package:google_maps_flutter/google_maps_flutter.dart";
 import "package:geolocator/geolocator.dart";
-import "package:frontend/models/locations.dart" as locations;
+import "package:frontend/models/caches.dart" as caches;
 
 // TODO:
 // DONE - Figure out how to import this from env file
@@ -12,15 +12,15 @@ import "package:frontend/models/locations.dart" as locations;
 // DONE - Enable following user location
 // DONE - Have user location update automatically
 // DONE - Have user location update live
-// Add custom locations and markers
+// DONE - Add custom locations and markers
+// DONE - Setup firebase to store custom locations
 // Enable point to point navigation
-// Setup AWS to store custom locations
 // Create API to get locations
 // Set all initial API calls to occur on the loading page
 // Setup loading page
 // Comment
 
-const mapZoom = 18.0;
+const mapZoom = 10.0;
 const userLocationUpdateDistance = 100;
 
 class NavigationUI extends StatefulWidget {
@@ -37,31 +37,30 @@ class _NavigationUIState extends State<NavigationUI> {
     zoom: mapZoom,
   );
   bool _isLoading = true;
-  final Map<String, Marker> _markers = {};
+  final Map<String, Marker> _cacheMarkers = {};
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _loadInitialUserLocation();
-    _loadMarkers();
+    _loadCacheMarkers();
   }
 
-  void _loadMarkers() async {
-    final googleOffices = await locations.getGoogleOffices();
+  void _loadCacheMarkers() async {
+    final cacheLocations = await caches.getCacheLocations();
 
     setState(() {
-      _markers.clear();
-      for (final office in googleOffices.offices) {
+      _cacheMarkers.clear();
+      for (final cache in cacheLocations.caches) {
         final marker = Marker(
-          markerId: MarkerId(office.name),
-          position: LatLng(office.lat, office.lng),
+          markerId: MarkerId(cache.name),
+          position: LatLng(cache.lat, cache.lng),
           infoWindow: InfoWindow(
-            title: office.name,
-            snippet: office.address,
+            title: cache.name,
           ),
         );
-        _markers[office.name] = marker;
+        _cacheMarkers[cache.name] = marker;
       }
     });
   }
@@ -133,7 +132,7 @@ class _NavigationUIState extends State<NavigationUI> {
         myLocationButtonEnabled: true,
         zoomControlsEnabled: false,
         initialCameraPosition: _initialCameraPosition,
-        markers: _markers.values.toSet(),
+        markers: _cacheMarkers.values.toSet(),
       );
     }
 

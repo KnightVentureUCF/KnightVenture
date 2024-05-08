@@ -4,6 +4,7 @@ import "package:flutter/material.dart";
 import "package:frontend/components/markers.dart";
 import "package:google_maps_flutter/google_maps_flutter.dart";
 import "package:geolocator/geolocator.dart";
+import "package:frontend/models/locations.dart" as locations;
 
 // TODO:
 // DONE - Figure out how to import this from env file
@@ -11,12 +12,13 @@ import "package:geolocator/geolocator.dart";
 // DONE - Enable following user location
 // DONE - Have user location update automatically
 // DONE - Have user location update live
-// Add an icon on user location
-// Add custom locations
+// Add custom locations and markers
 // Enable point to point navigation
-// Create S3 Bucket with locations
+// Setup AWS to store custom locations
 // Create API to get locations
 // Set all initial API calls to occur on the loading page
+// Setup loading page
+// Comment
 
 const mapZoom = 18.0;
 const userLocationUpdateDistance = 100;
@@ -35,12 +37,33 @@ class _NavigationUIState extends State<NavigationUI> {
     zoom: mapZoom,
   );
   bool _isLoading = true;
+  final Map<String, Marker> _markers = {};
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _loadInitialUserLocation();
+    _loadMarkers();
+  }
+
+  void _loadMarkers() async {
+    final googleOffices = await locations.getGoogleOffices();
+
+    setState(() {
+      _markers.clear();
+      for (final office in googleOffices.offices) {
+        final marker = Marker(
+          markerId: MarkerId(office.name),
+          position: LatLng(office.lat, office.lng),
+          infoWindow: InfoWindow(
+            title: office.name,
+            snippet: office.address,
+          ),
+        );
+        _markers[office.name] = marker;
+      }
+    });
   }
 
   void _loadInitialUserLocation() async {
@@ -54,8 +77,8 @@ class _NavigationUIState extends State<NavigationUI> {
           target: LatLng(position.latitude, position.longitude), zoom: mapZoom);
       _isLoading = false;
     });
-    _mapController
-        .animateCamera(CameraUpdate.newCameraPosition(_initialCameraPosition));
+    // _mapController
+    //     .animateCamera(CameraUpdate.newCameraPosition(_initialCameraPosition));
   }
 
   // TODO: Make this change to the user's current location immediately using set state
@@ -107,9 +130,10 @@ class _NavigationUIState extends State<NavigationUI> {
     if (_isLoading == false) {
       content = GoogleMap(
         onMapCreated: _onMapCreated,
-        myLocationButtonEnabled: false,
+        myLocationButtonEnabled: true,
         zoomControlsEnabled: false,
         initialCameraPosition: _initialCameraPosition,
+        markers: _markers.values.toSet(),
       );
     }
 

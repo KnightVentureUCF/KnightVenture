@@ -11,12 +11,8 @@ class VentureScreen extends StatelessWidget {
         // useMaterial3: true,
         primaryColor: const Color.fromARGB(255, 255, 201, 4),
       ),
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Maps Sample App'),
-          elevation: 2,
-        ),
-        body: const NavigationUI(),
+      home: const Scaffold(
+        body: NavigationUI(),
       ),
     );
   }

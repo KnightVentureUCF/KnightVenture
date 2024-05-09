@@ -1,6 +1,8 @@
 require('dotenv').config();
 const express = require('express');
 const AWS = require('aws-sdk');
+const admin = require('firebase-admin');
+const serviceAccount = require('./firestorePrivateKey.json');
 
 // Initialize Express
 const app = express();
@@ -16,35 +18,36 @@ const client = new AWS.CognitoIdentityServiceProvider({
   region: process.env.REGION,
 });
 
-// Confiure Firebase
-// const admin = require('firebase-admin');
-// const serviceAccount = require('./service-account-file.json');
-// admin.initializeApp({
-//   credential: admin.credential.cert(serviceAccount),
-//   databaseURL: process.env.FIREBASE_DATABASE_URL,
-// });
-// const dtb = admin.firestore();
+// Initialize Firebase Admin SDK with your service account credentials
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: 'https://your-firebase-project-id.firebaseio.com'
+});
 
 // Middleware to parse JSON bodies
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
-const register = require('./backend/routes/user/register');
+const register = require('./backend/routes/user/register.js');
 app.use('/api/register', register);
 
-const confirmRegistration = require('./backend/routes/user/confirmRegistration');
+const confirmRegistration = require('./backend/routes/user/confirmRegistration.js');
 app.use('/api/confirm_registration', confirmRegistration);
 
-const login = require('./backend/routes/user/login');
+const login = require('./backend/routes/user/login.js');
 app.use('/api/login', login);
 
-const forgotPassword = require('./backend/routes/user/forgotPassword');
+const forgotPassword = require('./backend/routes/user/forgotPassword.js');
 app.use('/api/forgot_password', forgotPassword);
 
-const confirmPasswordReset = require('./backend/routes/user/confirmPasswordReset');
+const confirmPasswordReset = require('./backend/routes/user/confirmPasswordReset.js');
 app.use('/api/confirm_password_reset', confirmPasswordReset);
 
-// Listen on a port
-app.listen(3000, () => {
-  console.log('Server running on http://localhost:3000');
+const loadCaches = require('./backend/routes/cache/loadCaches.js');
+app.use('/caches', loadCaches);
+
+// Start the server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });

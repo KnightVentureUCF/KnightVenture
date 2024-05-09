@@ -141,4 +141,7 @@ dist
 # SvelteKit build / generate output
 .svelte-kit
 
+#google file
+firebasePrivateKey.json
+
 # End of https://www.toptal.com/developers/gitignore/api/node

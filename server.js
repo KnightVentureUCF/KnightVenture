@@ -1,8 +1,6 @@
 require('dotenv').config();
-
 const express = require('express');
 const AWS = require('aws-sdk');
-const bodyParser = require('body-parser');
 
 // Initialize Express
 const app = express();
@@ -18,101 +16,33 @@ const client = new AWS.CognitoIdentityServiceProvider({
   region: process.env.REGION,
 });
 
+// Confiure Firebase
+// const admin = require('firebase-admin');
+// const serviceAccount = require('./service-account-file.json');
+// admin.initializeApp({
+//   credential: admin.credential.cert(serviceAccount),
+//   databaseURL: process.env.FIREBASE_DATABASE_URL,
+// });
+// const dtb = admin.firestore();
+
 // Middleware to parse JSON bodies
+const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
-// Register endpoint
-app.post('/register', (req, res) => {
-  const { username, email, password } = req.body;
-  const params = {
-    ClientId: process.env.CLIENT_ID,
-    Password: password,
-    Username: username,
-    UserAttributes: [
-      {
-        Name: 'email',
-        Value: email,
-      },
-    ],
-  };
+const register = require('./backend/routes/user/register');
+app.use('/api/register', register);
 
-  client.signUp(params, (err, data) => {
-    if (err) res.status(500).send(err);
-    else res.send(data);
-  });
-});
+const confirmRegistration = require('./backend/routes/user/confirmRegistration');
+app.use('/api/confirm_registration', confirmRegistration);
 
-// Confirm User Registration endpoint
-app.post('/confirm-registration', (req, res) => {
-  const { username, confirmationCode } = req.body;
-  const params = {
-    ClientId: process.env.CLIENT_ID,
-    Username: username,
-    ConfirmationCode: confirmationCode,
-  };
+const login = require('./backend/routes/user/login');
+app.use('/api/login', login);
 
-  client.confirmSignUp(params, (err, data) => {
-    if (err) {
-      res.status(500).send(err.message);
-    } else {
-      res.send({ message: 'User registration confirmed.' });
-    }
-  });
-});
+const forgotPassword = require('./backend/routes/user/forgotPassword');
+app.use('/api/forgot_password', forgotPassword);
 
-// Login endpoint
-app.post('/login', (req, res) => {
-  const { username, password } = req.body;
-  const params = {
-    AuthFlow: 'USER_PASSWORD_AUTH',
-    ClientId: process.env.CLIENT_ID,
-    AuthParameters: {
-      USERNAME: username,
-      PASSWORD: password,
-    },
-  };
-
-  client.initiateAuth(params, (err, authData) => {
-    if (err) res.status(500).send(err);
-    else res.send(authData);
-  });
-});
-
-// Forgot Password endpoint
-app.post('/forgot-password', (req, res) => {
-  const { username } = req.body;
-  const params = {
-    ClientId: process.env.CLIENT_ID,
-    Username: username,
-  };
-
-  client.forgotPassword(params, (err, data) => {
-    if (err) {
-      res.status(500).send(err.message);
-    } else {
-      res.send({ message: 'Password reset code sent to email.' });
-    }
-  });
-});
-
-// Confirm Password Reset endpoint
-app.post('/confirm-password-reset', (req, res) => {
-  const { username, code, newPassword } = req.body;
-  const params = {
-    ClientId: process.env.CLIENT_ID,
-    ConfirmationCode: code,
-    Password: newPassword,
-    Username: username,
-  };
-
-  client.confirmForgotPassword(params, (err, data) => {
-    if (err) {
-      res.status(500).send(err.message);
-    } else {
-      res.send({ message: 'Password successfully reset.' });
-    }
-  });
-});
+const confirmPasswordReset = require('./backend/routes/user/confirmPasswordReset');
+app.use('/api/confirm_password_reset', confirmPasswordReset);
 
 // Listen on a port
 app.listen(3000, () => {

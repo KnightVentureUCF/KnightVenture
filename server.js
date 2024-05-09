@@ -17,12 +17,12 @@ const client = new AWS.CognitoIdentityServiceProvider({
 });
 
 // Confiure Firebase
-// const admin = require('firebase-admin');
-// const serviceAccount = require('./service-account-file.json');
-// admin.initializeApp({
-//   credential: admin.credential.cert(serviceAccount),
-//   databaseURL: process.env.FIREBASE_DATABASE_URL,
-// });
+const admin = require('firebase-admin');
+const serviceAccount = require('./firebasePrivateKey.json');
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: process.env.FIREBASE_DATABASE_URL,
+});
 // const dtb = admin.firestore();
 
 // Middleware to parse JSON bodies
@@ -43,6 +43,9 @@ app.use('/api/forgot_password', forgotPassword);
 
 const confirmPasswordReset = require('./backend/routes/user/confirmPasswordReset');
 app.use('/api/confirm_password_reset', confirmPasswordReset);
+
+const getProfile = require('./backend/routes/profile/getProfile');
+app.use('/api/get_profile', getProfile);
 
 // Listen on a port
 app.listen(3000, () => {

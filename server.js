@@ -28,22 +28,22 @@ admin.initializeApp({
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
-const register = require('./backend/routes/user/register.js');
+const register = require('./routes/user/register.js');
 app.use('/api/register', register);
 
-const confirmRegistration = require('./backend/routes/user/confirmRegistration.js');
+const confirmRegistration = require('./routes/user/confirmRegistration.js');
 app.use('/api/confirm_registration', confirmRegistration);
 
-const login = require('./backend/routes/user/login.js');
+const login = require('./routes/user/login.js');
 app.use('/api/login', login);
 
-const forgotPassword = require('./backend/routes/user/forgotPassword.js');
+const forgotPassword = require('./routes/user/forgotPassword.js');
 app.use('/api/forgot_password', forgotPassword);
 
-const confirmPasswordReset = require('./backend/routes/user/confirmPasswordReset.js');
+const confirmPasswordReset = require('./routes/user/confirmPasswordReset.js');
 app.use('/api/confirm_password_reset', confirmPasswordReset);
 
-const loadCaches = require('./backend/routes/cache/loadCaches.js');
+const loadCaches = require('./routes/cache/loadCaches.js');
 app.use('/caches', loadCaches);
 
 // Start the server

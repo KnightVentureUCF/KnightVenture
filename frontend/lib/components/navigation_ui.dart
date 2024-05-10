@@ -15,10 +15,13 @@ import "package:frontend/models/caches.dart" as caches;
 // DONE - Add custom locations and markers
 // DONE - Set a marker on user location
 // DONE - Enable point to point navigation
-// DONE - Setup firebase to store custom locations
 // DONE - Set all initial API calls to occur on the loading page
-// DONE - Setup loading page
+// - Setup firebase to store custom locations
+// - Create separate loading page widget
 // - Create API to get locations
+// - Create Unit Test for API
+// - Refactor code to be SOLID
+// - Complete all TODOs
 
 const mapZoom = 18.0;
 const userLocationUpdateDistance = 100;

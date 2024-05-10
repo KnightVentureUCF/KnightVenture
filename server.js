@@ -44,7 +44,7 @@ const confirmPasswordReset = require('./routes/user/confirmPasswordReset.js');
 app.use('/api/confirm_password_reset', confirmPasswordReset);
 
 const loadCaches = require('./routes/cache/loadCaches.js');
-app.use('/caches', loadCaches);
+app.use('/api/load_caches', loadCaches);
 
 // Start the server
 const PORT = process.env.PORT || 3000;

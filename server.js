@@ -50,6 +50,9 @@ app.use('/api/get_profile', getProfile);
 const updateProfile = require('./backend/routes/profile/updateProfile');
 app.use('/api/update_profile', updateProfile);
 
+const createComment = require('./backend/routes/comment/createComment');
+app.use('/api/create_comment', createComment);
+
 // Listen on a port
 app.listen(3000, () => {
   console.log('Server running on http://localhost:3000');

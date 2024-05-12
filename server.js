@@ -53,6 +53,9 @@ app.use('/api/update_profile', updateProfile);
 const createComment = require('./backend/routes/comment/createComment');
 app.use('/api/create_comment', createComment);
 
+const readRanking = require('./backend/routes/ranking/readRanking');
+app.use('/api/read_ranking', readRanking);
+
 // Listen on a port
 app.listen(3000, () => {
   console.log('Server running on http://localhost:3000');

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { verifyAccessToken } = require('../utils/cognito-utils');
+const { verifyAccessToken } = require('../../utils/cognito-utils');
 const admin = require('firebase-admin');
 const db = admin.firestore();
 
@@ -25,11 +25,9 @@ router.post('/', async (req, res) => {
         .send({ message: 'Your comment contains a spoiler, please rewrite.' });
     }
     if (text.includes('harass')) {
-      return res
-        .status(400)
-        .send({
-          message: 'Your comment contains harassing language, please rewrite.',
-        });
+      return res.status(400).send({
+        message: 'Your comment contains harassing language, please rewrite.',
+      });
     }
 
     // Add comment to Firestore
@@ -42,11 +40,9 @@ router.post('/', async (req, res) => {
     res.status(200).send({ message: 'Comment added successfully' });
   } catch (error) {
     console.error('Error posting comment:', error);
-    res
-      .status(500)
-      .send({
-        message: 'An error occurred on the server. Please try again later.',
-      });
+    res.status(500).send({
+      message: 'An error occurred on the server. Please try again later.',
+    });
   }
 });
 

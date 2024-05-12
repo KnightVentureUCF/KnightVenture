@@ -19,12 +19,12 @@ Map<String, dynamic> _$QuizQuestionToJson(QuizQuestion instance) =>
 
 Cache _$CacheFromJson(Map<String, dynamic> json) => Cache(
       name: json['name'] as String,
-      desc: json['desc'] as String,
+      desc: json['desc'] as String?,
       lat: (json['lat'] as num).toDouble(),
       lng: (json['lng'] as num).toDouble(),
-      imgUrl: json['imgUrl'] as String,
-      questions: (json['questions'] as List<dynamic>)
-          .map((e) => QuizQuestion.fromJson(e as Map<String, dynamic>))
+      imgUrl: json['imgUrl'] as String?,
+      questions: (json['questions'] as List<dynamic>?)
+          ?.map((e) => QuizQuestion.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 

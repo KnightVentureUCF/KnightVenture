@@ -2,6 +2,7 @@ import "dart:ffi";
 
 import "package:flutter/material.dart";
 import "package:frontend/components/markers.dart";
+import "package:frontend/components/venture_loading.dart";
 import "package:google_maps_flutter/google_maps_flutter.dart";
 import "package:geolocator/geolocator.dart";
 import "package:frontend/models/caches.dart" as caches;
@@ -16,9 +17,9 @@ import "package:frontend/models/caches.dart" as caches;
 // DONE - Set a marker on user location
 // DONE - Enable point to point navigation
 // DONE - Set all initial API calls to occur on the loading page
-// - Setup firebase to store custom locations
-// - Create separate loading page widget
-// - Create API to get locations
+// DONE - Setup firebase to store custom locations
+// DONE - Create separate loading page widget
+// DONE - Create API to get locations
 // - Create Unit Test for API
 // - Refactor code to be SOLID
 // - Complete all TODOs
@@ -130,7 +131,7 @@ class _NavigationUIState extends State<NavigationUI> {
   @override
   Widget build(BuildContext context) {
     // TODO: change loading widget to loading screen
-    Widget content = const Center(child: CircularProgressIndicator());
+    Widget content = VentureLoading();
     if (_isLoading == false) {
       CameraPosition cameraPosition =
           CameraPosition(target: _currentLocation, zoom: mapZoom);

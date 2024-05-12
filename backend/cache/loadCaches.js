@@ -10,7 +10,7 @@ router.get('/', async (req, res) => {
   try {
     const snapshot = await collectionRef.get();
     const data = snapshot.docs.map(doc => doc.data());
-    res.json(data);
+    res.json({ 'caches': data });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

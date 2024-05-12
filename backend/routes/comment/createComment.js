@@ -1,3 +1,4 @@
+//TODO: check this API with IBM Watson
 const express = require('express');
 const router = express.Router();
 const { verifyAccessToken } = require('../../utils/cognito-utils');

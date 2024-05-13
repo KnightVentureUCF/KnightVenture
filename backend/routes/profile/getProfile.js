@@ -1,24 +1,20 @@
-const express = require('express');
-const router = express.Router();
 const AWS = require('aws-sdk');
+const cognitoIdentityServiceProvider = new AWS.CognitoIdentityServiceProvider();
 const admin = require('firebase-admin');
-
-// Ensure Firebase Admin is initialized outside of this file, typically in server.js
 const db = admin.firestore();
+const router = express.Router();
 
-// Configure AWS using environment variables
-AWS.config.update({
-  region: process.env.REGION,
+
+// Initialize Firebase Admin
+const admin = require('firebase-admin');
+const serviceAccount = require('./service-account-file.json');
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: process.env.FIREBASE_DATABASE_URL,
 });
 
-// Create Cognito Client
-const cognitoIdentityServiceProvider = new AWS.CognitoIdentityServiceProvider({
-  apiVersion: '2024-05-06',
-  region: process.env.REGION,
-});
-
-// Setup the endpoint to use POST to receive the accessToken
-router.post('/', async (req, res) => {
+// Get Profile endpoint
+router('/', async (req, res) => {
   const { accessToken } = req.body;
 
   const params = {
@@ -38,7 +34,7 @@ router.post('/', async (req, res) => {
         } else {
           res.status(200).send({
             message: 'Profile data found successfully.',
-            profileData: userDoc.data(),
+            ...userDoc.data(),
           });
         }
       } catch (dbErr) {
@@ -52,5 +48,3 @@ router.post('/', async (req, res) => {
     }
   });
 });
-
-module.exports = router;

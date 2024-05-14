@@ -5,25 +5,7 @@ import "package:frontend/components/venture_loading.dart";
 import "package:google_maps_flutter/google_maps_flutter.dart";
 import "package:geolocator/geolocator.dart";
 import "package:frontend/models/caches.dart" as caches;
-
-// TODO:
-// DONE - Figure out how to import this from env file
-// DONE - Center map over UCF
-// DONE - Enable following user location
-// DONE - Have user location update automatically
-// DONE - Have user location update live
-// DONE - Add custom locations and markers
-// DONE - Set a marker on user location
-// DONE - Enable point to point navigation
-// DONE - Set all initial API calls to occur on the loading page
-// DONE - Setup firebase to store custom locations
-// DONE - Create separate loading page widget
-// DONE - Create API to get locations
-// - Refactor frontend code
-// - Setup env to switch to test when emulators on
-// - Finish unit tests for APIs
-const mapZoom = 18.0;
-const userLocationUpdateDistance = 100;
+import "package:frontend/constants.dart" show initialMapZoomOnVentureScreen;
 
 class NavigationUI extends StatefulWidget {
   const NavigationUI({super.key});
@@ -76,11 +58,8 @@ class _NavigationUIState extends State<NavigationUI> {
       _currentLocation = LatLng(lat, lng);
       _isLoading = false;
     });
-    // _mapController
-    //     .animateCamera(CameraUpdate.newCameraPosition(_currentLocation));
   }
 
-  // TODO: Make this change to the user's current location immediately using set state
   void _onMapCreated(GoogleMapController controller) {
     _mapController = controller;
   }
@@ -124,32 +103,39 @@ class _NavigationUIState extends State<NavigationUI> {
     });
   }
 
+  CameraPosition getUserLocationCameraView() {
+    return CameraPosition(
+        target: _currentLocation, zoom: initialMapZoomOnVentureScreen);
+  }
+
+  GoogleMap createNavigationPanel() {
+    return GoogleMap(
+      onMapCreated: _onMapCreated,
+      myLocationButtonEnabled: true,
+      myLocationEnabled: true,
+      mapToolbarEnabled: false,
+      zoomControlsEnabled: false,
+      polylines: _destination != null
+          ? {
+              Polyline(
+                polylineId: const PolylineId("route"),
+                points: [_currentLocation, _destination!],
+                color: Colors.blue,
+                width: 6,
+              ),
+            }
+          : {},
+      initialCameraPosition: getUserLocationCameraView(),
+      markers: _cacheMarkers.values.toSet(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    Widget content = VentureLoading();
+    // Shows loading screen until user location and all the caches load.
+    Widget content = VentureLoadingScreen();
     if (_isLoading == false) {
-      CameraPosition cameraPosition =
-          CameraPosition(target: _currentLocation, zoom: mapZoom);
-
-      content = GoogleMap(
-        onMapCreated: _onMapCreated,
-        myLocationButtonEnabled: true,
-        myLocationEnabled: true,
-        mapToolbarEnabled: false,
-        zoomControlsEnabled: false,
-        polylines: _destination != null
-            ? {
-                Polyline(
-                  polylineId: const PolylineId("route"),
-                  points: [_currentLocation, _destination!],
-                  color: Colors.blue,
-                  width: 6,
-                ),
-              }
-            : {},
-        initialCameraPosition: cameraPosition,
-        markers: _cacheMarkers.values.toSet(),
-      );
+      content = createNavigationPanel();
     }
 
     return Scaffold(

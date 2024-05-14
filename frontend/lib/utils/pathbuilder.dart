@@ -1,6 +1,4 @@
-const appName = 'TBD';
-const hosting = 'TBD.com';
-const port = '3000';
+import 'package:frontend/constants.dart' show appName, hosting, port;
 
 String buildPath(String route) {
   const env = String.fromEnvironment('ENVIRONMENT');

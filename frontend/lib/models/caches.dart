@@ -8,7 +8,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'caches.g.dart';
 
-// Objects to take in Json data.
+// Takes in data for cache questions from API calls.
 @JsonSerializable()
 class QuizQuestion {
   const QuizQuestion(this.text, this.answers);
@@ -27,6 +27,7 @@ class QuizQuestion {
   }
 }
 
+// Takes in data for individual caches from API calls.
 @JsonSerializable()
 class Cache {
   Cache({
@@ -49,6 +50,7 @@ class Cache {
   final List<QuizQuestion>? questions;
 }
 
+// Takes in data for a group of caches from API calls.
 @JsonSerializable()
 class Caches {
   Caches({
@@ -61,12 +63,13 @@ class Caches {
   final List<Cache> caches;
 }
 
-// API to pull caches
+// function to call load caches API for venture page.
 Future<Caches> getCacheLocations() async {
   final url = Uri.parse(buildPath("api/load_caches"));
 
   try {
-    final response = await http.get(url);
+    // TODO: incorporate the access token here.
+    final response = await http.post(url);
     if (response.statusCode == 200) {
       return Caches.fromJson(
           json.decode(response.body) as Map<String, dynamic>);
@@ -76,6 +79,8 @@ Future<Caches> getCacheLocations() async {
       print(e);
     }
   }
+
+  // TODO: Remove below and set up an error screen on the venture page.
 
   // Fallback for when the above HTTP request fails.
   return Caches.fromJson(

@@ -6,7 +6,7 @@ const db = admin.firestore();
 const collectionRef = db.collection('Caches');
 
 // Define a route to get data from the Firestore database
-router.get('/', async (req, res) => {
+router.get('/load_caches', async (req, res) => {
   try {
     const snapshot = await collectionRef.get();
     const data = snapshot.docs.map(doc => doc.data());

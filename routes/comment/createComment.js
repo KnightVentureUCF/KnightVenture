@@ -5,7 +5,7 @@ const { verifyAccessToken } = require('../../utils/cognito-utils');
 const admin = require('firebase-admin');
 const db = admin.firestore();
 
-router.post('/', async (req, res) => {
+router.post('/create_comment', async (req, res) => {
   const { accessToken, text } = req.body;
   if (!accessToken || !text) {
     return res.status(400).send({ message: 'Invalid request.' });

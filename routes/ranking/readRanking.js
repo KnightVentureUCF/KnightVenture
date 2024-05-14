@@ -4,7 +4,7 @@ const { verifyAccessToken } = require('../../utils/cognito-utils');
 const admin = require('firebase-admin');
 const db = admin.firestore();
 
-router.post('/', async (req, res) => {
+router.post('/read_ranking', async (req, res) => {
   const { accessToken } = req.body;
   if (!accessToken) {
     return res.status(400).send({ message: 'Invalid request.' });

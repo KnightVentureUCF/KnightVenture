@@ -1,5 +1,5 @@
 const supertest = require('supertest');
-const app = require('../../app.js');
+const app = require('../../../app.js');
 
 describe('GET /api/load_caches', () => {
     it('should have status 200', async () => {

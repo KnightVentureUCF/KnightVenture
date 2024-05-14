@@ -3,7 +3,7 @@ const hosting = 'TBD.com';
 const port = '3000';
 
 String buildPath(String route) {
-  const env = String.fromEnvironment('NODE_ENV');
+  const env = String.fromEnvironment('ENVIRONMENT');
 
   if (env == 'production') {
     return 'https://$appName.$hosting/$route';

@@ -1,6 +1,6 @@
 // Middleware to verify the access token
 async function verifyAccessTokenMiddleware(req, res, next) {
-    if (process.env.NODE_ENV !== "test") {
+    if (process.env.ENVIRONMENT !== "test") {
       const { accessToken } = req.body;
       if (!accessToken) {
         return res.status(400).send({ message: 'Invalid request.' });

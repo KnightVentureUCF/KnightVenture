@@ -1,7 +1,6 @@
 import "dart:ffi";
 
 import "package:flutter/material.dart";
-import "package:frontend/components/markers.dart";
 import "package:frontend/components/venture_loading.dart";
 import "package:google_maps_flutter/google_maps_flutter.dart";
 import "package:geolocator/geolocator.dart";
@@ -20,10 +19,9 @@ import "package:frontend/models/caches.dart" as caches;
 // DONE - Setup firebase to store custom locations
 // DONE - Create separate loading page widget
 // DONE - Create API to get locations
-// - Create Unit Test for API
-// - Refactor code to be SOLID
-// - Complete all TODOs
-
+// - Refactor frontend code
+// - Setup env to switch to test when emulators on
+// - Finish unit tests for APIs
 const mapZoom = 18.0;
 const userLocationUpdateDistance = 100;
 
@@ -66,8 +64,6 @@ class _NavigationUIState extends State<NavigationUI> {
           },
           infoWindow: InfoWindow(
             title: cache.name,
-            // TODO: Add more to this info window and change the location.
-            // TODO: set a custom icon.
           ),
         );
         _cacheMarkers[cache.name] = marker;
@@ -130,50 +126,34 @@ class _NavigationUIState extends State<NavigationUI> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: change loading widget to loading screen
     Widget content = VentureLoading();
     if (_isLoading == false) {
       CameraPosition cameraPosition =
           CameraPosition(target: _currentLocation, zoom: mapZoom);
 
       content = GoogleMap(
-          onMapCreated: _onMapCreated,
-          myLocationButtonEnabled: true,
-          myLocationEnabled: true,
-          mapToolbarEnabled: false,
-          zoomControlsEnabled: false,
-          polylines: _destination != null
-              ? {
-                  Polyline(
-                    polylineId: const PolylineId("route"),
-                    points: [_currentLocation, _destination!],
-                    color: Colors.blue,
-                    width: 6,
-                  ),
-                }
-              : {},
-          initialCameraPosition: cameraPosition,
-          markers: {
-            ..._cacheMarkers.values.toSet(),
-            // Marker(
-            //     markerId: const MarkerId("currentLocation"),
-            //     position: _currentLocation),
-          });
+        onMapCreated: _onMapCreated,
+        myLocationButtonEnabled: true,
+        myLocationEnabled: true,
+        mapToolbarEnabled: false,
+        zoomControlsEnabled: false,
+        polylines: _destination != null
+            ? {
+                Polyline(
+                  polylineId: const PolylineId("route"),
+                  points: [_currentLocation, _destination!],
+                  color: Colors.blue,
+                  width: 6,
+                ),
+              }
+            : {},
+        initialCameraPosition: cameraPosition,
+        markers: _cacheMarkers.values.toSet(),
+      );
     }
 
     return Scaffold(
-      // Creates the map
       body: content,
-
-      // Creates a button to return screen to user's location
-      // floatingActionButton: FloatingActionButton(
-      //   backgroundColor: Theme.of(context).primaryColor,
-      //   foregroundColor: Colors.black,
-      //   onPressed: () => _mapController.animateCamera(
-      //     CameraUpdate.newCameraPosition(cameraPosition),
-      //   ),
-      //   child: const Icon(Icons.center_focus_strong),
-      // ),
     );
   }
 }

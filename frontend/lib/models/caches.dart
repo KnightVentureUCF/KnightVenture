@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:frontend/pathbuilder.dart';
+import 'package:frontend/utils/pathbuilder.dart';
 import "package:google_maps_flutter/google_maps_flutter.dart";
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -8,6 +8,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'caches.g.dart';
 
+// Objects to take in Json data.
 @JsonSerializable()
 class QuizQuestion {
   const QuizQuestion(this.text, this.answers);
@@ -26,7 +27,6 @@ class QuizQuestion {
   }
 }
 
-// TODO: Look into null safety later and make an object for all api calls
 @JsonSerializable()
 class Cache {
   Cache({
@@ -61,6 +61,7 @@ class Caches {
   final List<Cache> caches;
 }
 
+// API to pull caches
 Future<Caches> getCacheLocations() async {
   final url = Uri.parse(buildPath("api/load_caches"));
 

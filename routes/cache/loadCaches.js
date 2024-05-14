@@ -2,6 +2,7 @@ const express = require('express');
 const admin = require('firebase-admin');
 const router = express.Router();
 const db = admin.firestore();
+
 const collectionRef = db.collection('Caches');
 
 // Define a route to get data from the Firestore database

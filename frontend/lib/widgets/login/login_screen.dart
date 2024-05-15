@@ -42,7 +42,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: Text(
                         "Knight cannot be made to fear. Let’s the hunt begin!",
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.black),
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                        ),
                       ),
                     ),
                     SizedBox(height: 50),
@@ -68,14 +71,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       height: 61,
                       child: OutlinedButton(
                         style: OutlinedButton.styleFrom(
-                          side: BorderSide(color: Colors.black),
+                          side: const BorderSide(color: Colors.black),
                         ),
                         onPressed: () => Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => SignUpWidget()),
                         ),
-                        child: Text('Sign Up',
+                        child: const Text('Sign Up',
                             style: TextStyle(color: Colors.black)),
                       ),
                     ),

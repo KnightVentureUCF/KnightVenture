@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
+import 'dart:ui' as ui;
 import 'path_painter.dart'; // Import the custom painter
 
 class LoadingScreen extends StatefulWidget {
@@ -10,7 +10,8 @@ class LoadingScreen extends StatefulWidget {
 class _LoadingScreenState extends State<LoadingScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  late Animation<double> _animation;
+  late Path _path;
+  late ui.PathMetric _pathMetric;
 
   @override
   void initState() {
@@ -20,10 +21,16 @@ class _LoadingScreenState extends State<LoadingScreen>
       vsync: this,
     )..repeat();
 
-    _animation = Tween<double>(begin: 0, end: 2 * math.pi).animate(_controller)
-      ..addListener(() {
-        setState(() {}); // Force build when animation value changes
-      });
+    // Define the S-shaped path
+    _path = Path();
+    _path.moveTo(0, 1290 * 0.7); // Adjusted starting point
+    _path.quadraticBezierTo(2796 * 0.3, 1290 * 0.9, 2796 * 0.5, 1290 * 0.3);
+    _path.quadraticBezierTo(2796 * 0.7, 1290 * 0.1, 2796 * 0.9, 1290 * 0.3);
+    _pathMetric = _path.computeMetrics().first;
+
+    _controller.addListener(() {
+      setState(() {}); // Force build when animation value changes
+    });
   }
 
   @override
@@ -34,20 +41,23 @@ class _LoadingScreenState extends State<LoadingScreen>
 
   @override
   Widget build(BuildContext context) {
+    final position = _pathMetric
+            .getTangentForOffset(_pathMetric.length * _controller.value)
+            ?.position ??
+        Offset.zero;
+
     return Scaffold(
       backgroundColor: Colors.yellow,
       body: Stack(
         children: [
           Positioned(
-            left: (MediaQuery.of(context).size.width / 2 - 50) +
-                100 * math.cos(_animation.value),
-            top: (MediaQuery.of(context).size.height / 2 - 50) +
-                100 * math.sin(_animation.value),
+            left: position.dx - 50, // Center the image at the path position
+            top: position.dy - 50,
             child: Image.asset('assets/knight_horse.png', width: 100),
           ),
           Positioned.fill(
             child: CustomPaint(
-              painter: PathPainter(),
+              painter: PathPainter(), // Ensure this draws the S-shaped path
             ),
           ),
           Align(

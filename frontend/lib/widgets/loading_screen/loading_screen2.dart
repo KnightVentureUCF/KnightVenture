@@ -8,6 +8,22 @@ class LoadingScreenWidget extends StatelessWidget {
       body: Stack(
         children: <Widget>[
           const Positioned(
+            left: 0, // Start from the left edge
+            right: 0, // Extend to the right edge
+            bottom: 20, // 20 pixels from the bottom (updated from 50 pixels)
+            child: Center(
+              child: SizedBox(
+                height: 20, // Set the height of the CircularProgressIndicator
+                width: 20, // Set the width of the CircularProgressIndicator
+                child: CircularProgressIndicator(
+                  strokeWidth: 2, // Makes the spinning line thinner
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                      Colors.black), // Spinner color
+                ),
+              ),
+            ),
+          ),
+          const Positioned(
             left: 65, // Example x coordinate
             top: 770, // Example y coordinate
             width: 306,
@@ -21,7 +37,7 @@ class LoadingScreenWidget extends StatelessWidget {
             ),
           ),
           Positioned(
-            left: 173, // Example x coordinate
+            left: 190, // Example x coordinate
             top: 830, // Example y coordinate
             child: Image.asset('assets/horseback.png'),
           ),
@@ -79,8 +95,8 @@ class LoadingScreenWidget extends StatelessWidget {
             top: 220, // Another y coordinate
             child: Image.asset('assets/chest.png'),
           ),
+
           // Repeat the Positioned widget for each item you want to place
-          // Include all your items with their correct assets and positions
         ],
       ),
     );

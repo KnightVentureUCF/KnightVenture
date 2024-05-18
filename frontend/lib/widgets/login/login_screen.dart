@@ -86,8 +86,19 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 20),
+            // Padding(
+            //   padding: const EdgeInsets.only(bottom: 20),
+            //   child: Image.asset(
+            //     'assets/horseback.png',
+            //     width: 100,
+            //     height: 100,
+            //   ),
+            // ),
+            Positioned(
+              left:
+                  190, // You may need to adjust this based on your layout requirements
+              bottom:
+                  20, // This positions the widget 20 pixels from the bottom of the Stack
               child: Image.asset(
                 'assets/horseback.png',
                 width: 100,

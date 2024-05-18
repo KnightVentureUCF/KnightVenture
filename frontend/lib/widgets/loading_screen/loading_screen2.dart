@@ -1,31 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/widgets/login/login_screen.dart';
 
-class LoadingScreenWidget extends StatelessWidget {
+class LoadingScreenWidget extends StatefulWidget {
+  @override
+  _LoadingScreenWidgetState createState() => _LoadingScreenWidgetState();
+}
+
+class _LoadingScreenWidgetState extends State<LoadingScreenWidget> {
+  @override
+  void initState() {
+    super.initState();
+    _navigateToLogin();
+  }
+
+  void _navigateToLogin() async {
+    await Future.delayed(Duration(seconds: 3)); // Wait for 3 seconds
+    if (!mounted) return; // Check if the widget is still in the tree
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+          builder: (context) => LoginScreen()), // Navigate to the LoginScreen
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xffFFC904), // The yellow background color
       body: Stack(
         children: <Widget>[
+          // Positioned widgets for images and texts here...
           const Positioned(
-            left: 0, // Start from the left edge
-            right: 0, // Extend to the right edge
-            bottom: 20, // 20 pixels from the bottom (updated from 50 pixels)
-            child: Center(
-              child: SizedBox(
-                height: 20, // Set the height of the CircularProgressIndicator
-                width: 20, // Set the width of the CircularProgressIndicator
-                child: CircularProgressIndicator(
-                  strokeWidth: 2, // Makes the spinning line thinner
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                      Colors.black), // Spinner color
-                ),
-              ),
-            ),
-          ),
-          const Positioned(
-            left: 65, // Example x coordinate
-            top: 770, // Example y coordinate
+            left: 65,
+            top: 770,
             width: 306,
             child: Text(
               'When she said yes to the knight, he promised to protect her for life',
@@ -37,66 +44,73 @@ class LoadingScreenWidget extends StatelessWidget {
             ),
           ),
           Positioned(
-            left: 190, // Example x coordinate
-            top: 830, // Example y coordinate
+            left: 190,
+            top: 830,
             child: Image.asset('assets/horseback.png'),
           ),
           Positioned(
-            left: 130, // Another x coordinate
-            top: 640, // Another y coordinate
+            left: 130,
+            top: 640,
             child: Image.asset('assets/knight.png'),
           ),
           Positioned(
-            left: 50, // Another x coordinate
-            top: 50, // Another y coordinate
+            left: 50,
+            top: 50,
             child: Image.asset('assets/dotted_line.png'),
           ),
           Positioned(
-            left: 100, // Another x coordinate
-            top: 570, // Another y coordinate
+            left: 100,
+            top: 570,
             child: Image.asset('assets/tree.png'),
           ),
           Positioned(
-            left: 280, // Another x coordinate
-            top: 495, // Another y coordinate
+            left: 280,
+            top: 495,
             child: Image.asset('assets/tree.png'),
           ),
-          // Positioned(
-          //   left: 269, // Another x coordinate
-          //   top: 391, // Another y coordinate
-          //   child: Image.asset(
-          //       'assets/pawprint.png'),
-          // ),
           Positioned(
-            left: 30, // Another x coordinate
-            top: 374, // Another y coordinate
+            left: 30,
+            top: 374,
             child: Image.asset('assets/pawprint.png'),
           ),
           const Positioned(
-            left: 100, // Another x coordinate
-            top: 320, // Another y coordinate
+            left: 100,
+            top: 320,
             child: Text(
               'KnightVenture',
               style: TextStyle(color: Colors.black, fontSize: 42.68),
             ),
           ),
           Positioned(
-            left: 70, // Another x coordinate
-            top: 270, // Another y coordinate
+            left: 70,
+            top: 270,
             child: Image.asset('assets/duck.png'),
           ),
           Positioned(
-            left: 209, // Another x coordinate
-            top: 180, // Another y coordinate
+            left: 209,
+            top: 180,
             child: Image.asset('assets/tree.png'),
           ),
           Positioned(
-            left: 300, // Another x coordinate
-            top: 220, // Another y coordinate
+            left: 300,
+            top: 220,
             child: Image.asset('assets/chest.png'),
           ),
-
-          // Repeat the Positioned widget for each item you want to place
+          const Positioned(
+            left: 0,
+            right: 0,
+            bottom: 20,
+            child: Center(
+              child: SizedBox(
+                height: 20,
+                width: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );

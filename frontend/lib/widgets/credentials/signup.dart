@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/widgets/styling/theme.dart';
 
-class SignUpWidget extends StatelessWidget {
+class SignUp extends StatelessWidget {
+  const SignUp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xffFFC904),
+      backgroundColor: brightGold,
       body: Padding(
         padding: const EdgeInsets.all(50.0),
         child: Column(

@@ -68,6 +68,7 @@ flutter:
     - assets/pawprint.png
     - assets/tree.png
     - assets/dotted_line.png
+    - assets/dummy_map.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

@@ -1,19 +1,20 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'login_widget.dart';
-import 'signup_widget.dart';
+import 'package:frontend/widgets/styling/theme.dart';
+import 'login.dart';
+import 'signup.dart';
 
-class LoginScreen extends StatefulWidget {
+class Credentials extends StatefulWidget {
+  const Credentials({super.key});
+
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _CredentialsState createState() => _CredentialsState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _CredentialsState extends State<Credentials> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xffFFC904),
+      backgroundColor: brightGold,
       body: SafeArea(
         child: Column(
           children: [
@@ -48,7 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 50),
+                    const SizedBox(height: 50),
                     SizedBox(
                       width: 305,
                       height: 61,
@@ -60,12 +61,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         onPressed: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => LoginWidget()),
+                              builder: (context) => const Login()),
                         ),
-                        child: Text('Login'),
+                        child: const Text('Login'),
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     SizedBox(
                       width: 305,
                       height: 61,
@@ -76,7 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         onPressed: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => SignUpWidget()),
+                              builder: (context) => const SignUp()),
                         ),
                         child: const Text('Sign Up',
                             style: TextStyle(color: Colors.black)),

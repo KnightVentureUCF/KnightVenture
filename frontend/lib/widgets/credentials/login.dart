@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
-import 'signup_widget.dart';
+import 'package:frontend/widgets/styling/theme.dart';
+import 'signup.dart';
+import 'package:frontend/widgets/home_screen/home.dart';
 
-class LoginWidget extends StatelessWidget {
+class Login extends StatelessWidget {
+  const Login({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -9,7 +13,7 @@ class LoginWidget extends StatelessWidget {
         onGenerateRoute: (settings) {
           return MaterialPageRoute(
             builder: (context) => Scaffold(
-              backgroundColor: Color(0xffFFC904),
+              backgroundColor: brightGold,
               body: Padding(
                 padding: const EdgeInsets.all(50.0),
                 child: Column(
@@ -50,7 +54,12 @@ class LoginWidget extends StatelessWidget {
                           backgroundColor: Colors.black,
                         ),
                         onPressed: () {
-                          // Add login logic here
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const HomeScreen(),
+                            ),
+                          );
                         },
                         child: const Text(
                           'Login',
@@ -66,7 +75,7 @@ class LoginWidget extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SignUpWidget(),
+                            builder: (context) => const SignUp(),
                           ),
                         );
                       },
@@ -78,12 +87,12 @@ class LoginWidget extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     GestureDetector(
                       onTap: () {
                         // Add logic for "Trouble logging in?" here
                       },
-                      child: Text(
+                      child: const Text(
                         "Trouble logging in?",
                         style: TextStyle(
                           decoration: TextDecoration.underline,

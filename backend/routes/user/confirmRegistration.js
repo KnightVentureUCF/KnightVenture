@@ -18,6 +18,7 @@ const client = new AWS.CognitoIdentityServiceProvider({
 // Confirm User Registration endpoint
 router.post('/', (req, res) => {
   const { username, confirmationCode } = req.body;
+  console.log('username:', username, 'confirmationCode:', confirmationCode);
   const params = {
     ClientId: process.env.CLIENT_ID,
     Username: username,

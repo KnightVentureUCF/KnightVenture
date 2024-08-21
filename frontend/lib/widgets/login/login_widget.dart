@@ -51,6 +51,7 @@ class LoginWidget extends StatelessWidget {
                         ),
                         onPressed: () {
                           // Add login logic here
+                          
                         },
                         child: const Text(
                           'Login',

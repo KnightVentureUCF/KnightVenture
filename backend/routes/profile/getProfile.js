@@ -1,20 +1,24 @@
-const AWS = require('aws-sdk');
-const cognitoIdentityServiceProvider = new AWS.CognitoIdentityServiceProvider();
-const admin = require('firebase-admin');
-const db = admin.firestore();
+const express = require('express');
 const router = express.Router();
-
-
-// Initialize Firebase Admin
+const AWS = require('aws-sdk');
 const admin = require('firebase-admin');
-const serviceAccount = require('./service-account-file.json');
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: process.env.FIREBASE_DATABASE_URL,
+
+// Ensure Firebase Admin is initialized outside of this file, typically in server.js
+const db = admin.firestore();
+
+// Configure AWS using environment variables
+AWS.config.update({
+  region: process.env.REGION,
 });
 
-// Get Profile endpoint
-router('/', async (req, res) => {
+// Create Cognito Client
+const cognitoIdentityServiceProvider = new AWS.CognitoIdentityServiceProvider({
+  apiVersion: '2024-05-06',
+  region: process.env.REGION,
+});
+
+// Setup the endpoint to use POST to receive the accessToken
+router.post('/', async (req, res) => {
   const { accessToken } = req.body;
 
   const params = {
@@ -34,17 +38,17 @@ router('/', async (req, res) => {
         } else {
           res.status(200).send({
             message: 'Profile data found successfully.',
-            ...userDoc.data(),
+            profileData: userDoc.data(),
           });
         }
       } catch (dbErr) {
         console.error(dbErr);
-        res
-          .status(500)
-          .send({
-            message: 'An error occurred on the server. Please try again later.',
-          });
+        res.status(500).send({
+          message: 'An error occurred on the server. Please try again later.',
+        });
       }
     }
   });
 });
+
+module.exports = router;

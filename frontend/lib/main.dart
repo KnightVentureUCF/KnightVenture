@@ -4,6 +4,6 @@ import 'package:frontend/widgets/loading_screen/loading_screen2.dart';
 
 void main() {
   runApp(MaterialApp(
-    home: ForgotSomethingPage(), // Using the new LoadingScreenWidget
+    home: LoadingScreenWidget(), // Using the new LoadingScreenWidget
   ));
 }

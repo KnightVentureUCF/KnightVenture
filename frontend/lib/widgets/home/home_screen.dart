@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/widgets/home/navigation_ui.dart';
 import 'package:frontend/widgets/styling/theme.dart';
 import 'package:frontend/widgets/main_menu/main_menu_screen.dart';
 
@@ -10,14 +11,7 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/dummy_map.png'),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
+          const NavigationUI(),
           Positioned(
             top: 50,
             left: 35,

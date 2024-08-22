@@ -1,6 +1,8 @@
 require('dotenv').config();
 const express = require('express');
 const AWS = require('aws-sdk');
+const PORT = process.env.PORT || 3000;
+
 
 // Initialize Express
 const app = express();
@@ -18,7 +20,7 @@ const client = new AWS.CognitoIdentityServiceProvider({
 
 // Confiure Firebase
 const admin = require('firebase-admin');
-const serviceAccount = require('./firebasePrivateKey.json');
+const serviceAccount = JSON.parse(process.env.FIREBASE_CREDENTIALS);
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: process.env.FIREBASE_DATABASE_URL,
@@ -57,6 +59,7 @@ const readRanking = require('./backend/routes/ranking/readRanking');
 app.use('/api/read_ranking', readRanking);
 
 // Listen on a port
-app.listen(3000, () => {
-  console.log('Server running on http://localhost:3000');
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
+

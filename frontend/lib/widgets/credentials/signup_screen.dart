@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:frontend/widgets/styling/theme.dart';
 import 'package:http/http.dart' as http;
 import 'confirm_screen.dart';
 
@@ -8,10 +9,12 @@ class SignUpWidget extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  SignUpWidget({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xffFFC904),
+      backgroundColor: brightGold,
       body: Padding(
         padding: const EdgeInsets.all(50.0),
         child: Column(

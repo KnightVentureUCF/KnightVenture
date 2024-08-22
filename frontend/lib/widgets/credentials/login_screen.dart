@@ -1,12 +1,17 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'forgot_password_screen.dart';
+import 'package:frontend/widgets/home/home_screen.dart';
+import 'package:frontend/widgets/styling/theme.dart';
 import 'package:http/http.dart' as http;
-import 'signup_widget.dart';
+import 'signup_screen.dart';
 
 class LoginWidget extends StatelessWidget {
   // Define text controllers to get the username and password
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  LoginWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +20,7 @@ class LoginWidget extends StatelessWidget {
         onGenerateRoute: (settings) {
           return MaterialPageRoute(
             builder: (context) => Scaffold(
-              backgroundColor: Color(0xffFFC904),
+              backgroundColor: brightGold,
               body: Padding(
                 padding: const EdgeInsets.all(50.0),
                 child: Column(
@@ -56,7 +61,12 @@ class LoginWidget extends StatelessWidget {
                           backgroundColor: Colors.black,
                         ),
                         onPressed: () async {
-                          // Call the login function
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const HomeScreen(),
+                            ),
+                          );
                           await _login(context);
                         },
                         child: const Text(
@@ -88,7 +98,12 @@ class LoginWidget extends StatelessWidget {
                     const SizedBox(height: 10),
                     GestureDetector(
                       onTap: () {
-                        // Add logic for "Trouble logging in?" here
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ForgotPasswordScreen(),
+                          ),
+                        );
                       },
                       child: const Text(
                         "Trouble logging in?",

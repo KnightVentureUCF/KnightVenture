@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/widgets/forget_password/forgot_page.dart';
-import 'package:frontend/widgets/loading_screen/loading_screen2.dart';
+import 'package:frontend/widgets/credentials/loading_screen.dart';
 
 void main() {
-  runApp(MaterialApp(
-    home: LoadingScreenWidget(), // Using the new LoadingScreenWidget
+  runApp(const MaterialApp(
+    home: LoadingScreen(), // Using the new LoadingScreenWidget
   ));
 }

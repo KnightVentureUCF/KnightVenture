@@ -1,13 +1,14 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:frontend/widgets/styling/theme.dart';
 import 'package:http/http.dart' as http;
-import 'login_widget.dart'; 
+import 'login_screen.dart';
 
 class ConfirmWidget extends StatelessWidget {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _codeController = TextEditingController();
 
-  ConfirmWidget({String? username}) {
+  ConfirmWidget({super.key, String? username}) {
     if (username != null) {
       _usernameController.text = username;
     }
@@ -16,7 +17,7 @@ class ConfirmWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xffFFC904),
+      backgroundColor: brightGold,
       body: Padding(
         padding: const EdgeInsets.all(50.0),
         child: Column(
@@ -164,9 +165,11 @@ class ConfirmWidget extends StatelessWidget {
           (route) => false, // Remove all previous routes
         );
 
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Account successfully confirmed. Please log in.'),
-        ));
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Account successfully confirmed. Please log in.'),
+          ),
+        );
       } else {
         throw Exception('Failed to confirm registration.');
       }

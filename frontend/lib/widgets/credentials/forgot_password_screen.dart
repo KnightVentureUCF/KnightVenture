@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/widgets/login/login_widget.dart';
-import 'package:frontend/widgets/login/signup_widget.dart';
+import 'package:frontend/widgets/credentials/login_screen.dart';
+import 'package:frontend/widgets/credentials/signup_screen.dart';
+import 'package:frontend/widgets/styling/theme.dart';
 
-class ForgotSomethingPage extends StatelessWidget {
+class ForgotPasswordScreen extends StatelessWidget {
+  const ForgotPasswordScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xffFFC904),
+      backgroundColor: brightGold,
       appBar: AppBar(
-        title: Text('Forgot Something ?'),
-        backgroundColor: Color(0xffFFC904),
+        title: const Text('Forgot Something ?'),
+        backgroundColor: brightGold,
       ),
       body: Column(
         children: <Widget>[
@@ -18,9 +21,9 @@ class ForgotSomethingPage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Image.asset('assets/knight.png'),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(

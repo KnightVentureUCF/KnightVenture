@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/widgets/login/login_screen.dart';
+import 'package:frontend/widgets/credentials/credentials_screen.dart';
+import 'package:frontend/widgets/styling/theme.dart';
 
-class LoadingScreenWidget extends StatefulWidget {
+class LoadingScreen extends StatefulWidget {
+  const LoadingScreen({super.key});
+
   @override
-  _LoadingScreenWidgetState createState() => _LoadingScreenWidgetState();
+  _LoadingScreenState createState() => _LoadingScreenState();
 }
 
-class _LoadingScreenWidgetState extends State<LoadingScreenWidget> {
+class _LoadingScreenState extends State<LoadingScreen> {
   @override
   void initState() {
     super.initState();
@@ -14,19 +17,20 @@ class _LoadingScreenWidgetState extends State<LoadingScreenWidget> {
   }
 
   void _navigateToLogin() async {
-    await Future.delayed(Duration(seconds: 3)); // Wait for 3 seconds
+    await Future.delayed(const Duration(seconds: 5)); // Wait for 3 seconds
     if (!mounted) return; // Check if the widget is still in the tree
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-          builder: (context) => LoginScreen()), // Navigate to the LoginScreen
+          builder: (context) =>
+              const LoginScreen()), // Navigate to the LoginScreen
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xffFFC904), // The yellow background color
+      backgroundColor: brightGold, // The yellow background color
       body: Stack(
         children: <Widget>[
           // Positioned widgets for images and texts here...

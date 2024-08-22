@@ -1,11 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'login_widget.dart';
-import 'signup_widget.dart';
-import 'package:http/http.dart' as http;
+import 'package:frontend/widgets/styling/theme.dart';
+import 'login_screen.dart';
+import 'signup_screen.dart';
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -14,7 +14,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xffFFC904),
+      backgroundColor: brightGold,
       body: SafeArea(
         child: Column(
           children: [
@@ -41,7 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     const Padding(
                       padding: EdgeInsets.all(8.0),
                       child: Text(
-                        "Knight cannot be made to fear. Let’s the hunt begin!",
+                        "Knights cannot be made to fear. Let the hunt begin!",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.black,
@@ -49,7 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 50),
+                    const SizedBox(height: 50),
                     SizedBox(
                       width: 305,
                       height: 61,
@@ -63,10 +63,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           MaterialPageRoute(
                               builder: (context) => LoginWidget()),
                         ),
-                        child: Text('Login'),
+                        child: const Text('Login'),
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     SizedBox(
                       width: 305,
                       height: 61,

@@ -43,11 +43,9 @@ router.post('/', async (req, res) => {
         }
       } catch (dbErr) {
         console.error(dbErr);
-        res
-          .status(500)
-          .send({
-            message: 'An error occurred on the server. Please try again later.',
-          });
+        res.status(500).send({
+          message: 'An error occurred on the server. Please try again later.',
+        });
       }
     }
   });

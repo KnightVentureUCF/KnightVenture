@@ -56,7 +56,15 @@ app.use('/api/create_comment', createComment);
 const readRanking = require('./backend/routes/ranking/readRanking');
 app.use('/api/read_ranking', readRanking);
 
+const loadCaches = require('./backend/routes/cache/loadCaches');
+app.use('/api/load_caches', loadCaches);
+
+const readCache = require('./backend/routes/cache/readCache');
+app.use('/api/read_cache', readCache);
+
 // Listen on a port
-app.listen(3000, () => {
+server = app.listen(3000, () => {
   console.log('Server running on http://localhost:3000');
 });
+
+module.exports = {app, server}

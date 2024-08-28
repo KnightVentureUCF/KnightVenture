@@ -124,6 +124,7 @@ class SignUpWidget extends StatelessWidget {
           MaterialPageRoute(
             builder: (context) => ConfirmWidget(
               username: username,
+              email: email,
             ),
           ),
         );

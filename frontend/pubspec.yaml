@@ -75,7 +75,7 @@ flutter:
     - assets/pawprint.png
     - assets/tree.png
     - assets/dotted_line.png
-    - .env
+    - ../.env
     - assets/cache-locations.json
 
   # An image asset can refer to one or more resolution-specific "variants", see

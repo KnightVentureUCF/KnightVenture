@@ -8,8 +8,15 @@ class ConfirmWidget extends StatelessWidget {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _codeController = TextEditingController();
   final String? _email; // Store email as a private variable
+  final String? _password;
 
-  ConfirmWidget({super.key, String? username, String? email}) : _email = email {
+  ConfirmWidget({
+    super.key,
+    String? username,
+    String? email,
+    String? password,
+  })  : _email = email,
+        _password = password {
     if (username != null) {
       _usernameController.text = username;
     }
@@ -156,6 +163,7 @@ class ConfirmWidget extends StatelessWidget {
           'username': username,
           'confirmationCode': confirmationCode,
           'email': _email!,
+          'password': _password!,
         }),
       );
 

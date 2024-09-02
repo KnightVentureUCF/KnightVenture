@@ -1,9 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const AWS = require('aws-sdk');
-
-// Use the existing Firebase instance from the main server file
-const admin = require('firebase-admin');
+const admin = require('firebase-admin'); // Firebase admin for Firestore
 
 // Create Cognito Client (already configured in server.js)
 const client = new AWS.CognitoIdentityServiceProvider({
@@ -11,8 +9,8 @@ const client = new AWS.CognitoIdentityServiceProvider({
   region: process.env.REGION,
 });
 
-// Confirm Email and Add User to Firebase
-router.post('/', (req, res) => {
+// Confirm Email and Add User Data to Firebase
+router.post('/', async (req, res) => {
   const { username, confirmationCode, email } = req.body;
   const confirmParams = {
     ClientId: process.env.CLIENT_ID,
@@ -27,16 +25,10 @@ router.post('/', (req, res) => {
       res.status(500).send({ message: err.message });
     } else {
       try {
-        // After confirmation, add the user to Firebase Authentication
-        const userRecord = await admin.auth().createUser({
-          email: email,
-          emailVerified: true,
-          password: 'Knight-3101.', // TODO: change this to real password, apply hashing
-        });
-
-        // Store additional user information in Firestore
+        // After confirming the user in Cognito, store user information in Firebase Firestore
         const db = admin.firestore();
-        await db.collection('users').doc(userRecord.uid).set({
+        await db.collection('users').doc(username).set({
+          email: email,
           fullName: username,
           profilePicture: '🐶',
           cachesFound: 0,
@@ -44,8 +36,8 @@ router.post('/', (req, res) => {
         });
 
         res.status(200).send({
-          message: 'User confirmed and added to Firebase successfully.',
-          userId: userRecord.uid,
+          message: 'User confirmed and data added to Firebase successfully.',
+          username: username,
         });
       } catch (firebaseErr) {
         res

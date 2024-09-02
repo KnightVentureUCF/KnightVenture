@@ -125,6 +125,7 @@ class SignUpWidget extends StatelessWidget {
             builder: (context) => ConfirmWidget(
               username: username,
               email: email,
+              password: password,
             ),
           ),
         );

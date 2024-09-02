@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
-import 'forgot_password_screen.dart';
+import 'forgot_something_screen.dart';
 import 'package:frontend/widgets/home/home_screen.dart';
 import 'package:frontend/widgets/styling/theme.dart';
 import 'package:http/http.dart' as http;
@@ -101,7 +101,7 @@ class LoginWidget extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ForgotPasswordScreen(),
+                            builder: (context) => ForgotSomething(),
                           ),
                         );
                       },
@@ -147,7 +147,7 @@ class LoginWidget extends StatelessWidget {
     }
 
     try {
-      // Replace with your actual backend URL
+      // TODO: Replace with your actual backend URL
       const String apiUrl = "http://localhost:3000/api/login";
 
       // Make a POST request to the backend

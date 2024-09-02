@@ -32,7 +32,7 @@ class ConfirmWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text(
-              'Verification',
+              'Verification Code For New Account',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,

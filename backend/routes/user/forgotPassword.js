@@ -15,7 +15,6 @@ const client = new AWS.CognitoIdentityServiceProvider({
   region: process.env.REGION,
 });
 
-
 // Forgot Password endpoint
 router.post('/', (req, res) => {
   const { username } = req.body;

@@ -19,12 +19,11 @@ const client = new AWS.CognitoIdentityServiceProvider({
 
 // Configure Firebase
 const admin = require('firebase-admin');
-const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
+const serviceAccount = JSON.parse(process.env.FIREBASE_CREDENTIALS);
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: process.env.FIREBASE_DATABASE_URL,
 });
-
 // const dtb = admin.firestore();
 
 // Middleware to parse JSON bodies

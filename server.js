@@ -3,7 +3,6 @@ const express = require('express');
 const AWS = require('aws-sdk');
 const admin = require('firebase-admin');
 const bodyParser = require('body-parser');
-
 const PORT = process.env.PORT || 3000;
 
 // Initialize Express

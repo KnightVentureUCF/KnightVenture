@@ -2,7 +2,6 @@ require('dotenv').config();
 const express = require('express');
 const AWS = require('aws-sdk');
 const admin = require('firebase-admin');
-const path = require('path');
 const bodyParser = require('body-parser');
 
 const PORT = process.env.PORT || 3000;
@@ -24,22 +23,14 @@ async function loadFirebaseCredentials() {
     Key: process.env.S3_CREDENTIALS_KEY, // Key (file path) for the JSON file
   };
 
-  return new Promise((resolve, reject) => {
-    s3.getObject(params, (err, data) => {
-      if (err) {
-        console.error('Error fetching Firebase credentials from S3:', err);
-        reject(err);
-      } else {
-        try {
-          const credentials = JSON.parse(data.Body.toString('utf-8'));
-          resolve(credentials);
-        } catch (parseError) {
-          console.error('Error parsing Firebase credentials:', parseError);
-          reject(parseError);
-        }
-      }
-    });
-  });
+  try {
+    const data = await s3.getObject(params).promise();
+    const credentials = JSON.parse(data.Body.toString('utf-8'));
+    return credentials;
+  } catch (err) {
+    console.error('Error fetching or parsing Firebase credentials from S3:', err);
+    throw err;
+  }
 }
 
 // Initialize Firebase with credentials from S3
@@ -58,7 +49,9 @@ async function initializeFirebase() {
 }
 
 // Initialize Firebase asynchronously
-initializeFirebase();
+initializeFirebase().catch((err) => {
+  console.error('Error initializing Firebase:', err);
+});
 
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());
@@ -103,4 +96,3 @@ const server = app.listen(PORT, () => {
 });
 
 module.exports = { app, server };
-

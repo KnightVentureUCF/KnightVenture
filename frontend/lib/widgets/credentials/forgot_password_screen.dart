@@ -80,7 +80,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => LoginWidget(),
+                        builder: (context) => LoginScreen(),
                       ),
                     );
                   },

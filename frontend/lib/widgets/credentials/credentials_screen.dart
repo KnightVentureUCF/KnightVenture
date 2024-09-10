@@ -3,14 +3,14 @@ import 'package:frontend/widgets/styling/theme.dart';
 import 'login_screen.dart';
 import 'signup_screen.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class CredentialsScreen extends StatefulWidget {
+  const CredentialsScreen({super.key});
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _CredentialsScreenState createState() => _CredentialsScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _CredentialsScreenState extends State<CredentialsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         onPressed: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => LoginWidget()),
+                              builder: (context) => LoginScreen()),
                         ),
                         child: const Text('Login'),
                       ),

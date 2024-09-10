@@ -23,7 +23,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
       context,
       MaterialPageRoute(
           builder: (context) =>
-              const LoginScreen()), // Navigate to the LoginScreen
+              const CredentialsScreen()), // Navigate to the LoginScreen
     );
   }
 

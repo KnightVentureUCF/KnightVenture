@@ -17,22 +17,45 @@ class CacheDetails extends StatelessWidget {
     }
 
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.only(left: 36, right: 36, top: 72),
       child: Column(
         children: [
-          Image.asset(selectedCache!.imgUrl),
+          Container(
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Colors.black,
+                width: 3.0,
+              ),
+              borderRadius: BorderRadius.circular(11.0),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(9.0),
+              child: Image.asset(
+                selectedCache!.imgUrl,
+                fit: BoxFit.cover,
+                width: 200,
+                height: 200,
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
           Text(
             selectedCache!.name,
+            textAlign: TextAlign.center,
             style: const TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
             ),
           ),
           const SizedBox(height: 16),
-          Text(
-            selectedCache!.desc,
-            style: const TextStyle(
-              fontSize: 16,
+          Expanded(
+            child: SingleChildScrollView(
+              child: Text(
+                selectedCache!.desc,
+                style: const TextStyle(
+                  fontSize: 16,
+                ),
+              ),
             ),
           ),
         ],

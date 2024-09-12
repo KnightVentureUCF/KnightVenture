@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/test_cache.dart';
-import 'package:frontend/data/all_caches.dart';
 
 class CachesGrid extends StatelessWidget {
   const CachesGrid(
@@ -18,7 +17,8 @@ class CachesGrid extends StatelessWidget {
         return GestureDetector(
           onTap: () => onCacheSelected(allCaches[index]),
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding:
+                const EdgeInsets.only(left: 18, right: 18, top: 36, bottom: 72),
             child: Image.asset(allCaches[index].icon),
           ),
         );

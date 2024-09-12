@@ -24,27 +24,35 @@ class _CacheLogScreenState extends State<CacheLogScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: brightGold,
-      body: Column(
-        children: [
-          Expanded(
-            flex: 2,
-            child: CacheDetails(
-              selectedCache: selectedCache,
-            ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.bottomLeft,
+            end: Alignment.topRight,
+            colors: [brightGold, Color.fromARGB(255, 232, 234, 72)],
           ),
-          Expanded(
-            flex: 1,
-            child: CachesGrid(
-              allCaches: allCaches,
-              onCacheSelected: (cache) {
-                setState(() {
-                  selectedCache = cache;
-                });
-              },
+        ),
+        child: Column(
+          children: [
+            Expanded(
+              flex: 3,
+              child: CacheDetails(
+                selectedCache: selectedCache,
+              ),
             ),
-          ),
-        ],
+            Expanded(
+              flex: 1,
+              child: CachesGrid(
+                allCaches: allCaches,
+                onCacheSelected: (cache) {
+                  setState(() {
+                    selectedCache = cache;
+                  });
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

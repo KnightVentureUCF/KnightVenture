@@ -16,6 +16,7 @@ class NavigationUI extends StatefulWidget {
 
 class _NavigationUIState extends State<NavigationUI> {
   late GoogleMapController _mapController;
+  bool _isMapReady = false;
   late LatLng _currentLocation;
   LatLng? _destination;
   bool _isLoading = true;
@@ -80,6 +81,7 @@ class _NavigationUIState extends State<NavigationUI> {
 
   void _onMapCreated(GoogleMapController controller) {
     _mapController = controller;
+    _isMapReady = true;
   }
 
   // Asks for the user's location and returns error if unavailable.
@@ -130,7 +132,7 @@ class _NavigationUIState extends State<NavigationUI> {
     return GoogleMap(
       onMapCreated: _onMapCreated,
       myLocationButtonEnabled: false,
-      myLocationEnabled: false,
+      myLocationEnabled: true,
       mapToolbarEnabled: false,
       zoomControlsEnabled: false,
       polylines: _destination != null
@@ -162,8 +164,11 @@ class _NavigationUIState extends State<NavigationUI> {
             child: FloatingActionButton(
               onPressed: () {
                 // Recenter the map on the user's location if they're at UCF
-                _updateCameraPosition(
-                    _currentLocation.latitude, _currentLocation.longitude);
+                var newLocation = _currentLocation;
+                if (userAtUCF(newLocation.latitude, newLocation.longitude) == false) {
+                  newLocation = ucfCampusCenter;
+                }
+                _mapController.moveCamera(CameraUpdate.newLatLng(newLocation));
               },
               child: const Icon(Icons.my_location),
             ),

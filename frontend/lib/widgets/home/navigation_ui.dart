@@ -16,15 +16,17 @@ class NavigationUI extends StatefulWidget {
 
 class _NavigationUIState extends State<NavigationUI> {
   late GoogleMapController _mapController;
-  bool _isMapReady = false;
   late LatLng _currentLocation;
   LatLng? _destination;
   bool _isLoading = true;
   final Map<String, Marker> _cacheMarkers = {};
 
-  // Define UCF Campus center and radius
+  // Define UCF location data
+  bool _userLocatedAtUCF = false;
   static const LatLng ucfCampusCenter =
       LatLng(28.60197, -81.20051); // Example: UCF Main Campus
+  static const LatLng ucfNECorner = LatLng(28.6060, -81.1940);
+  static const LatLng ucfSWCorner = LatLng(28.5900, -81.2130);
   static const double ucfCampusRadius = 2000; // Radius in meters (e.g., 2km)
 
   @override
@@ -45,9 +47,16 @@ class _NavigationUIState extends State<NavigationUI> {
           markerId: MarkerId(cache.name),
           position: coords,
           onTap: () {
-            setState(() {
-              _destination = coords;
-            });
+            if (_userLocatedAtUCF == true && _destination != coords) {
+              setState(() {
+                _destination = coords;
+              });
+            }
+            else if (_destination == coords) {
+              setState(() {
+                _destination = null;
+              });
+            }
           },
           infoWindow: InfoWindow(
             title: cache.name,
@@ -68,20 +77,21 @@ class _NavigationUIState extends State<NavigationUI> {
 
   void _updateCameraPosition(double lat, double lng) {
     var userLocation = LatLng(lat, lng);
+    var userInUCF = userAtUCF(lat, lng);
 
-    if (userAtUCF(lat, lng) == false) {
+    if (userInUCF == false) {
       userLocation = ucfCampusCenter;
     }
 
     setState(() {
       _currentLocation = userLocation;
+      _userLocatedAtUCF = userInUCF;
       _isLoading = false;
     });
   }
 
   void _onMapCreated(GoogleMapController controller) {
     _mapController = controller;
-    _isMapReady = true;
   }
 
   // Asks for the user's location and returns error if unavailable.
@@ -147,6 +157,13 @@ class _NavigationUIState extends State<NavigationUI> {
           : {},
       initialCameraPosition: getUserLocationCameraView(),
       markers: _cacheMarkers.values.toSet(),
+      minMaxZoomPreference: const MinMaxZoomPreference(16, 20),
+      cameraTargetBounds: CameraTargetBounds(
+        LatLngBounds(
+          northeast: ucfNECorner, // Northeast corner
+          southwest: ucfSWCorner, // Southwest corner
+        ),
+      ),
     );
   }
 
@@ -165,7 +182,8 @@ class _NavigationUIState extends State<NavigationUI> {
               onPressed: () {
                 // Recenter the map on the user's location if they're at UCF
                 var newLocation = _currentLocation;
-                if (userAtUCF(newLocation.latitude, newLocation.longitude) == false) {
+                if (userAtUCF(newLocation.latitude, newLocation.longitude) ==
+                    false) {
                   newLocation = ucfCampusCenter;
                 }
                 _mapController.moveCamera(CameraUpdate.newLatLng(newLocation));

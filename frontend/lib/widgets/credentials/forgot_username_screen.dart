@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:frontend/widgets/credentials/credentials_screen.dart';
+import 'package:frontend/widgets/credentials/login_screen.dart';
 import 'package:frontend/widgets/credentials/signup_screen.dart';
 import 'package:frontend/widgets/styling/theme.dart';
 import 'package:http/http.dart' as http;
@@ -45,7 +46,7 @@ class _ForgotUsernameWidgetState extends State<ForgotUsernameWidget> {
             context,
             MaterialPageRoute(
                 builder: (context) =>
-                    const LoginScreen() // Replace with your next screen
+                     LoginScreen() // Replace with your next screen
                 ));
       } else {
         setState(() {
@@ -136,7 +137,7 @@ class _ForgotUsernameWidgetState extends State<ForgotUsernameWidget> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const LoginScreen()),
+                  MaterialPageRoute(builder: (context) =>  LoginScreen()),
                 ); // Go back to the sign-in page
               },
               child: const Text('Back to sign in',

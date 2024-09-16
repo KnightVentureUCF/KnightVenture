@@ -1,35 +1,49 @@
 const express = require('express');
 const router = express.Router();
-const dotenv = require('dotenv');
-const path = require('path');
 const AWS = require('aws-sdk');
+const admin = require('firebase-admin'); // Firebase admin for Firestore
 
-// Configure AWS using environment variables
-AWS.config.update({
-  region: process.env.REGION,
-});
-
-// Create Cognito Client
+// Create Cognito Client (already configured in server.js)
 const client = new AWS.CognitoIdentityServiceProvider({
   apiVersion: '2024-05-06',
   region: process.env.REGION,
 });
 
-// Confirm User Registration endpoint
-router.post('/', (req, res) => {
-  const { username, confirmationCode } = req.body;
-  console.log('username:', username, 'confirmationCode:', confirmationCode);
-  const params = {
+// Confirm Email and Add User Data to Firebase
+router.post('/', async (req, res) => {
+  const { username, confirmationCode, email } = req.body;
+  const confirmParams = {
     ClientId: process.env.CLIENT_ID,
     Username: username,
     ConfirmationCode: confirmationCode,
   };
 
-  client.confirmSignUp(params, (err, data) => {
+  console.log(email);
+
+  client.confirmSignUp(confirmParams, async (err, data) => {
     if (err) {
-      res.status(500).send(err.message);
+      res.status(500).send({ message: err.message });
     } else {
-      res.send({ message: 'User registration confirmed.' });
+      try {
+        // After confirming the user in Cognito, store user information in Firebase Firestore
+        const db = admin.firestore();
+        await db.collection('users').doc(username).set({
+          email: email,
+          fullName: username,
+          profilePicture: '🐶',
+          cachesFound: 0,
+          distanceVentured: 0,
+        });
+
+        res.status(200).send({
+          message: 'User confirmed and data added to Firebase successfully.',
+          username: username,
+        });
+      } catch (firebaseErr) {
+        res
+          .status(500)
+          .send({ message: `Firebase error: ${firebaseErr.message}` });
+      }
     }
   });
 });

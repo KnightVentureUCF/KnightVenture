@@ -7,8 +7,16 @@ import 'login_screen.dart';
 class ConfirmWidget extends StatelessWidget {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _codeController = TextEditingController();
+  final String? _email; // Store email as a private variable
+  final String? _password;
 
-  ConfirmWidget({super.key, String? username}) {
+  ConfirmWidget({
+    super.key,
+    String? username,
+    String? email,
+    String? password,
+  })  : _email = email,
+        _password = password {
     if (username != null) {
       _usernameController.text = username;
     }
@@ -24,7 +32,7 @@ class ConfirmWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text(
-              'Verification',
+              'Verification Code For New Account',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -154,6 +162,8 @@ class ConfirmWidget extends StatelessWidget {
         body: jsonEncode(<String, String>{
           'username': username,
           'confirmationCode': confirmationCode,
+          'email': _email!,
+          'password': _password!,
         }),
       );
 

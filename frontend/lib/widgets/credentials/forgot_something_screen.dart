@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/widgets/credentials/forgot_password_screen.dart';
 import 'package:frontend/widgets/credentials/login_screen.dart';
 import 'package:frontend/widgets/credentials/signup_screen.dart';
 import 'package:frontend/widgets/styling/theme.dart';
 
-class ForgotPasswordScreen extends StatelessWidget {
-  const ForgotPasswordScreen({super.key});
+class ForgotSomething extends StatelessWidget {
+  const ForgotSomething({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -13,6 +14,10 @@ class ForgotPasswordScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Forgot Something ?'),
         backgroundColor: brightGold,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
       ),
       body: Column(
         children: <Widget>[
@@ -31,7 +36,11 @@ class ForgotPasswordScreen extends StatelessWidget {
                       backgroundColor: Colors.black,
                     ),
                     onPressed: () {
-                      // Add logic here
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ForgotPasswordWidget()),
+                      );
                     },
                     child: const Text(
                       'Reset Password',
@@ -80,7 +89,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => LoginScreen(),
+                        builder: (context) => LoginWidget(),
                       ),
                     );
                   },

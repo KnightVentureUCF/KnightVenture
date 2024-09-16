@@ -62,7 +62,7 @@ class _ResetNewPassword extends State<ResetNewPassword> {
         );
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => LoginScreen()),
+          MaterialPageRoute(builder: (context) => const CredentialsScreen()),
         );
       } else {
         setState(() {
@@ -193,7 +193,8 @@ class _ResetNewPassword extends State<ResetNewPassword> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                  MaterialPageRoute(
+                      builder: (context) => const CredentialsScreen()),
                 ); // Go back to the sign-in page
               },
               child: Text('Back to sign in',

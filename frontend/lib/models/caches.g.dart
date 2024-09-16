@@ -18,22 +18,22 @@ Map<String, dynamic> _$QuizQuestionToJson(QuizQuestion instance) =>
     };
 
 Cache _$CacheFromJson(Map<String, dynamic> json) => Cache(
-      name: json['name'] as String,
-      desc: json['desc'] as String?,
+      name: json['Name'] as String,
+      desc: json['Description'] as String?,
       lat: (json['lat'] as num).toDouble(),
       lng: (json['lng'] as num).toDouble(),
-      imgUrl: json['imgUrl'] as String?,
+      imgUrl: json['Image'] as String?,
       questions: (json['questions'] as List<dynamic>?)
           ?.map((e) => QuizQuestion.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
 Map<String, dynamic> _$CacheToJson(Cache instance) => <String, dynamic>{
-      'name': instance.name,
-      'desc': instance.desc,
+      'Name': instance.name,
+      'Description': instance.desc,
       'lat': instance.lat,
       'lng': instance.lng,
-      'imgUrl': instance.imgUrl,
+      'Image': instance.imgUrl,
       'questions': instance.questions,
     };
 

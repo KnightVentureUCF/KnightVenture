@@ -171,7 +171,7 @@ class ConfirmWidget extends StatelessWidget {
         // Handle successful confirmation by navigating to LoginWidget
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => LoginWidget()),
+          MaterialPageRoute(builder: (context) => LoginScreen()),
           (route) => false, // Remove all previous routes
         );
 

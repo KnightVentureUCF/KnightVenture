@@ -64,7 +64,7 @@ const readCache = require('./backend/routes/cache/readCache');
 app.use('/api/read_cache', readCache);
 
 // Listen on a port
-const server = app.listen(PORT, () => {
+server = app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 

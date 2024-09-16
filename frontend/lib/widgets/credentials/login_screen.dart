@@ -6,12 +6,12 @@ import 'package:frontend/widgets/styling/theme.dart';
 import 'package:http/http.dart' as http;
 import 'signup_screen.dart';
 
-class LoginWidget extends StatelessWidget {
+class LoginScreen extends StatelessWidget {
   // Define text controllers to get the username and password
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  LoginWidget({super.key});
+  LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

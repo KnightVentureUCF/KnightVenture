@@ -2,7 +2,7 @@ const express = require('express');
 const admin = require('firebase-admin');
 const router = express.Router();
 const db = admin.firestore();
-const collectionRef = db.collection('cachesTemp');
+const collectionRef = db.collection('caches');
 const {verifyAccessTokenMiddleware} = require("../../utils/verifyAccessTokenMiddleware.js");
 
 // Route for loading all UCF caches for the venture screen.

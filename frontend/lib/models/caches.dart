@@ -42,10 +42,13 @@ class Cache {
   factory Cache.fromJson(Map<String, dynamic> json) => _$CacheFromJson(json);
   Map<String, dynamic> toJson() => _$CacheToJson(this);
 
+  @JsonKey(name: 'Name')
   final String name;
+  @JsonKey(name: 'Description')
   final String? desc;
   final double lat;
   final double lng;
+  @JsonKey(name: 'Image')
   final String? imgUrl;
   final List<QuizQuestion>? questions;
 }

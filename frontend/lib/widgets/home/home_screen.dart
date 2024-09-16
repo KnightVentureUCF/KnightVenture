@@ -13,8 +13,8 @@ class HomeScreen extends StatelessWidget {
         children: [
           const NavigationUI(),
           Positioned(
-            top: 50,
-            left: 35,
+            top: 75,
+            right: 35,
             child: GestureDetector(
               onTap: () {
                 Navigator.push(
@@ -23,14 +23,10 @@ class HomeScreen extends StatelessWidget {
                       builder: (context) => const MainMenuScreen()),
                 );
               },
-              child: Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: brightGold,
-                  border: Border.all(color: Colors.black, width: 2),
-                ),
+              child: const Icon(
+                Icons.menu,
+                size: 48,
+                color: Colors.black,
               ),
             ),
           ),

@@ -1,3 +1,4 @@
+const { verifyAccessToken } = require("../utils/cognito-utils");
 // Middleware to verify the access token
 async function verifyAccessTokenMiddleware(req, res, next) {
     if (process.env.ENVIRONMENT !== "test") {

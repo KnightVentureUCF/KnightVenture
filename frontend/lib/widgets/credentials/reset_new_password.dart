@@ -44,8 +44,8 @@ class _ResetNewPassword extends State<ResetNewPassword> {
       return;
     }
 
-    // Replace with your actual API endpoint
-    final String apiUrl = 'http://localhost:3000/api/confirm_password_reset';
+    final String apiUrl =
+        'http://knightventure.us-east-1.elasticbeanstalk.com/api/confirm_password_reset';
 
     try {
       final response = await http.post(

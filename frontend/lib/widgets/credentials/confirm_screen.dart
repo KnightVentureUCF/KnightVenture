@@ -153,7 +153,8 @@ class ConfirmWidget extends StatelessWidget {
     }
 
     try {
-      const String apiUrl = "http://localhost:3000/api/confirm_registration";
+      const String apiUrl =
+          "http://knightventure.us-east-1.elasticbeanstalk.com/api/confirm_registration";
       final response = await http.post(
         Uri.parse(apiUrl),
         headers: <String, String>{

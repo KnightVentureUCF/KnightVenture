@@ -104,7 +104,8 @@ class SignUpWidget extends StatelessWidget {
     }
 
     try {
-      const String apiUrl = "http://localhost:3000/api/register";
+      const String apiUrl =
+          "http://knightventure.us-east-1.elasticbeanstalk.com/api/register";
       final response = await http.post(
         Uri.parse(apiUrl),
         headers: <String, String>{

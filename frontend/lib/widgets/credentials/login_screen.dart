@@ -147,8 +147,8 @@ class LoginScreen extends StatelessWidget {
     }
 
     try {
-      // TODO: Replace with your actual backend URL
-      const String apiUrl = "http://localhost:3000/api/login";
+      const String apiUrl =
+          "http://knightventure.us-east-1.elasticbeanstalk.com/api/login";
 
       // Make a POST request to the backend
       final response = await http.post(

@@ -45,6 +45,9 @@ app.use('/api/forgot_password', forgotPassword);
 const confirmPasswordReset = require('./backend/routes/user/confirmPasswordReset');
 app.use('/api/confirm_password_reset', confirmPasswordReset);
 
+const getUserInfo = require('./backend/routes/user/getUserInfo');
+app.use('/api/get_user_info', getUserInfo);
+
 const getProfile = require('./backend/routes/profile/getProfile');
 app.use('/api/get_profile', getProfile);
 
@@ -62,6 +65,9 @@ app.use('/api/load_caches', loadCaches);
 
 const readCache = require('./backend/routes/cache/readCache');
 app.use('/api/read_cache', readCache);
+
+const confirmCache = require('./backend/routes/cache/confirmCache');
+app.use('/api/confirm_cache', confirmCache);
 
 // Listen on a port
 server = app.listen(PORT, () => {

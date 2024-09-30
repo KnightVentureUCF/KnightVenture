@@ -8,7 +8,10 @@ import "package:frontend/models/caches.dart" as caches;
 import "package:frontend/constants.dart" show initialMapZoomOnVentureScreen;
 
 class NavigationUI extends StatefulWidget {
-  const NavigationUI({super.key});
+  final String accessToken; // Add accessToken as a final field
+
+  const NavigationUI({Key? key, required this.accessToken})
+      : super(key: key); // Add accessToken as a named required parameter
 
   @override
   State<NavigationUI> createState() => _NavigationUIState();
@@ -18,7 +21,8 @@ class _NavigationUIState extends State<NavigationUI> {
   late GoogleMapController _mapController;
   late LatLng _currentLocation;
   LatLng? _destination;
-  bool _isLoading = true;
+  bool _cacheLocationsLoaded = false;
+  bool _userLocationLoaded = false;
   final Map<String, Marker> _cacheMarkers = {};
 
   // Define UCF location data
@@ -32,12 +36,12 @@ class _NavigationUIState extends State<NavigationUI> {
   @override
   void initState() {
     super.initState();
-    _loadCacheMarkers();
     _getCurrentLocation();
+    _loadCacheMarkers();
   }
 
   void _loadCacheMarkers() async {
-    final cacheLocations = await caches.getCacheLocations();
+    final cacheLocations = await caches.getCacheLocations(widget.accessToken);
 
     setState(() {
       _cacheMarkers.clear();
@@ -51,8 +55,7 @@ class _NavigationUIState extends State<NavigationUI> {
               setState(() {
                 _destination = coords;
               });
-            }
-            else if (_destination == coords) {
+            } else if (_destination == coords) {
               setState(() {
                 _destination = null;
               });
@@ -64,6 +67,7 @@ class _NavigationUIState extends State<NavigationUI> {
         );
         _cacheMarkers[cache.name] = marker;
       }
+      _cacheLocationsLoaded = true;
     });
   }
 
@@ -86,7 +90,7 @@ class _NavigationUIState extends State<NavigationUI> {
     setState(() {
       _currentLocation = userLocation;
       _userLocatedAtUCF = userInUCF;
-      _isLoading = false;
+      _userLocationLoaded = true;
     });
   }
 
@@ -94,33 +98,78 @@ class _NavigationUIState extends State<NavigationUI> {
     _mapController = controller;
   }
 
-  // Asks for the user's location and returns error if unavailable.
-  void _getCurrentLocation() async {
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
-    }
-
-    LocationPermission permission = await Geolocator.checkPermission();
-
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request your location');
-    }
-
-    var position = await Geolocator.getCurrentPosition();
-
-    _updateCameraPosition(position.latitude, position.longitude);
-
-    _updateLiveLocation();
+// Asks for the user's location and returns error if unavailable.
+void _getCurrentLocation() async {
+  bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  if (!serviceEnabled) {
+    _showErrorDialog(
+      context,
+      "Location Services Disabled",
+      "Location services are disabled. Please enable them in settings.",
+    );
+    return Future.error('Location services are disabled.');
   }
+
+  LocationPermission permission = await Geolocator.checkPermission();
+
+  if (permission == LocationPermission.denied) {
+    permission = await Geolocator.requestPermission();
+    if (permission == LocationPermission.denied) {
+      _showErrorDialog(
+        context,
+        "Location Permission Denied",
+        "Location permissions are denied. Please enable them in settings.",
+      );
+      return Future.error('Location permissions are denied');
+    }
+  }
+
+  if (permission == LocationPermission.deniedForever) {
+    // Show dialog that explains the user needs to enable permissions manually
+    _showErrorDialog(
+      context,
+      "Location Permission Permanently Denied",
+      "Location permissions are permanently denied. Please enable them in settings.",
+      openAppSettings: true, // Pass flag to open settings if needed
+    );
+    return Future.error(
+        'Location permissions are permanently denied, we cannot request your location');
+  }
+
+  // Get the user's current location
+  var position = await Geolocator.getCurrentPosition();
+
+  _updateCameraPosition(position.latitude, position.longitude);
+
+  _updateLiveLocation();
+}
+
+// Show a dialog to handle location permission issues
+void _showErrorDialog(BuildContext context, String title, String message, {bool openAppSettings = false}) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text(title),
+        content: Text(message),
+        actions: <Widget>[
+          if (openAppSettings)
+            TextButton(
+              onPressed: () {
+                Geolocator.openAppSettings(); // Open app settings via Geolocator
+                Navigator.of(context).pop();
+              },
+              child: const Text("Open Settings"),
+            ),
+          TextButton(
+            child: const Text("OK"),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ],
+      );
+    },
+  );
+}
 
   void _updateLiveLocation() {
     LocationSettings locationSettings = const LocationSettings(
@@ -171,7 +220,7 @@ class _NavigationUIState extends State<NavigationUI> {
   Widget build(BuildContext context) {
     // Shows loading screen until user location and all the caches load.
     Widget content = const VentureLoadingScreen();
-    if (_isLoading == false) {
+    if (_userLocationLoaded && _cacheLocationsLoaded) {
       content = Stack(
         children: [
           createNavigationPanel(),

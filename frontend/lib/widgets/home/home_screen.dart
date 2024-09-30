@@ -4,14 +4,16 @@ import 'package:frontend/widgets/styling/theme.dart';
 import 'package:frontend/widgets/main_menu/main_menu_screen.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  final String accessToken;
+
+  const HomeScreen({Key? key, required this.accessToken}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
-          const NavigationUI(),
+          NavigationUI(accessToken: accessToken),
           Positioned(
             top: 75,
             right: 35,

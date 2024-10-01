@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:math'; // For shuffling the answers
 import 'package:frontend/models/test_cache.dart';
 
 class CachePopup {
@@ -37,35 +36,30 @@ class _QuestionWidgetState extends State<_QuestionWidget> {
     _shuffleAnswers();
   }
 
-  // Shuffle the answers for the current question
   void _shuffleAnswers() {
     final question = widget.cache.questions![currentQuestionIndex];
-    shuffledAnswers = List.from(question.answers); // Copy the list of answers
-    shuffledAnswers.shuffle(); // Shuffle them
+    shuffledAnswers = List.from(question.answers);
+    shuffledAnswers.shuffle();
   }
 
-  // Check if the selected answer is correct
   void _checkAnswer(String selectedAnswer) {
     final question = widget.cache.questions![currentQuestionIndex];
-    // The first answer in the original list is always the correct one
     bool isCorrect = (selectedAnswer == question.answers[0]);
 
     if (isCorrect) {
       correctAnswersCount++;
     }
 
-    // Move to the next question or show the result
     if (currentQuestionIndex < widget.cache.questions!.length - 1) {
       setState(() {
         currentQuestionIndex++;
-        _shuffleAnswers(); // Shuffle answers for the next question
+        _shuffleAnswers();
       });
     } else {
       _showResults();
     }
   }
 
-  // Show the result at the end
   void _showResults() {
     showDialog(
       context: context,
@@ -78,9 +72,8 @@ class _QuestionWidgetState extends State<_QuestionWidget> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pop(context); // Close the dialog
-                Navigator.of(this.context)
-                    .pop(); // Close the modal bottom sheet
+                Navigator.pop(context);
+                Navigator.of(this.context).pop();
               },
               child: const Text('OK'),
             ),
@@ -95,7 +88,7 @@ class _QuestionWidgetState extends State<_QuestionWidget> {
     final question = widget.cache.questions![currentQuestionIndex];
 
     return Container(
-      color: Colors.black, // Set background color to black
+      color: Colors.black,
       padding: const EdgeInsets.all(24.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -107,7 +100,7 @@ class _QuestionWidgetState extends State<_QuestionWidget> {
                 widget.cache.name,
                 style: const TextStyle(
                   fontSize: 24,
-                  color: Colors.white, // Set title text color to white
+                  color: Colors.white,
                 ),
               ),
             ),
@@ -119,33 +112,28 @@ class _QuestionWidgetState extends State<_QuestionWidget> {
               question.questionText,
               style: const TextStyle(
                 fontSize: 18,
-                color: Colors.white, // Set question text color to white
+                color: Colors.white,
               ),
               textAlign: TextAlign.center,
             ),
           ),
           const SizedBox(height: 20),
-          // Create yellow buttons with black text
           ...shuffledAnswers.map((answer) {
             return Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      Colors.yellow, // Set button background color to yellow
-                  foregroundColor:
-                      Colors.black, // Set button text color to black
-                  minimumSize: const Size.fromHeight(
-                      50), // Stretch button to fit horizontally
+                  backgroundColor: Colors.yellow,
+                  foregroundColor: Colors.black,
+                  minimumSize: const Size.fromHeight(50),
                 ),
                 onPressed: () {
-                  _checkAnswer(answer); // Check the selected answer
+                  _checkAnswer(answer);
                 },
                 child: Text(
                   answer,
-                  style: const TextStyle(
-                      color: Colors.black), // Ensure button text is black
+                  style: const TextStyle(color: Colors.black),
                 ),
               ),
             );
@@ -154,7 +142,7 @@ class _QuestionWidgetState extends State<_QuestionWidget> {
           Text(
             'Question ${currentQuestionIndex + 1} of ${widget.cache.questions!.length}',
             style: const TextStyle(
-              color: Colors.white, // Set bottom progress text color to white
+              color: Colors.white,
             ),
           ),
         ],

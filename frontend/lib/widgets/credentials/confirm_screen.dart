@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/widgets/styling/theme.dart';
 import 'package:http/http.dart' as http;
 import 'login_screen.dart';
+import 'package:frontend/utils/pathbuilder.dart';
 
 class ConfirmWidget extends StatelessWidget {
   final TextEditingController _usernameController = TextEditingController();
@@ -153,8 +154,7 @@ class ConfirmWidget extends StatelessWidget {
     }
 
     try {
-      const String apiUrl =
-          "http://knightventure.us-east-1.elasticbeanstalk.com/api/confirm_registration";
+      final String apiUrl = buildPath("api/confirm_registration");
       final response = await http.post(
         Uri.parse(apiUrl),
         headers: <String, String>{

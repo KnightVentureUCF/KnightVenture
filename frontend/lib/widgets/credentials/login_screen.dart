@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/models/login_response.dart';
 import 'dart:convert';
 import 'forgot_something_screen.dart';
 import 'package:frontend/widgets/home/home_screen.dart';
+import 'package:frontend/utils/pathbuilder.dart';
 import 'package:frontend/widgets/styling/theme.dart';
 import 'package:http/http.dart' as http;
 import 'signup_screen.dart';
@@ -61,13 +63,20 @@ class LoginScreen extends StatelessWidget {
                           backgroundColor: Colors.black,
                         ),
                         onPressed: () async {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const HomeScreen(),
-                            ),
-                          );
-                          await _login(context);
+                          // First, perform the login and wait for the result
+                          final loginResponse = await _login(context);
+
+                          // Navigate to HomeScreen only if the login was successful
+                          if (loginResponse != null &&
+                              loginResponse.accessToken.isNotEmpty) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => HomeScreen(
+                                    accessToken: loginResponse.accessToken), // Pass the accessToken
+                              ),
+                            );
+                          }
                         },
                         child: const Text(
                           'Login',
@@ -124,7 +133,7 @@ class LoginScreen extends StatelessWidget {
   }
 
 // Function to handle login
-  Future<void> _login(BuildContext context) async {
+  Future<LoginResponse?> _login(BuildContext context) async {
     final String username = _usernameController.text;
     final String password = _passwordController.text;
 
@@ -143,12 +152,11 @@ class LoginScreen extends StatelessWidget {
           ],
         ),
       );
-      return;
+      return null;
     }
 
     try {
-      const String apiUrl =
-          "http://knightventure.us-east-1.elasticbeanstalk.com/api/login";
+      final String apiUrl = buildPath("api/login");
 
       // Make a POST request to the backend
       final response = await http.post(
@@ -165,8 +173,8 @@ class LoginScreen extends StatelessWidget {
       if (response.statusCode == 200) {
         // Parse the response and handle successful login
         final Map<String, dynamic> data = jsonDecode(response.body);
-        // Handle successful login (e.g., store token, navigate, etc.)
-        print('Login Successful: ${data}');
+        final loginResponse = LoginResponse.fromJson(data['AuthenticationResult']);
+        return loginResponse;
       } else {
         // Handle unsuccessful login
         throw Exception('Failed to log in.');

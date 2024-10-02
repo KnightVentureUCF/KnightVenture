@@ -106,7 +106,7 @@ class SignUpWidget extends StatelessWidget {
     }
 
     try {
-      final String apiUrl = buildPath("/api/register");
+      final String apiUrl = buildPath("api/register");
       final response = await http.post(
         Uri.parse(apiUrl),
         headers: <String, String>{

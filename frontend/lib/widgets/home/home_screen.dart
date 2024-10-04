@@ -7,15 +7,9 @@ import 'package:frontend/data/all_caches.dart';
 import 'package:frontend/widgets/home/cache_popup.dart';
 
 class HomeScreen extends StatelessWidget {
-<<<<<<< HEAD
-  final TestCache myCache = allCaches[0];
-
-  HomeScreen({super.key});
-=======
   final String accessToken;
 
   const HomeScreen({Key? key, required this.accessToken}) : super(key: key);
->>>>>>> origin
 
   @override
   Widget build(BuildContext context) {
@@ -38,21 +32,6 @@ class HomeScreen extends StatelessWidget {
                 Icons.menu,
                 size: 48,
                 color: Colors.black,
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: 45,
-            left: 0,
-            right: 0,
-            child: GestureDetector(
-              onTap: () {
-                CachePopup.show(context, myCache);
-              },
-              child: Image.asset(
-                'assets/logo.png', // Replace with your actual path
-                width: 160, // Set the desired width
-                height: 160,
               ),
             ),
           ),

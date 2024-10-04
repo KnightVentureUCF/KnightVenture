@@ -35,21 +35,6 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
           ),
-          Positioned(
-            bottom: 45,
-            left: 0,
-            right: 0,
-            child: GestureDetector(
-              onTap: () {
-                CachePopup.show(context, myCache);
-              },
-              child: Image.asset(
-                'assets/logo.png', // Replace with your actual path
-                width: 160, // Set the desired width
-                height: 160,
-              ),
-            ),
-          ),
         ],
       ),
     );

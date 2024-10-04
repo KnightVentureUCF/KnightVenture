@@ -67,23 +67,29 @@ class Caches {
 }
 
 // function to call load caches API for venture page.
-Future<Caches> getCacheLocations() async {
+Future<Caches> getCacheLocations(String accessToken) async {
   final url = Uri.parse(buildPath("api/load_caches"));
 
   try {
-    // TODO: incorporate the access token here.
-    final response = await http.post(url);
+    // Including the access token in the request body
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'accessToken': accessToken, // Adding the access token in the body
+      }),
+    );
+
     if (response.statusCode == 200) {
-      return Caches.fromJson(
-          json.decode(response.body) as Map<String, dynamic>);
+      return Caches.fromJson(json.decode(response.body) as Map<String, dynamic>);
+    } else {
+      throw Exception('Failed to load caches');
     }
   } catch (e) {
-    if (kDebugMode) {
-      print(e);
-    }
+    print('Error: $e');
   }
-
-  // TODO: Remove below and set up an error screen on the venture page.
 
   // Fallback for when the above HTTP request fails.
   return Caches.fromJson(

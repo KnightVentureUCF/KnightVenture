@@ -1,6 +1,7 @@
 //TODO: test again
 
 import 'package:flutter/material.dart';
+import 'package:frontend/utils/pathbuilder.dart';
 import 'package:frontend/widgets/credentials/credentials_screen.dart';
 import 'package:frontend/widgets/credentials/login_screen.dart';
 import 'package:frontend/widgets/credentials/signup_screen.dart';
@@ -46,7 +47,7 @@ class _ResetNewPassword extends State<ResetNewPassword> {
     }
 
     // Replace with your actual API endpoint
-    final String apiUrl = 'http://localhost:3000/api/confirm_password_reset';
+    final String apiUrl = buildPath("api/confirm_password_reset");
 
     try {
       final response = await http.post(
@@ -63,7 +64,7 @@ class _ResetNewPassword extends State<ResetNewPassword> {
         );
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => LoginScreen()),
+          MaterialPageRoute(builder: (context) => const CredentialsScreen()),
         );
       } else {
         setState(() {
@@ -194,7 +195,8 @@ class _ResetNewPassword extends State<ResetNewPassword> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                  MaterialPageRoute(
+                      builder: (context) => const CredentialsScreen()),
                 ); // Go back to the sign-in page
               },
               child: Text('Back to sign in',

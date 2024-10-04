@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:frontend/widgets/styling/theme.dart';
+import 'package:frontend/utils/pathbuilder.dart';
+
 import 'package:http/http.dart' as http;
 import 'confirm_screen.dart';
 
@@ -104,7 +106,7 @@ class SignUpWidget extends StatelessWidget {
     }
 
     try {
-      const String apiUrl = "http://localhost:3000/api/register";
+      final String apiUrl = buildPath("api/register");
       final response = await http.post(
         Uri.parse(apiUrl),
         headers: <String, String>{

@@ -169,7 +169,6 @@ class ConfirmWidget extends StatelessWidget {
       );
 
       if (response.statusCode == 200) {
-        // Handle successful confirmation by navigating to LoginWidget
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => LoginScreen()),

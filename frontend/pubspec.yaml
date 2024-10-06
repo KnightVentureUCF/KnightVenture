@@ -80,6 +80,11 @@ flutter:
     - assets/cache-locations.json
     - assets/cache_icons/
     - assets/cache_images/
+    - assets/avatar2.png
+    - assets/avatar.png
+    - assets/achievement15.png
+    - assets/achievement10.png
+    - assets/achievement5.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

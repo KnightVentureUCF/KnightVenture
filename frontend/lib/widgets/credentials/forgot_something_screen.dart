@@ -39,7 +39,7 @@ class ForgotSomething extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => ForgotPasswordScreen()),
+                            builder: (context) => const ForgotPasswordScreen()),
                       );
                     },
                     child: const Text(
@@ -72,7 +72,7 @@ class ForgotSomething extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => SignUpWidget(),
+                        builder: (context) => SignUpScreen(),
                       ),
                     );
                   },

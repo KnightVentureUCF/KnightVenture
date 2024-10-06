@@ -73,7 +73,8 @@ class LoginScreen extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => HomeScreen(
-                                    accessToken: loginResponse.accessToken), // Pass the accessToken
+                                    accessToken: loginResponse
+                                        .accessToken), // Pass the accessToken
                               ),
                             );
                           }
@@ -92,7 +93,7 @@ class LoginScreen extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SignUpWidget(),
+                            builder: (context) => SignUpScreen(),
                           ),
                         );
                       },
@@ -173,7 +174,8 @@ class LoginScreen extends StatelessWidget {
       if (response.statusCode == 200) {
         // Parse the response and handle successful login
         final Map<String, dynamic> data = jsonDecode(response.body);
-        final loginResponse = LoginResponse.fromJson(data['AuthenticationResult']);
+        final loginResponse =
+            LoginResponse.fromJson(data['AuthenticationResult']);
         return loginResponse;
       } else {
         // Handle unsuccessful login

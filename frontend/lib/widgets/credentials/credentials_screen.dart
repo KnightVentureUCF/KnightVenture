@@ -77,7 +77,7 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
                         onPressed: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => SignUpWidget()),
+                              builder: (context) => SignUpScreen()),
                         ),
                         child: const Text('Sign Up',
                             style: TextStyle(color: Colors.black)),

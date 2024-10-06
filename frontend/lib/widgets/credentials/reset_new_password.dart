@@ -221,7 +221,7 @@ class _ResetNewPassword extends State<ResetNewPassword> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => SignUpWidget()),
+                  MaterialPageRoute(builder: (context) => SignUpScreen()),
                 );
               },
               child: Text('Sign up', style: TextStyle(color: Colors.black)),

@@ -6,12 +6,12 @@ import 'package:frontend/utils/pathbuilder.dart';
 import 'package:http/http.dart' as http;
 import 'confirm_screen.dart';
 
-class SignUpWidget extends StatelessWidget {
+class SignUpScreen extends StatelessWidget {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  SignUpWidget({super.key});
+  SignUpScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

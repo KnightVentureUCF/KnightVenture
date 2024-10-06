@@ -46,7 +46,7 @@ class _ForgotUsernameWidgetState extends State<ForgotUsernameWidget> {
             context,
             MaterialPageRoute(
                 builder: (context) =>
-                     LoginScreen() // Replace with your next screen
+                    LoginScreen() // Replace with your next screen
                 ));
       } else {
         setState(() {
@@ -137,7 +137,7 @@ class _ForgotUsernameWidgetState extends State<ForgotUsernameWidget> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) =>  LoginScreen()),
+                  MaterialPageRoute(builder: (context) => LoginScreen()),
                 ); // Go back to the sign-in page
               },
               child: const Text('Back to sign in',
@@ -168,7 +168,7 @@ class _ForgotUsernameWidgetState extends State<ForgotUsernameWidget> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => SignUpWidget()),
+                  MaterialPageRoute(builder: (context) => SignUpScreen()),
                 );
               },
               child:

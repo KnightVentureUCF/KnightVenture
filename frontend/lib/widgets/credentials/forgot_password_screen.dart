@@ -3,8 +3,8 @@ import 'package:frontend/widgets/credentials/login_screen.dart';
 import 'package:frontend/widgets/credentials/signup_screen.dart';
 import 'package:frontend/widgets/styling/theme.dart';
 
-class ForgotPasswordWidget extends StatelessWidget {
-  const ForgotPasswordWidget({super.key});
+class ForgotPasswordScreen extends StatelessWidget {
+  const ForgotPasswordScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +63,7 @@ class ForgotPasswordWidget extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => SignUpWidget(),
+                        builder: (context) => SignUpScreen(),
                       ),
                     );
                   },

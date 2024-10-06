@@ -1,4 +1,3 @@
-//TODO: test again
 
 import 'package:flutter/material.dart';
 import 'package:frontend/utils/pathbuilder.dart';
@@ -197,7 +196,7 @@ class _ResetNewPassword extends State<ResetNewPassword> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => const CredentialsScreen()),
-                ); // Go back to the sign-in page
+                );
               },
               child: Text('Back to sign in',
                   style: TextStyle(color: Colors.black)),

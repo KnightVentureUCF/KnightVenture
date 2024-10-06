@@ -159,7 +159,6 @@ class LoginScreen extends StatelessWidget {
     try {
       final String apiUrl = buildPath("api/login");
 
-      // Make a POST request to the backend
       final response = await http.post(
         Uri.parse(apiUrl),
         headers: <String, String>{
@@ -172,17 +171,14 @@ class LoginScreen extends StatelessWidget {
       );
 
       if (response.statusCode == 200) {
-        // Parse the response and handle successful login
         final Map<String, dynamic> data = jsonDecode(response.body);
         final loginResponse =
             LoginResponse.fromJson(data['AuthenticationResult']);
         return loginResponse;
       } else {
-        // Handle unsuccessful login
         throw Exception('Failed to log in.');
       }
     } catch (e) {
-      // Handle errors (e.g., show an error dialog)
       showDialog(
         context: context,
         builder: (context) => AlertDialog(

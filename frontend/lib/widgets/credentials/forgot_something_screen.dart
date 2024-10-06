@@ -39,7 +39,7 @@ class ForgotSomething extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const ForgotPasswordScreen()),
+                            builder: (context) => ForgotPasswordScreen()),
                       );
                     },
                     child: const Text(

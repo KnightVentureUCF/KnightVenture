@@ -7,16 +7,16 @@ import 'package:frontend/data/all_caches.dart';
 import 'package:frontend/widgets/home/cache_popup.dart';
 
 class HomeScreen extends StatelessWidget {
-  final TestCache myCache = allCaches[0];
+  final String accessToken;
 
-  HomeScreen({super.key});
+  const HomeScreen({Key? key, required this.accessToken}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
-          const NavigationUI(),
+          NavigationUI(accessToken: accessToken),
           Positioned(
             top: 75,
             right: 35,

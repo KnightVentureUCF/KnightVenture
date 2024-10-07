@@ -18,8 +18,6 @@ router.post('/', async (req, res) => {
     ConfirmationCode: confirmationCode,
   };
 
-  console.log(email);
-
   client.confirmSignUp(confirmParams, async (err, data) => {
     if (err) {
       res.status(500).send({ message: err.message });

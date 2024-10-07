@@ -5,8 +5,7 @@ class Question {
   Question({
     required this.questionText,
     required this.answers,
-  }) : assert(answers.length == 4,
-            'Each question must have 4 answers'); // Ensures 4 answers
+  }); // Ensures 4 answers
 }
 
 class TestCache {

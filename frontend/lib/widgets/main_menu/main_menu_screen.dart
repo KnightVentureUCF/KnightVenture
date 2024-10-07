@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/widgets/cachelog/cachelog_screen.dart';
+import 'package:frontend/widgets/profile/profile_screen.dart';
 import 'package:frontend/widgets/settings/settings_screen.dart';
 import 'package:frontend/widgets/styling/theme.dart';
 import 'package:frontend/widgets/about/about_screen.dart';
@@ -44,10 +45,10 @@ class MainMenuScreen extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => SettingsScreen()),
+                    MaterialPageRoute(builder: (context) => ProfileScreen()),
                   );
                 },
-                child: const Text('Settings'),
+                child: const Text('Profile'),
               ),
             ),
             SizedBox(height: 16),

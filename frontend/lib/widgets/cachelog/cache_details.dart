@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/test_cache.dart';
+import 'package:frontend/data/testing_newcaches.dart';
 
 class CacheDetails extends StatelessWidget {
   const CacheDetails({super.key, required this.selectedCache});

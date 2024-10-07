@@ -5,6 +5,7 @@ import "package:frontend/widgets/home/loading_screen.dart";
 import 'package:frontend/widgets/home/cache_popup.dart';
 import "package:google_maps_flutter/google_maps_flutter.dart";
 import 'package:frontend/widgets/main_menu/main_menu_screen.dart';
+import 'package:frontend/data/testing_newcaches.dart';
 import "package:geolocator/geolocator.dart";
 import "package:frontend/models/caches.dart" as caches;
 import "package:frontend/constants.dart" show initialMapZoomOnVentureScreen;
@@ -45,6 +46,7 @@ class _NavigationUIState extends State<NavigationUI> {
 
   void _loadCacheMarkers() async {
     final cacheLocations = await caches.getCacheLocations(widget.accessToken);
+    newAllCaches = cacheLocations;
 
     setState(() {
       _cacheMarkers.clear();

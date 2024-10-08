@@ -83,7 +83,8 @@ Future<Caches> getCacheLocations(String accessToken) async {
     );
 
     if (response.statusCode == 200) {
-      return Caches.fromJson(json.decode(response.body) as Map<String, dynamic>);
+      return Caches.fromJson(
+          json.decode(response.body) as Map<String, dynamic>);
     } else {
       throw Exception('Failed to load caches');
     }

@@ -1,152 +1,100 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/models/test_cache.dart';
 
-class CachePopup {
-  static void show(BuildContext context, TestCache cache) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (BuildContext context) {
-        return FractionallySizedBox(
-          heightFactor: .7,
-          child: _QuestionWidget(cache: cache),
-        );
-      },
-    );
-  }
-}
+import 'package:frontend/models/caches.dart';
 
-class _QuestionWidget extends StatefulWidget {
-  final TestCache cache;
+class CachePopup extends StatelessWidget {
+  final Cache cache;
 
-  const _QuestionWidget({required this.cache});
-
-  @override
-  State<_QuestionWidget> createState() => _QuestionWidgetState();
-}
-
-class _QuestionWidgetState extends State<_QuestionWidget> {
-  int currentQuestionIndex = 0;
-  int correctAnswersCount = 0;
-  late List<String> shuffledAnswers;
-
-  @override
-  void initState() {
-    super.initState();
-    _shuffleAnswers();
-  }
-
-  void _shuffleAnswers() {
-    final question = widget.cache.questions![currentQuestionIndex];
-    shuffledAnswers = List.from(question.answers);
-    shuffledAnswers.shuffle();
-  }
-
-  void _checkAnswer(String selectedAnswer) {
-    final question = widget.cache.questions![currentQuestionIndex];
-    bool isCorrect = (selectedAnswer == question.answers[0]);
-
-    if (isCorrect) {
-      correctAnswersCount++;
-    }
-
-    if (currentQuestionIndex < widget.cache.questions!.length - 1) {
-      setState(() {
-        currentQuestionIndex++;
-        _shuffleAnswers();
-      });
-    } else {
-      _showResults();
-    }
-  }
-
-  void _showResults() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Quiz Complete'),
-          content: Text(
-            'You got $correctAnswersCount out of ${widget.cache.questions!.length} correct!',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                Navigator.of(this.context).pop();
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
-  }
+  const CachePopup({super.key, required this.cache});
 
   @override
   Widget build(BuildContext context) {
-    final question = widget.cache.questions![currentQuestionIndex];
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor:
+            Colors.transparent, // This makes the entire sheet transparent
+        builder: (BuildContext context) {
+          return FractionallySizedBox(
+            heightFactor: 0.7,
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16.0),
+              decoration: BoxDecoration(
+                color: Colors.black
+                    .withOpacity(0.8), // Black with slight transparency
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(16.0),
+                  topRight: Radius.circular(16.0),
+                ),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Image.asset(
+                        "assets/default_cache_icon.png",
+                        width: 80,
+                        height: 80,
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                            cache.name,
+                            style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                            overflow: TextOverflow.visible,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Center(
+                    child: Text(
+                      cache.desc ?? 'No description available',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        color: Colors.white,
+                      ),
+                      textAlign: TextAlign.left,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  const Spacer(), // Add a spacer to push the button to the bottom
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 40.0),
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 32, vertical: 16),
+                        foregroundColor: Colors.black,
+                        backgroundColor: Colors.yellow, // Text color
+                      ),
+                      child: const Text('Venture!',
+                          style: TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                          )),
+                    ),
+                  ),
+                  // Add more widgets here as needed
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    });
 
-    return Container(
-      color: Colors.black,
-      padding: const EdgeInsets.all(24.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Center(
-              child: Text(
-                widget.cache.name,
-                style: const TextStyle(
-                  fontSize: 24,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Text(
-              question.questionText,
-              style: const TextStyle(
-                fontSize: 18,
-                color: Colors.white,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          const SizedBox(height: 20),
-          ...shuffledAnswers.map((answer) {
-            return Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.yellow,
-                  foregroundColor: Colors.black,
-                  minimumSize: const Size.fromHeight(50),
-                ),
-                onPressed: () {
-                  _checkAnswer(answer);
-                },
-                child: Text(
-                  answer,
-                  style: const TextStyle(color: Colors.black),
-                ),
-              ),
-            );
-          }).toList(),
-          const SizedBox(height: 20),
-          Text(
-            'Question ${currentQuestionIndex + 1} of ${widget.cache.questions!.length}',
-            style: const TextStyle(
-              color: Colors.white,
-            ),
-          ),
-        ],
-      ),
-    );
+    return Container(); // Return an empty container as the widget needs to return something
   }
 }

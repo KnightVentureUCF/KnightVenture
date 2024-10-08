@@ -5,6 +5,6 @@ import 'package:frontend/widgets/profile/profile_screen.dart';
 
 void main() {
   runApp(MaterialApp(
-    home: CredentialsScreen(),
+    home: LoginScreen(),
   ));
 }

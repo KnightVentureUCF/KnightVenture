@@ -1,4 +1,4 @@
-//TODO: add achievement logic, update name for profile
+//TODO: add achievement logic
 import 'package:flutter/material.dart';
 import 'package:frontend/utils/pathbuilder.dart';
 import 'package:http/http.dart' as http;
@@ -190,20 +190,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildAchievements() {
+    List<Widget> achievements = [];
+
+    // Logic to add achievements based on cachesFound
+    if (cachesFound >= 15) {
+      achievements.add(
+          _buildAchievementItem("Completed 15 Geocaches", Icons.check_circle));
+    }
+    if (cachesFound >= 10) {
+      achievements.add(
+          _buildAchievementItem("Completed 10 Geocaches", Icons.check_circle));
+    }
+    if (cachesFound >= 5) {
+      achievements.add(
+          _buildAchievementItem("Completed 5 Geocaches", Icons.check_circle));
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        const Text(
           "Achievements",
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
         ),
-        SizedBox(height: 10),
-        _buildAchievementItem("Completed 15 Geocaches", Icons.check_circle),
-        _buildAchievementItem("Completed 5 Geocaches", Icons.check_circle),
-        _buildAchievementItem("Completed 10 Geocaches", Icons.check_circle),
+        const SizedBox(height: 10),
+        ...achievements,
       ],
     );
   }

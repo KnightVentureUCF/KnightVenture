@@ -1,8 +1,16 @@
-//TODO: Add enpoints to update profile in data base, pull the info (points, caches found, email) from database and cache found, think about acchivements
 import 'package:flutter/material.dart';
+import 'package:frontend/utils/pathbuilder.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert'; // For converting JSON response to a map
 import 'package:frontend/widgets/styling/theme.dart';
 
 class ProfileScreen extends StatefulWidget {
+  final String accessToken;
+  final String username;
+
+  const ProfileScreen(
+      {Key? key, required this.accessToken, required this.username})
+      : super(key: key);
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
 }
@@ -13,6 +21,46 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String email = "xxx@gmail.com";
   int points = 15;
   int cachesFound = 8;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserProfile();
+  }
+
+  Future<void> _fetchUserProfile() async {
+    try {
+      final String apiUrl = buildPath("api/get_profile");
+
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          'accessToken': widget.accessToken,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        print("Profile fetched successfully");
+        final data = jsonDecode(response.body);
+
+        setState(() {
+          fullName = data['profileData']['fullName'] ?? fullName;
+          email = data['profileData']['email'] ?? email;
+          points = data['profileData']['point'] ?? points;
+          cachesFound = data['profileData']['cachesFound'] ?? cachesFound;
+        });
+      } else {
+        // Handle error response here
+        print('Failed to fetch profile: ${response.statusCode}');
+      }
+    } catch (e) {
+      // Handle any exceptions here
+      print('Error fetching profile: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,14 +101,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
             // Display full name and username
             Text(
               fullName,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
               ),
             ),
             Text(
-              userName,
-              style: TextStyle(
+              widget.username,
+              style: const TextStyle(
                 color: Colors.grey,
                 fontSize: 16,
               ),
@@ -99,7 +147,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     prefixIcon: Icon(Icons.email, color: Colors.grey),
                     filled: true,
                     fillColor: brightGold, // Adjust fill color as needed
-                    hintText: 'xxx@gmail.com', // Add your email variable
+                    hintText: email, // Use email from the fetched data
                     hintStyle: TextStyle(
                         color: Colors.grey), // Style for the hint text
                     border: OutlineInputBorder(
@@ -116,21 +164,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             SizedBox(height: 30),
             // Achievements
             _buildAchievements(),
-            Spacer(),
+            //Spacer(),
             // Logout Button
-            ElevatedButton(
-              onPressed: _logoutUser,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black,
-                padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-              ),
-              child: Text(
-                "Logout",
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-            ),
           ],
         ),
       ),
@@ -213,27 +248,5 @@ class _ProfileScreenState extends State<ProfileScreen> {
         fullName = newName;
       });
     }
-  }
-
-  void _logoutUser() {
-    // Add AWS Cognito log out functionality here
-    print("User logged out");
-    // Example: Cognito sign out
-    // await CognitoUserPool.signOut();
-    // Navigate to login screen
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => LoginPage()),
-    );
-  }
-}
-
-class LoginPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Text("Login Page"),
-      ),
-    );
   }
 }

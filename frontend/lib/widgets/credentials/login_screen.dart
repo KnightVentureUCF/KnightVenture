@@ -73,8 +73,9 @@ class LoginScreen extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => HomeScreen(
-                                    accessToken: loginResponse
-                                        .accessToken), // Pass the accessToken
+                                    accessToken: loginResponse.accessToken,
+                                    username: _usernameController
+                                        .text), // Pass the accessToken
                               ),
                             );
                           }

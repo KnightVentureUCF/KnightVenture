@@ -42,7 +42,7 @@ router.post('/', async (req, res) => {
         // if (cachesFound !== undefined) updates.cachesFound = cachesFound;
         // if (distanceVentured !== undefined)
         //   updates.distanceVentured = distanceVentured;
-        if (fullName !== undefined) updates.fullName = fullName;
+        updates.fullName = fullName;
         // if (password !== undefined) updates.password = password; // Note: Storing passwords in Firestore is discouraged
         // if (profilePicture !== undefined)
         //   updates.profilePicture = profilePicture;

@@ -1,3 +1,4 @@
+//TODO: add achievement logic, update name for profile
 import 'package:flutter/material.dart';
 import 'package:frontend/utils/pathbuilder.dart';
 import 'package:http/http.dart' as http;
@@ -247,6 +248,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
       setState(() {
         fullName = newName;
       });
+
+      // Call the update profile API to update the user's full name
+      final String apiUrl = buildPath("api/update_profile");
+      try {
+        final response = await http.post(
+          Uri.parse(apiUrl),
+          headers: {
+            'Authorization': 'Bearer ${widget.accessToken}',
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode({
+            'fullName': newName,
+            'accessToken': widget.accessToken,
+          }),
+        );
+
+        if (response.statusCode != 200) {
+          // Handle error response here
+          print('Failed to update profile: ${response.statusCode}');
+        }
+
+        if (response.statusCode == 200) {
+          print("Profile updated successfully");
+        }
+      } catch (e) {
+        // Handle any exceptions here
+        print('Error updating profile: $e');
+      }
     }
   }
 }

@@ -1,8 +1,11 @@
 import "dart:ffi";
 
 import "package:flutter/material.dart";
+import "package:frontend/widgets/home/cache_popup.dart";
 import "package:frontend/widgets/home/loading_screen.dart";
 import "package:google_maps_flutter/google_maps_flutter.dart";
+import 'package:frontend/widgets/main_menu/main_menu_screen.dart';
+import 'package:frontend/data/all_caches.dart';
 import "package:geolocator/geolocator.dart";
 import "package:frontend/models/caches.dart" as caches;
 import "package:frontend/constants.dart" show initialMapZoomOnVentureScreen;
@@ -24,6 +27,7 @@ class _NavigationUIState extends State<NavigationUI> {
   bool _cacheLocationsLoaded = false;
   bool _userLocationLoaded = false;
   final Map<String, Marker> _cacheMarkers = {};
+  List<caches.Cache> _allCaches = [];
 
   // Define UCF location data
   bool _userLocatedAtUCF = false;
@@ -42,9 +46,11 @@ class _NavigationUIState extends State<NavigationUI> {
 
   void _loadCacheMarkers() async {
     final cacheLocations = await caches.getCacheLocations(widget.accessToken);
+    allCaches = cacheLocations;
 
     setState(() {
       _cacheMarkers.clear();
+      _allCaches = cacheLocations.caches;
       for (final cache in cacheLocations.caches) {
         final coords = LatLng(cache.lat, cache.lng);
         final marker = Marker(
@@ -99,77 +105,79 @@ class _NavigationUIState extends State<NavigationUI> {
   }
 
 // Asks for the user's location and returns error if unavailable.
-void _getCurrentLocation() async {
-  bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-  if (!serviceEnabled) {
-    _showErrorDialog(
-      context,
-      "Location Services Disabled",
-      "Location services are disabled. Please enable them in settings.",
-    );
-    return Future.error('Location services are disabled.');
-  }
-
-  LocationPermission permission = await Geolocator.checkPermission();
-
-  if (permission == LocationPermission.denied) {
-    permission = await Geolocator.requestPermission();
-    if (permission == LocationPermission.denied) {
+  void _getCurrentLocation() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
       _showErrorDialog(
         context,
-        "Location Permission Denied",
-        "Location permissions are denied. Please enable them in settings.",
+        "Location Services Disabled",
+        "Location services are disabled. Please enable them in settings.",
       );
-      return Future.error('Location permissions are denied');
+      return Future.error('Location services are disabled.');
     }
+
+    LocationPermission permission = await Geolocator.checkPermission();
+
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        _showErrorDialog(
+          context,
+          "Location Permission Denied",
+          "Location permissions are denied. Please enable them in settings.",
+        );
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // Show dialog that explains the user needs to enable permissions manually
+      _showErrorDialog(
+        context,
+        "Location Permission Permanently Denied",
+        "Location permissions are permanently denied. Please enable them in settings.",
+        openAppSettings: true, // Pass flag to open settings if needed
+      );
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request your location');
+    }
+
+    // Get the user's current location
+    var position = await Geolocator.getCurrentPosition();
+
+    _updateCameraPosition(position.latitude, position.longitude);
+
+    _updateLiveLocation();
   }
-
-  if (permission == LocationPermission.deniedForever) {
-    // Show dialog that explains the user needs to enable permissions manually
-    _showErrorDialog(
-      context,
-      "Location Permission Permanently Denied",
-      "Location permissions are permanently denied. Please enable them in settings.",
-      openAppSettings: true, // Pass flag to open settings if needed
-    );
-    return Future.error(
-        'Location permissions are permanently denied, we cannot request your location');
-  }
-
-  // Get the user's current location
-  var position = await Geolocator.getCurrentPosition();
-
-  _updateCameraPosition(position.latitude, position.longitude);
-
-  _updateLiveLocation();
-}
 
 // Show a dialog to handle location permission issues
-void _showErrorDialog(BuildContext context, String title, String message, {bool openAppSettings = false}) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text(title),
-        content: Text(message),
-        actions: <Widget>[
-          if (openAppSettings)
+  void _showErrorDialog(BuildContext context, String title, String message,
+      {bool openAppSettings = false}) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: <Widget>[
+            if (openAppSettings)
+              TextButton(
+                onPressed: () {
+                  Geolocator
+                      .openAppSettings(); // Open app settings via Geolocator
+                  Navigator.of(context).pop();
+                },
+                child: const Text("Open Settings"),
+              ),
             TextButton(
-              onPressed: () {
-                Geolocator.openAppSettings(); // Open app settings via Geolocator
-                Navigator.of(context).pop();
-              },
-              child: const Text("Open Settings"),
+              child: const Text("OK"),
+              onPressed: () => Navigator.of(context).pop(),
             ),
-          TextButton(
-            child: const Text("OK"),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-        ],
-      );
-    },
-  );
-}
+          ],
+        );
+      },
+    );
+  }
 
   void _updateLiveLocation() {
     LocationSettings locationSettings = const LocationSettings(
@@ -225,6 +233,24 @@ void _showErrorDialog(BuildContext context, String title, String message, {bool 
         children: [
           createNavigationPanel(),
           Positioned(
+            top: 75,
+            right: 35,
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const MainMenuScreen()),
+                );
+              },
+              child: const Icon(
+                Icons.menu,
+                size: 48,
+                color: Colors.black,
+              ),
+            ),
+          ),
+          Positioned(
             bottom: 16,
             right: 16,
             child: FloatingActionButton(
@@ -238,6 +264,121 @@ void _showErrorDialog(BuildContext context, String title, String message, {bool 
                 _mapController.moveCamera(CameraUpdate.newLatLng(newLocation));
               },
               child: const Icon(Icons.my_location),
+            ),
+          ),
+          Container(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 24),
+              child: GestureDetector(
+                onTap: () {
+                  if (_allCaches.isNotEmpty) {
+                    caches.Cache closestCache = _allCaches.reduce((a, b) {
+                      double distanceA = Geolocator.distanceBetween(
+                          _currentLocation.latitude,
+                          _currentLocation.longitude,
+                          a.lat,
+                          a.lng);
+                      double distanceB = Geolocator.distanceBetween(
+                          _currentLocation.latitude,
+                          _currentLocation.longitude,
+                          b.lat,
+                          b.lng);
+                      return distanceA < distanceB ? a : b;
+                    });
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      backgroundColor: Colors
+                          .transparent, // This makes the entire sheet transparent
+                      builder: (BuildContext context) {
+                        return FractionallySizedBox(
+                          heightFactor: 0.7,
+                          child: Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(16.0),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(
+                                  0.8), // Black with slight transparency
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(16.0),
+                                topRight: Radius.circular(16.0),
+                              ),
+                            ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Image.asset(
+                                      "assets/default_cache_icon.png",
+                                      width: 80,
+                                      height: 80,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: Center(
+                                        child: Text(
+                                          closestCache.name,
+                                          style: const TextStyle(
+                                            fontSize: 24,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                          ),
+                                          overflow: TextOverflow.visible,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 16),
+                                Center(
+                                  child: Text(
+                                    closestCache.desc ??
+                                        'No description available',
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.white,
+                                    ),
+                                    textAlign: TextAlign.left,
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+                                const Spacer(), // Add a spacer to push the button to the bottom
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 40.0),
+                                  child: ElevatedButton(
+                                    onPressed: () {},
+                                    style: ElevatedButton.styleFrom(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 32, vertical: 16),
+                                      foregroundColor: Colors.black,
+                                      backgroundColor:
+                                          Colors.yellow, // Text color
+                                    ),
+                                    child: const Text('Venture!',
+                                        style: TextStyle(
+                                          fontSize: 25,
+                                          fontWeight: FontWeight.bold,
+                                        )),
+                                  ),
+                                ),
+                                // Add more widgets here as needed
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  }
+                },
+                child: Image.asset(
+                  "assets/logo.png",
+                  width: 160,
+                  height: 160,
+                ),
+              ),
             ),
           ),
         ],

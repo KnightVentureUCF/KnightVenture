@@ -85,6 +85,8 @@ flutter:
     - assets/achievement15.png
     - assets/achievement10.png
     - assets/achievement5.png
+    - assets/logo.png
+    - assets/default_cache_icon.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

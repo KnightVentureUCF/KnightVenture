@@ -1,4 +1,3 @@
-//TODO: add achievement logic
 import 'package:flutter/material.dart';
 import 'package:frontend/utils/pathbuilder.dart';
 import 'package:http/http.dart' as http;

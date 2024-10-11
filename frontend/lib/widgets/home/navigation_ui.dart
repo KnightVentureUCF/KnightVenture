@@ -23,14 +23,18 @@ class NavigationUI extends StatefulWidget {
 
 class _NavigationUIState extends State<NavigationUI> {
   late GoogleMapController _mapController;
+
+  // Used to load and store user and cache locations
   late LatLng _currentLocation;
-  bool _inNavigationMode = false;
-  LatLng? _destination;
   bool _cacheLocationsLoaded = false;
   bool _userLocationLoaded = false;
   final Map<String, Marker> _cacheMarkers = {};
   List<caches.Cache> _allCaches = [];
-  late caches.Cache ventureCache;
+
+  // Variables for cache navigation and quiz popup
+  caches.Cache? _destination;
+  bool _reachedDestination = false;
+  static const double reachedDestinationThreshold = 10;
 
   // Define UCF location data
   bool _userLocatedAtUCF = false;
@@ -59,7 +63,7 @@ class _NavigationUIState extends State<NavigationUI> {
         final marker = Marker(
           markerId: MarkerId(cache.name),
           position: coords,
-          onTap: () => beginCacheNavigation(_userLocatedAtUCF, coords),
+          onTap: () => beginCacheNavigation(_userLocatedAtUCF, cache),
           infoWindow: InfoWindow(
             title: cache.name,
           ),
@@ -70,16 +74,14 @@ class _NavigationUIState extends State<NavigationUI> {
     });
   }
 
-  void beginCacheNavigation(bool userLocatedAtUCF, LatLng coords) {
-    if (_userLocatedAtUCF == true && _destination != coords) {
+  void beginCacheNavigation(bool userLocatedAtUCF, caches.Cache cache) {
+    if (_userLocatedAtUCF == true && _destination != cache) {
       setState(() {
-        _destination = coords;
-        _inNavigationMode = true;
+        _destination = cache;
       });
-    } else if (_destination == coords) {
+    } else if (_destination == cache) {
       setState(() {
         _destination = null;
-        _inNavigationMode = false;
       });
     }
   }
@@ -95,15 +97,25 @@ class _NavigationUIState extends State<NavigationUI> {
   void _updateCameraPosition(double lat, double lng) {
     var userLocation = LatLng(lat, lng);
     var userInUCF = userAtUCF(lat, lng);
+    var reachedDestination = false;
 
     if (userInUCF == false) {
       userLocation = ucfCampusCenter;
+    }
+    if (_destination != null) {
+      double distanceToCache = Geolocator.distanceBetween(
+          _currentLocation.latitude,
+          _currentLocation.longitude,
+          _destination!.lat,
+          _destination!.lng);
+
+      reachedDestination = distanceToCache < reachedDestinationThreshold;
     }
 
     setState(() {
       _currentLocation = userLocation;
       _userLocatedAtUCF = userInUCF;
-      _userLocationLoaded = true;
+      _reachedDestination = reachedDestination;
     });
   }
 
@@ -151,6 +163,9 @@ class _NavigationUIState extends State<NavigationUI> {
 
     // Get the user's current location
     var position = await Geolocator.getCurrentPosition();
+    setState(() {
+      _userLocationLoaded = true;
+    });
 
     _updateCameraPosition(position.latitude, position.longitude);
 
@@ -213,7 +228,10 @@ class _NavigationUIState extends State<NavigationUI> {
           ? {
               Polyline(
                 polylineId: const PolylineId("route"),
-                points: [_currentLocation, _destination!],
+                points: [
+                  _currentLocation,
+                  LatLng(_destination!.lat, _destination!.lng)
+                ],
                 color: Colors.blue,
                 width: 6,
               ),
@@ -255,13 +273,16 @@ class _NavigationUIState extends State<NavigationUI> {
               child: const Icon(Icons.my_location),
             ),
           ),
-          _inNavigationMode == false
+          _destination == null
               ? VentureButton(
                   allCaches: _allCaches,
                   currentLocation: _currentLocation,
                   beginCacheNavigation: beginCacheNavigation,
                   userLocatedAtUCF: _userLocatedAtUCF,
                 )
+              : const SizedBox.shrink(),
+          _destination != null && _reachedDestination
+              ? CachePopup(cache: _destination!)
               : const SizedBox.shrink()
         ],
       );

@@ -3,10 +3,10 @@ import 'package:frontend/models/caches.dart' as caches;
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class VentureButton extends StatefulWidget {
+class VentureButton extends StatelessWidget {
   final List<caches.Cache> allCaches;
   final LatLng currentLocation;
-  final Function(bool userLocatedAtUCF, LatLng cacheLocation)
+  final Function(bool userLocatedAtUCF, caches.Cache cache)
       beginCacheNavigation;
   final bool userLocatedAtUCF;
 
@@ -18,11 +18,6 @@ class VentureButton extends StatefulWidget {
       required this.userLocatedAtUCF});
 
   @override
-  State<VentureButton> createState() => VentureButtonState();
-}
-
-class VentureButtonState extends State<VentureButton> {
-  @override
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.bottomCenter,
@@ -30,16 +25,16 @@ class VentureButtonState extends State<VentureButton> {
         padding: const EdgeInsets.only(bottom: 24),
         child: GestureDetector(
           onTap: () {
-            if (widget.allCaches.isNotEmpty) {
-              caches.Cache closestCache = widget.allCaches.reduce((a, b) {
+            if (allCaches.isNotEmpty) {
+              caches.Cache closestCache = allCaches.reduce((a, b) {
                 double distanceA = Geolocator.distanceBetween(
-                    widget.currentLocation.latitude,
-                    widget.currentLocation.longitude,
+                    currentLocation.latitude,
+                    currentLocation.longitude,
                     a.lat,
                     a.lng);
                 double distanceB = Geolocator.distanceBetween(
-                    widget.currentLocation.latitude,
-                    widget.currentLocation.longitude,
+                    currentLocation.latitude,
+                    currentLocation.longitude,
                     b.lat,
                     b.lng);
                 return distanceA < distanceB ? a : b;
@@ -107,9 +102,8 @@ class VentureButtonState extends State<VentureButton> {
                             padding: const EdgeInsets.only(bottom: 40.0),
                             child: ElevatedButton(
                               onPressed: () {
-                                widget.beginCacheNavigation(
-                                    widget.userLocatedAtUCF,
-                                    LatLng(closestCache.lat, closestCache.lng));
+                                beginCacheNavigation(
+                                    userLocatedAtUCF, closestCache);
                                 Navigator.pop(context);
                               },
                               style: ElevatedButton.styleFrom(

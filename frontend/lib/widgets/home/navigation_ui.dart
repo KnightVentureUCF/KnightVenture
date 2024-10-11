@@ -23,6 +23,7 @@ class NavigationUI extends StatefulWidget {
 class _NavigationUIState extends State<NavigationUI> {
   late GoogleMapController _mapController;
   late LatLng _currentLocation;
+  bool _inNavigationMode = false;
   LatLng? _destination;
   bool _cacheLocationsLoaded = false;
   bool _userLocationLoaded = false;
@@ -72,10 +73,12 @@ class _NavigationUIState extends State<NavigationUI> {
     if (_userLocatedAtUCF == true && _destination != coords) {
       setState(() {
         _destination = coords;
+        _inNavigationMode = true;
       });
     } else if (_destination == coords) {
       setState(() {
         _destination = null;
+        _inNavigationMode = false;
       });
     }
   }
@@ -251,7 +254,7 @@ class _NavigationUIState extends State<NavigationUI> {
               child: const Icon(Icons.my_location),
             ),
           ),
-          Container(
+          _inNavigationMode == false ? Container(
             alignment: Alignment.bottomCenter,
             child: Padding(
               padding: const EdgeInsets.only(bottom: 24),
@@ -334,7 +337,13 @@ class _NavigationUIState extends State<NavigationUI> {
                                 Padding(
                                   padding: const EdgeInsets.only(bottom: 40.0),
                                   child: ElevatedButton(
-                                    onPressed: () => beginCacheNavigation(_userLocatedAtUCF, LatLng(closestCache.lat, closestCache.lng)),
+                                    onPressed: () {
+                                      beginCacheNavigation(
+                                          _userLocatedAtUCF,
+                                          LatLng(closestCache.lat,
+                                              closestCache.lng));
+                                      Navigator.pop(context);
+                                    },
                                     style: ElevatedButton.styleFrom(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 32, vertical: 16),
@@ -365,7 +374,7 @@ class _NavigationUIState extends State<NavigationUI> {
                 ),
               ),
             ),
-          ),
+          ) : const SizedBox.shrink(),
         ],
       );
     }

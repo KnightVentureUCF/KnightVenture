@@ -28,6 +28,7 @@ class _NavigationUIState extends State<NavigationUI> {
   bool _userLocationLoaded = false;
   final Map<String, Marker> _cacheMarkers = {};
   List<caches.Cache> _allCaches = [];
+  late caches.Cache ventureCache;
 
   // Define UCF location data
   bool _userLocatedAtUCF = false;
@@ -333,7 +334,7 @@ class _NavigationUIState extends State<NavigationUI> {
                                 Padding(
                                   padding: const EdgeInsets.only(bottom: 40.0),
                                   child: ElevatedButton(
-                                    onPressed: () {},
+                                    onPressed: () => beginCacheNavigation(_userLocatedAtUCF, LatLng(closestCache.lat, closestCache.lng)),
                                     style: ElevatedButton.styleFrom(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 32, vertical: 16),

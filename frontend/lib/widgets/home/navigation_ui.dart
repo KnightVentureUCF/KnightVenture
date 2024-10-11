@@ -56,17 +56,7 @@ class _NavigationUIState extends State<NavigationUI> {
         final marker = Marker(
           markerId: MarkerId(cache.name),
           position: coords,
-          onTap: () {
-            if (_userLocatedAtUCF == true && _destination != coords) {
-              setState(() {
-                _destination = coords;
-              });
-            } else if (_destination == coords) {
-              setState(() {
-                _destination = null;
-              });
-            }
-          },
+          onTap: () => beginCacheNavigation(_userLocatedAtUCF, coords),
           infoWindow: InfoWindow(
             title: cache.name,
           ),
@@ -75,6 +65,18 @@ class _NavigationUIState extends State<NavigationUI> {
       }
       _cacheLocationsLoaded = true;
     });
+  }
+
+  void beginCacheNavigation(bool userLocatedAtUCF, LatLng coords) {
+    if (_userLocatedAtUCF == true && _destination != coords) {
+      setState(() {
+        _destination = coords;
+      });
+    } else if (_destination == coords) {
+      setState(() {
+        _destination = null;
+      });
+    }
   }
 
   bool userAtUCF(double userLat, double userLng) {

@@ -233,24 +233,6 @@ class _NavigationUIState extends State<NavigationUI> {
         children: [
           createNavigationPanel(),
           Positioned(
-            top: 75,
-            right: 35,
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const MainMenuScreen()),
-                );
-              },
-              child: const Icon(
-                Icons.menu,
-                size: 48,
-                color: Colors.black,
-              ),
-            ),
-          ),
-          Positioned(
             bottom: 16,
             right: 16,
             child: FloatingActionButton(

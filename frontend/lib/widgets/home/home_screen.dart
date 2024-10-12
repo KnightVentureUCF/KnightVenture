@@ -6,8 +6,11 @@ import 'package:frontend/models/test_cache.dart';
 
 class HomeScreen extends StatelessWidget {
   final String accessToken;
+  final String username;
 
-  const HomeScreen({Key? key, required this.accessToken}) : super(key: key);
+  const HomeScreen(
+      {Key? key, required this.accessToken, required this.username})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +26,8 @@ class HomeScreen extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const MainMenuScreen()),
+                      builder: (context) =>
+                          MainMenuScreen(accessToken: accessToken, username: username)),
                 );
               },
               child: const Icon(

@@ -3,6 +3,7 @@ import "dart:ffi";
 import "package:flutter/material.dart";
 import "package:frontend/widgets/home/quiz_popup.dart";
 import "package:frontend/widgets/home/loading_screen.dart";
+import "package:frontend/widgets/home/venture_button.dart";
 import "package:google_maps_flutter/google_maps_flutter.dart";
 import 'package:frontend/widgets/main_menu/main_menu_screen.dart';
 import 'package:frontend/data/all_caches.dart';
@@ -22,12 +23,18 @@ class NavigationUI extends StatefulWidget {
 
 class _NavigationUIState extends State<NavigationUI> {
   late GoogleMapController _mapController;
+
+  // Used to load and store user and cache locations
   late LatLng _currentLocation;
-  LatLng? _destination;
   bool _cacheLocationsLoaded = false;
   bool _userLocationLoaded = false;
   final Map<String, Marker> _cacheMarkers = {};
   List<caches.Cache> _allCaches = [];
+
+  // Variables for cache navigation and quiz popup
+  caches.Cache? _destination;
+  bool _reachedDestination = false;
+  static const double reachedDestinationThreshold = 10;
 
   // Define UCF location data
   bool _userLocatedAtUCF = false;
@@ -56,17 +63,7 @@ class _NavigationUIState extends State<NavigationUI> {
         final marker = Marker(
           markerId: MarkerId(cache.name),
           position: coords,
-          onTap: () {
-            if (_userLocatedAtUCF == true && _destination != coords) {
-              setState(() {
-                _destination = coords;
-              });
-            } else if (_destination == coords) {
-              setState(() {
-                _destination = null;
-              });
-            }
-          },
+          onTap: () => beginCacheNavigation(_userLocatedAtUCF, cache),
           infoWindow: InfoWindow(
             title: cache.name,
           ),
@@ -75,6 +72,18 @@ class _NavigationUIState extends State<NavigationUI> {
       }
       _cacheLocationsLoaded = true;
     });
+  }
+
+  void beginCacheNavigation(bool userLocatedAtUCF, caches.Cache cache) {
+    if (_userLocatedAtUCF == true && _destination != cache) {
+      setState(() {
+        _destination = cache;
+      });
+    } else if (_destination == cache) {
+      setState(() {
+        _destination = null;
+      });
+    }
   }
 
   bool userAtUCF(double userLat, double userLng) {
@@ -88,15 +97,25 @@ class _NavigationUIState extends State<NavigationUI> {
   void _updateCameraPosition(double lat, double lng) {
     var userLocation = LatLng(lat, lng);
     var userInUCF = userAtUCF(lat, lng);
+    var reachedDestination = false;
 
     if (userInUCF == false) {
       userLocation = ucfCampusCenter;
+    }
+    if (_destination != null) {
+      double distanceToCache = Geolocator.distanceBetween(
+          _currentLocation.latitude,
+          _currentLocation.longitude,
+          _destination!.lat,
+          _destination!.lng);
+
+      reachedDestination = distanceToCache < reachedDestinationThreshold;
     }
 
     setState(() {
       _currentLocation = userLocation;
       _userLocatedAtUCF = userInUCF;
-      _userLocationLoaded = true;
+      _reachedDestination = reachedDestination;
     });
   }
 
@@ -144,6 +163,9 @@ class _NavigationUIState extends State<NavigationUI> {
 
     // Get the user's current location
     var position = await Geolocator.getCurrentPosition();
+    setState(() {
+      _userLocationLoaded = true;
+    });
 
     _updateCameraPosition(position.latitude, position.longitude);
 
@@ -206,7 +228,10 @@ class _NavigationUIState extends State<NavigationUI> {
           ? {
               Polyline(
                 polylineId: const PolylineId("route"),
-                points: [_currentLocation, _destination!],
+                points: [
+                  _currentLocation,
+                  LatLng(_destination!.lat, _destination!.lng)
+                ],
                 color: Colors.blue,
                 width: 6,
               ),
@@ -232,24 +257,6 @@ class _NavigationUIState extends State<NavigationUI> {
       content = Stack(
         children: [
           createNavigationPanel(),
-          Positioned(
-            top: 75,
-            right: 35,
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const MainMenuScreen()),
-                );
-              },
-              child: const Icon(
-                Icons.menu,
-                size: 48,
-                color: Colors.black,
-              ),
-            ),
-          ),
           Positioned(
             bottom: 16,
             right: 16,

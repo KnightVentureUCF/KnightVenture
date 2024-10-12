@@ -31,6 +31,7 @@ router.post('/', async (req, res) => {
           profilePicture: '🐶',
           cachesFound: 0,
           distanceVentured: 0,
+          point: 0,
         });
 
         res.status(200).send({

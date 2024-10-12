@@ -6,7 +6,11 @@ import 'package:frontend/widgets/styling/theme.dart';
 import 'package:frontend/widgets/about/about_screen.dart';
 
 class MainMenuScreen extends StatelessWidget {
-  const MainMenuScreen({super.key});
+  final String accessToken;
+  final String username;
+
+  MainMenuScreen({Key? key, required this.accessToken, required this.username})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +49,11 @@ class MainMenuScreen extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ProfileScreen()),
+                    MaterialPageRoute(
+                        builder: (context) => ProfileScreen(
+                              accessToken: accessToken,
+                              username: username,
+                            )),
                   );
                 },
                 child: const Text('Profile'),

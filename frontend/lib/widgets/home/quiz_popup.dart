@@ -1,23 +1,55 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/models/test_cache.dart';
+import 'package:frontend/models/caches.dart';
 
-class CachePopup {
-  static void show(BuildContext context, TestCache cache) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (BuildContext context) {
-        return FractionallySizedBox(
-          heightFactor: .7,
-          child: _QuestionWidget(cache: cache),
-        );
-      },
+class QuizPopup extends StatelessWidget {
+  final Cache cache;
+
+  const QuizPopup({super.key, required this.cache});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      alignment: Alignment.bottomCenter,
+      padding: const EdgeInsets.only(bottom: 36),
+      child: ElevatedButton(
+        onPressed: () {
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            backgroundColor: Colors.transparent,
+            builder: (context) {
+              return FractionallySizedBox(
+                heightFactor: 0.7,
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16.0),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.8),
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(16.0),
+                      topRight: Radius.circular(16.0),
+                    ),
+                  ),
+                  child: _QuestionWidget(cache: cache),
+                ),
+              );
+            },
+          );
+        },
+        style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+          foregroundColor: Colors.black,
+          backgroundColor: Colors.yellow,
+        ),
+        child: const Text('Start Quiz',
+            style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+      ),
     );
   }
 }
 
 class _QuestionWidget extends StatefulWidget {
-  final TestCache cache;
+  final Cache cache;
 
   const _QuestionWidget({required this.cache});
 
@@ -109,7 +141,7 @@ class _QuestionWidgetState extends State<_QuestionWidget> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Text(
-              question.questionText,
+              question.text,
               style: const TextStyle(
                 fontSize: 18,
                 color: Colors.white,
@@ -137,7 +169,7 @@ class _QuestionWidgetState extends State<_QuestionWidget> {
                 ),
               ),
             );
-          }).toList(),
+          }),
           const SizedBox(height: 20),
           Text(
             'Question ${currentQuestionIndex + 1} of ${widget.cache.questions!.length}',

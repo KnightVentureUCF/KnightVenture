@@ -1,7 +1,7 @@
 import "dart:ffi";
 
 import "package:flutter/material.dart";
-import "package:frontend/widgets/home/cache_popup.dart";
+import "package:frontend/widgets/home/quiz_popup.dart";
 import "package:frontend/widgets/home/loading_screen.dart";
 import "package:google_maps_flutter/google_maps_flutter.dart";
 import 'package:frontend/widgets/main_menu/main_menu_screen.dart';
@@ -266,121 +266,17 @@ class _NavigationUIState extends State<NavigationUI> {
               child: const Icon(Icons.my_location),
             ),
           ),
-          Container(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 24),
-              child: GestureDetector(
-                onTap: () {
-                  if (_allCaches.isNotEmpty) {
-                    caches.Cache closestCache = _allCaches.reduce((a, b) {
-                      double distanceA = Geolocator.distanceBetween(
-                          _currentLocation.latitude,
-                          _currentLocation.longitude,
-                          a.lat,
-                          a.lng);
-                      double distanceB = Geolocator.distanceBetween(
-                          _currentLocation.latitude,
-                          _currentLocation.longitude,
-                          b.lat,
-                          b.lng);
-                      return distanceA < distanceB ? a : b;
-                    });
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      backgroundColor: Colors
-                          .transparent, // This makes the entire sheet transparent
-                      builder: (BuildContext context) {
-                        return FractionallySizedBox(
-                          heightFactor: 0.7,
-                          child: Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.all(16.0),
-                            decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(
-                                  0.8), // Black with slight transparency
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(16.0),
-                                topRight: Radius.circular(16.0),
-                              ),
-                            ),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Image.asset(
-                                      "assets/default_cache_icon.png",
-                                      width: 80,
-                                      height: 80,
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Expanded(
-                                      child: Center(
-                                        child: Text(
-                                          closestCache.name,
-                                          style: const TextStyle(
-                                            fontSize: 24,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white,
-                                          ),
-                                          overflow: TextOverflow.visible,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 16),
-                                Center(
-                                  child: Text(
-                                    closestCache.desc ??
-                                        'No description available',
-                                    style: const TextStyle(
-                                      fontSize: 18,
-                                      color: Colors.white,
-                                    ),
-                                    textAlign: TextAlign.left,
-                                  ),
-                                ),
-                                const SizedBox(height: 16),
-                                const Spacer(), // Add a spacer to push the button to the bottom
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 40.0),
-                                  child: ElevatedButton(
-                                    onPressed: () {},
-                                    style: ElevatedButton.styleFrom(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 32, vertical: 16),
-                                      foregroundColor: Colors.black,
-                                      backgroundColor:
-                                          Colors.yellow, // Text color
-                                    ),
-                                    child: const Text('Venture!',
-                                        style: TextStyle(
-                                          fontSize: 25,
-                                          fontWeight: FontWeight.bold,
-                                        )),
-                                  ),
-                                ),
-                                // Add more widgets here as needed
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  }
-                },
-                child: Image.asset(
-                  "assets/logo.png",
-                  width: 160,
-                  height: 160,
-                ),
-              ),
-            ),
-          ),
+          _destination == null
+              ? VentureButton(
+                  allCaches: _allCaches,
+                  currentLocation: _currentLocation,
+                  beginCacheNavigation: beginCacheNavigation,
+                  userLocatedAtUCF: _userLocatedAtUCF,
+                )
+              : const SizedBox.shrink(),
+          _destination != null && _reachedDestination
+              ? QuizPopup(cache: _destination!)
+              : const SizedBox.shrink()
         ],
       );
     }

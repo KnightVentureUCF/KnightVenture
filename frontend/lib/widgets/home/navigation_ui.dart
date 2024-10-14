@@ -1,5 +1,3 @@
-import "dart:ffi";
-
 import "package:flutter/material.dart";
 import "package:frontend/widgets/home/cache_popup.dart";
 import "package:frontend/widgets/home/loading_screen.dart";
@@ -51,28 +49,34 @@ class _NavigationUIState extends State<NavigationUI> {
     _loadCacheMarkers();
   }
 
-  void _loadCacheMarkers() async {
-    final cacheLocations = await caches.getCacheLocations(widget.accessToken);
-    allCaches = cacheLocations;
+void _loadCacheMarkers() async {
+  final cacheLocations = await caches.getCacheLocations(widget.accessToken);
+  allCaches = cacheLocations;
 
-    setState(() {
-      _cacheMarkers.clear();
-      _allCaches = cacheLocations.caches;
-      for (final cache in cacheLocations.caches) {
-        final coords = LatLng(cache.lat, cache.lng);
-        final marker = Marker(
-          markerId: MarkerId(cache.name),
-          position: coords,
-          onTap: () => beginCacheNavigation(_userLocatedAtUCF, cache),
-          infoWindow: InfoWindow(
-            title: cache.name,
-          ),
-        );
-        _cacheMarkers[cache.name] = marker;
-      }
-      _cacheLocationsLoaded = true;
-    });
-  }
+  final BitmapDescriptor customIcon = await BitmapDescriptor.fromAssetImage(
+    const ImageConfiguration(size: Size(48, 48)),
+    'assets/knight_icon_small.png',
+  );
+
+  setState(() {
+    _cacheMarkers.clear();
+    _allCaches = cacheLocations.caches;
+    for (final cache in cacheLocations.caches) {
+      final coords = LatLng(cache.lat, cache.lng);
+      final marker = Marker(
+        markerId: MarkerId(cache.name),
+        position: coords,
+        icon: customIcon,
+        onTap: () => beginCacheNavigation(_userLocatedAtUCF, cache),
+        infoWindow: InfoWindow(
+          title: cache.name,
+        ),
+      );
+      _cacheMarkers[cache.name] = marker;
+    }
+    _cacheLocationsLoaded = true;
+  });
+}
 
   void beginCacheNavigation(bool userLocatedAtUCF, caches.Cache cache) {
     if (_userLocatedAtUCF == true && _destination != cache) {

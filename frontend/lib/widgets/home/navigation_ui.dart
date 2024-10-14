@@ -1,9 +1,8 @@
 import "package:flutter/material.dart";
-import "package:frontend/widgets/home/cache_popup.dart";
+import "package:frontend/widgets/home/quiz_popup.dart";
 import "package:frontend/widgets/home/loading_screen.dart";
 import "package:frontend/widgets/home/venture_button.dart";
 import "package:google_maps_flutter/google_maps_flutter.dart";
-import 'package:frontend/widgets/main_menu/main_menu_screen.dart';
 import 'package:frontend/data/all_caches.dart';
 import "package:geolocator/geolocator.dart";
 import "package:frontend/models/caches.dart" as caches;
@@ -12,8 +11,9 @@ import "package:frontend/constants.dart" show initialMapZoomOnVentureScreen;
 class NavigationUI extends StatefulWidget {
   final String accessToken; // Add accessToken as a final field
 
-  const NavigationUI({Key? key, required this.accessToken})
-      : super(key: key); // Add accessToken as a named required parameter
+  const NavigationUI(
+      {super.key,
+      required this.accessToken}); // Add accessToken as a named required parameter
 
   @override
   State<NavigationUI> createState() => _NavigationUIState();
@@ -277,6 +277,7 @@ void _loadCacheMarkers() async {
               child: const Icon(Icons.my_location),
             ),
           ),
+          // QuizPopup(cache: _allCaches[0]), // Testing with the first cache
           _destination == null
               ? VentureButton(
                   allCaches: _allCaches,
@@ -286,7 +287,7 @@ void _loadCacheMarkers() async {
                 )
               : const SizedBox.shrink(),
           _destination != null && _reachedDestination
-              ? CachePopup(cache: _destination!)
+              ? QuizPopup(cache: _destination!)
               : const SizedBox.shrink()
         ],
       );

@@ -273,6 +273,7 @@ class _NavigationUIState extends State<NavigationUI> {
               child: const Icon(Icons.my_location),
             ),
           ),
+          // QuizPopup(cache: _allCaches[0]), // Testing with the first cache
           _destination == null
               ? VentureButton(
                   allCaches: _allCaches,

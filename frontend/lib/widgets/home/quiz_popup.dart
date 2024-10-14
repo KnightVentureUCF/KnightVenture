@@ -24,7 +24,7 @@ class QuizPopup extends StatelessWidget {
                   width: double.infinity,
                   padding: const EdgeInsets.all(16.0),
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.8),
+                    color: Colors.black.withOpacity(0.7),
                     borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(16.0),
                       topRight: Radius.circular(16.0),
@@ -120,7 +120,6 @@ class _QuestionWidgetState extends State<_QuestionWidget> {
     final question = widget.cache.questions![currentQuestionIndex];
 
     return Container(
-      color: Colors.black,
       padding: const EdgeInsets.all(24.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,

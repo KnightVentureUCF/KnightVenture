@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:frontend/widgets/credentials/credentials_screen.dart';
 import 'package:frontend/widgets/credentials/login_screen.dart';
 import 'package:frontend/widgets/credentials/signup_screen.dart';
 import 'package:frontend/widgets/styling/theme.dart';

@@ -19,8 +19,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String fullName = "Full Name";
   String userName = "@username";
   String email = "xxx@gmail.com";
-  int points = 15;
-  int cachesFound = 8;
+  int point = 0;
+  int cachesFound = 0;
 
   @override
   void initState() {
@@ -49,7 +49,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         setState(() {
           fullName = data['profileData']['fullName'] ?? fullName;
           email = data['profileData']['email'] ?? email;
-          points = data['profileData']['point'] ?? points;
+          point = data['profileData']['point'] ?? point;
           cachesFound = data['profileData']['cachesFound'] ?? cachesFound;
         });
       } else {
@@ -119,7 +119,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(width: 25),
-                _buildStatItem("Point", points.toString(), Icons.emoji_events),
+                _buildStatItem("Point", point.toString(), Icons.emoji_events),
                 SizedBox(width: 120),
                 _buildStatItem(
                     "Cache Found", cachesFound.toString(), Icons.map),

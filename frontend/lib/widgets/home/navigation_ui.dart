@@ -73,7 +73,7 @@ class _NavigationUIState extends State<NavigationUI> {
       for (final cache in _allCaches) {
         final coords = LatLng(cache.lat, cache.lng);
         final marker = Marker(
-          markerId: MarkerId(cache.name),
+          markerId: MarkerId(cache.id),
           position: coords,
           icon: _foundCaches.contains(cache.id) ? foundIcon : unfoundIcon,
           onTap: () => {
@@ -86,7 +86,7 @@ class _NavigationUIState extends State<NavigationUI> {
             title: cache.name,
           ),
         );
-        _cacheMarkers[cache.name] = marker;
+        _cacheMarkers[cache.id] = marker;
       }
       _cacheLocationsLoaded = true;
     });

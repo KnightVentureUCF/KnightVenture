@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:frontend/widgets/home/quiz_popup.dart";
 import "package:frontend/widgets/home/loading_screen.dart";
 import "package:frontend/widgets/home/venture_button.dart";
+import "package:frontend/widgets/main_menu/main_menu_screen.dart";
 import "package:google_maps_flutter/google_maps_flutter.dart";
 import 'package:frontend/data/all_caches.dart';
 import "package:geolocator/geolocator.dart";
@@ -10,10 +11,13 @@ import "package:frontend/constants.dart" show initialMapZoomOnVentureScreen;
 
 class NavigationUI extends StatefulWidget {
   final String accessToken; // Add accessToken as a final field
+  final String username;
 
-  const NavigationUI(
-      {super.key,
-      required this.accessToken}); // Add accessToken as a named required parameter
+  const NavigationUI({
+    super.key,
+    required this.accessToken,
+    required this.username,
+  }); // Add accessToken as a named required parameter
 
   @override
   State<NavigationUI> createState() => _NavigationUIState();
@@ -49,34 +53,34 @@ class _NavigationUIState extends State<NavigationUI> {
     _loadCacheMarkers();
   }
 
-void _loadCacheMarkers() async {
-  final cacheLocations = await caches.getCacheLocations(widget.accessToken);
-  allCaches = cacheLocations;
+  void _loadCacheMarkers() async {
+    final cacheLocations = await caches.getCacheLocations(widget.accessToken);
+    allCaches = cacheLocations;
 
-  final BitmapDescriptor customIcon = await BitmapDescriptor.fromAssetImage(
-    const ImageConfiguration(size: Size(48, 48)),
-    'assets/knight_icon_small.png',
-  );
+    final BitmapDescriptor customIcon = await BitmapDescriptor.fromAssetImage(
+      const ImageConfiguration(size: Size(48, 48)),
+      'assets/cache_marker.png',
+    );
 
-  setState(() {
-    _cacheMarkers.clear();
-    _allCaches = cacheLocations.caches;
-    for (final cache in cacheLocations.caches) {
-      final coords = LatLng(cache.lat, cache.lng);
-      final marker = Marker(
-        markerId: MarkerId(cache.name),
-        position: coords,
-        icon: customIcon,
-        onTap: () => beginCacheNavigation(_userLocatedAtUCF, cache),
-        infoWindow: InfoWindow(
-          title: cache.name,
-        ),
-      );
-      _cacheMarkers[cache.name] = marker;
-    }
-    _cacheLocationsLoaded = true;
-  });
-}
+    setState(() {
+      _cacheMarkers.clear();
+      _allCaches = cacheLocations.caches;
+      for (final cache in cacheLocations.caches) {
+        final coords = LatLng(cache.lat, cache.lng);
+        final marker = Marker(
+          markerId: MarkerId(cache.name),
+          position: coords,
+          icon: customIcon,
+          onTap: () => beginCacheNavigation(_userLocatedAtUCF, cache),
+          infoWindow: InfoWindow(
+            title: cache.name,
+          ),
+        );
+        _cacheMarkers[cache.name] = marker;
+      }
+      _cacheLocationsLoaded = true;
+    });
+  }
 
   void beginCacheNavigation(bool userLocatedAtUCF, caches.Cache cache) {
     if (_userLocatedAtUCF == true && _destination != cache) {
@@ -261,6 +265,26 @@ void _loadCacheMarkers() async {
       content = Stack(
         children: [
           createNavigationPanel(),
+          Positioned(
+            top: 75,
+            right: 35,
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => MainMenuScreen(
+                          accessToken: widget.accessToken,
+                          username: widget.username)),
+                );
+              },
+              child: const Icon(
+                Icons.menu,
+                size: 48,
+                color: Colors.black,
+              ),
+            ),
+          ),
           Positioned(
             bottom: 16,
             right: 16,

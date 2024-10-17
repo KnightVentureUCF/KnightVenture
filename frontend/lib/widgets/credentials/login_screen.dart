@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/login_response.dart';
+import 'package:frontend/widgets/home/navigation_ui.dart';
 import 'dart:convert';
 import 'forgot_something_screen.dart';
-import 'package:frontend/widgets/home/home_screen.dart';
 import 'package:frontend/utils/pathbuilder.dart';
 import 'package:frontend/widgets/styling/theme.dart';
 import 'package:http/http.dart' as http;
@@ -72,10 +72,10 @@ class LoginScreen extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => HomeScreen(
-                                    accessToken: loginResponse.accessToken,
-                                    username: _usernameController
-                                        .text), // Pass the accessToken
+                                builder: (context) => NavigationUI(
+                                  accessToken: loginResponse.accessToken,
+                                  username: _usernameController.text,
+                                ), // Pass the accessToken
                               ),
                             );
                           }
@@ -112,7 +112,7 @@ class LoginScreen extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ForgotSomething(),
+                            builder: (context) => const ForgotSomething(),
                           ),
                         );
                       },
@@ -194,5 +194,6 @@ class LoginScreen extends StatelessWidget {
         ),
       );
     }
+    return null;
   }
 }

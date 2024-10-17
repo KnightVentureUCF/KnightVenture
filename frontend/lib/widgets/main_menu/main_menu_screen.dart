@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/widgets/cachelog/cachelog_screen.dart';
 import 'package:frontend/widgets/profile/profile_screen.dart';
-import 'package:frontend/widgets/settings/settings_screen.dart';
 import 'package:frontend/widgets/styling/theme.dart';
 import 'package:frontend/widgets/about/about_screen.dart';
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/login_response.dart';
+import 'package:frontend/widgets/credentials/forgot_password_screen.dart';
 import 'dart:convert';
 import 'forgot_something_screen.dart';
 import 'package:frontend/widgets/home/home_screen.dart';
@@ -112,7 +113,7 @@ class LoginScreen extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ForgotSomething(),
+                            builder: (context) => ForgotPasswordScreen(),
                           ),
                         );
                       },

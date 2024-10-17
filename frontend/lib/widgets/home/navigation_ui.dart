@@ -34,7 +34,7 @@ class _NavigationUIState extends State<NavigationUI> {
   // Variables for cache navigation and quiz popup
   caches.Cache? _destination;
   bool _reachedDestination = false;
-  static const double reachedDestinationThreshold = 10;
+  static const double reachedDestinationThreshold = 15;
 
   // Define UCF location data
   bool _userLocatedAtUCF = false;
@@ -63,7 +63,7 @@ class _NavigationUIState extends State<NavigationUI> {
 
     final BitmapDescriptor foundIcon = await BitmapDescriptor.fromAssetImage(
       const ImageConfiguration(size: Size(24, 24)),
-      'assets/unfound_cache_marker.png',
+      'assets/found_cache_marker.png',
     );
 
     setState(() {
@@ -301,7 +301,10 @@ class _NavigationUIState extends State<NavigationUI> {
                 )
               : const SizedBox.shrink(),
           _destination != null && _reachedDestination
-              ? QuizPopup(cache: _destination!)
+              ? QuizPopup(
+                  cache: _destination!,
+                  accessToken: widget.accessToken,
+                  username: widget.username)
               : const SizedBox.shrink()
         ],
       );

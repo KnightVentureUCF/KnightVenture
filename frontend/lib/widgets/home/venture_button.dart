@@ -112,7 +112,7 @@ class VentureButton extends StatelessWidget {
                                 foregroundColor: Colors.black,
                                 backgroundColor: Colors.yellow, // Text color
                               ),
-                              child: const Text('Venture!',
+                              child: const Text('Start!',
                                   style: TextStyle(
                                     fontSize: 25,
                                     fontWeight: FontWeight.bold,

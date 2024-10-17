@@ -15,7 +15,7 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          NavigationUI(accessToken: accessToken),
+          NavigationUI(accessToken: accessToken, username: username),
           Positioned(
             top: 75,
             right: 35,

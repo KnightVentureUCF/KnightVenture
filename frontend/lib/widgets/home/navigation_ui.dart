@@ -57,13 +57,13 @@ class _NavigationUIState extends State<NavigationUI> {
     final foundCaches = cacheLocations.userCachesFound;
 
     final BitmapDescriptor unfoundIcon = await BitmapDescriptor.fromAssetImage(
-      const ImageConfiguration(size: Size(48, 48)),
-      'assets/knight_icon_small.png',
+      const ImageConfiguration(size: Size(24, 24)),
+      'assets/unfound_cache_marker.png',
     );
 
     final BitmapDescriptor foundIcon = await BitmapDescriptor.fromAssetImage(
-      const ImageConfiguration(size: Size(48, 48)),
-      'assets/default_cache_icon.png',
+      const ImageConfiguration(size: Size(24, 24)),
+      'assets/unfound_cache_marker.png',
     );
 
     setState(() {

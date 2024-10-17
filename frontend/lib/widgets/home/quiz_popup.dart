@@ -105,9 +105,22 @@ class _QuestionWidgetState extends State<_QuestionWidget> {
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
-                Navigator.of(this.context).pop();
+                if (correctAnswersCount == widget.cache.questions!.length) {
+                  Navigator.of(this.context).pop();
+                  // Add your "Log Cache" logic here
+                } else {
+                  setState(() {
+                    currentQuestionIndex = 0;
+                    correctAnswersCount = 0;
+                    _shuffleAnswers();
+                  });
+                }
               },
-              child: const Text('OK'),
+              child: Text(
+                correctAnswersCount == widget.cache.questions!.length
+                    ? 'Log Cache!'
+                    : 'Retry',
+              ),
             ),
           ],
         );

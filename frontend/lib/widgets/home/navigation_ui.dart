@@ -3,21 +3,9 @@ import "package:frontend/widgets/home/quiz_popup.dart";
 import "package:frontend/widgets/home/loading_screen.dart";
 import "package:frontend/widgets/home/venture_button.dart";
 import "package:google_maps_flutter/google_maps_flutter.dart";
-import 'package:frontend/data/all_caches.dart';
 import "package:geolocator/geolocator.dart";
 import "package:frontend/models/caches.dart" as caches;
 import "package:frontend/constants.dart" show initialMapZoomOnVentureScreen;
-
-// Needed To Pass
-// User's found caches are loaded in during map load
-// Requires new or existing API to read user's found caches
-// Frontend must take found caches and turn them green and non-navigable on the map
-
-// Connect quiz to confirm cache
-// Upon successful quiz completion, application state is updated.
-// Profile caches found stat is updated
-// Cache turns green and non-navigable
-// an API request is sent to server to update the user's caches found
 
 class NavigationUI extends StatefulWidget {
   final String accessToken; // Add accessToken as a final field

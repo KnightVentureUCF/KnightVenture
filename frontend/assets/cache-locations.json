@@ -1,5 +1,5 @@
 {
-    "caches": [
+    "allCaches": [
         {
             "Name": "Wooden Micket Mouse Statue",
             "Description": "Standing in “The Gallery”, the statue serve as both decorative pieces and reminders of the creativity and innovation that thrive within the university community. ",
@@ -18,5 +18,6 @@
                 }
             ]
         }
-    ]
+    ],
+    "foundCaches": []
 }

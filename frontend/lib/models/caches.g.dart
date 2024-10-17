@@ -18,6 +18,7 @@ Map<String, dynamic> _$QuizQuestionToJson(QuizQuestion instance) =>
     };
 
 Cache _$CacheFromJson(Map<String, dynamic> json) => Cache(
+      id: json['id'] as String,
       name: json['Name'] as String,
       desc: json['Description'] as String?,
       lat: (json['lat'] as num).toDouble(),
@@ -29,6 +30,7 @@ Cache _$CacheFromJson(Map<String, dynamic> json) => Cache(
     );
 
 Map<String, dynamic> _$CacheToJson(Cache instance) => <String, dynamic>{
+      'id': instance.id,
       'Name': instance.name,
       'Description': instance.desc,
       'lat': instance.lat,
@@ -37,12 +39,17 @@ Map<String, dynamic> _$CacheToJson(Cache instance) => <String, dynamic>{
       'questions': instance.questions,
     };
 
-Caches _$CachesFromJson(Map<String, dynamic> json) => Caches(
-      caches: (json['caches'] as List<dynamic>)
+UserCaches _$UserCachesFromJson(Map<String, dynamic> json) => UserCaches(
+      caches: (json['allCaches'] as List<dynamic>)
           .map((e) => Cache.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      userCachesFound: (json['foundCaches'] as List<dynamic>)
+          .map((e) => e as String)
           .toList(),
     );
 
-Map<String, dynamic> _$CachesToJson(Caches instance) => <String, dynamic>{
-      'caches': instance.caches,
+Map<String, dynamic> _$UserCachesToJson(UserCaches instance) =>
+    <String, dynamic>{
+      'foundCaches': instance.userCachesFound,
+      'allCaches': instance.caches,
     };

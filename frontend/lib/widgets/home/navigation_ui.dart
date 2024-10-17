@@ -3,17 +3,18 @@ import "package:frontend/widgets/home/quiz_popup.dart";
 import "package:frontend/widgets/home/loading_screen.dart";
 import "package:frontend/widgets/home/venture_button.dart";
 import "package:google_maps_flutter/google_maps_flutter.dart";
-import 'package:frontend/data/all_caches.dart';
 import "package:geolocator/geolocator.dart";
 import "package:frontend/models/caches.dart" as caches;
 import "package:frontend/constants.dart" show initialMapZoomOnVentureScreen;
 
 class NavigationUI extends StatefulWidget {
   final String accessToken; // Add accessToken as a final field
+  final String username;
 
   const NavigationUI(
       {super.key,
-      required this.accessToken}); // Add accessToken as a named required parameter
+      required this.accessToken,
+      required this.username}); // Add accessToken as a named required parameter
 
   @override
   State<NavigationUI> createState() => _NavigationUIState();
@@ -28,6 +29,7 @@ class _NavigationUIState extends State<NavigationUI> {
   bool _userLocationLoaded = false;
   final Map<String, Marker> _cacheMarkers = {};
   List<caches.Cache> _allCaches = [];
+  Set<String> _foundCaches = {};
 
   // Variables for cache navigation and quiz popup
   caches.Cache? _destination;
@@ -49,34 +51,46 @@ class _NavigationUIState extends State<NavigationUI> {
     _loadCacheMarkers();
   }
 
-void _loadCacheMarkers() async {
-  final cacheLocations = await caches.getCacheLocations(widget.accessToken);
-  allCaches = cacheLocations;
+  void _loadCacheMarkers() async {
+    final cacheLocations =
+        await caches.getCacheLocations(widget.accessToken, widget.username);
+    final foundCaches = cacheLocations.userCachesFound;
 
-  final BitmapDescriptor customIcon = await BitmapDescriptor.fromAssetImage(
-    const ImageConfiguration(size: Size(48, 48)),
-    'assets/knight_icon_small.png',
-  );
+    final BitmapDescriptor unfoundIcon = await BitmapDescriptor.fromAssetImage(
+      const ImageConfiguration(size: Size(48, 48)),
+      'assets/knight_icon_small.png',
+    );
 
-  setState(() {
-    _cacheMarkers.clear();
-    _allCaches = cacheLocations.caches;
-    for (final cache in cacheLocations.caches) {
-      final coords = LatLng(cache.lat, cache.lng);
-      final marker = Marker(
-        markerId: MarkerId(cache.name),
-        position: coords,
-        icon: customIcon,
-        onTap: () => beginCacheNavigation(_userLocatedAtUCF, cache),
-        infoWindow: InfoWindow(
-          title: cache.name,
-        ),
-      );
-      _cacheMarkers[cache.name] = marker;
-    }
-    _cacheLocationsLoaded = true;
-  });
-}
+    final BitmapDescriptor foundIcon = await BitmapDescriptor.fromAssetImage(
+      const ImageConfiguration(size: Size(48, 48)),
+      'assets/default_cache_icon.png',
+    );
+
+    setState(() {
+      _cacheMarkers.clear();
+      _allCaches = cacheLocations.caches;
+      _foundCaches = Set.from(foundCaches);
+      for (final cache in _allCaches) {
+        final coords = LatLng(cache.lat, cache.lng);
+        final marker = Marker(
+          markerId: MarkerId(cache.id),
+          position: coords,
+          icon: _foundCaches.contains(cache.id) ? foundIcon : unfoundIcon,
+          onTap: () => {
+            _foundCaches.contains(cache.id)
+                ? {}
+                : beginCacheNavigation(_userLocatedAtUCF, cache)
+          },
+          // TODO: Remove this once we add info windows to all caches
+          infoWindow: InfoWindow(
+            title: cache.name,
+          ),
+        );
+        _cacheMarkers[cache.id] = marker;
+      }
+      _cacheLocationsLoaded = true;
+    });
+  }
 
   void beginCacheNavigation(bool userLocatedAtUCF, caches.Cache cache) {
     if (_userLocatedAtUCF == true && _destination != cache) {

@@ -31,6 +31,7 @@ class QuizQuestion {
 @JsonSerializable()
 class Cache {
   Cache({
+    required this.id,
     required this.name,
     this.desc,
     required this.lat,
@@ -42,6 +43,7 @@ class Cache {
   factory Cache.fromJson(Map<String, dynamic> json) => _$CacheFromJson(json);
   Map<String, dynamic> toJson() => _$CacheToJson(this);
 
+  final String id;
   @JsonKey(name: 'Name')
   final String name;
   @JsonKey(name: 'Description')
@@ -53,21 +55,25 @@ class Cache {
   final List<QuizQuestion>? questions;
 }
 
-// Takes in data for a group of caches from API calls.
+// Takes in all Cache data, along with a user's found caches
 @JsonSerializable()
-class Caches {
-  Caches({
+class UserCaches {
+  UserCaches({
     required this.caches,
+    required this.userCachesFound
   });
 
-  factory Caches.fromJson(Map<String, dynamic> json) => _$CachesFromJson(json);
-  Map<String, dynamic> toJson() => _$CachesToJson(this);
+  factory UserCaches.fromJson(Map<String, dynamic> json) => _$UserCachesFromJson(json);
+  Map<String, dynamic> toJson() => _$UserCachesToJson(this);
 
+  @JsonKey(name: 'foundCaches')
+  final List<String> userCachesFound;
+  @JsonKey(name: 'allCaches')
   final List<Cache> caches;
 }
 
 // function to call load caches API for venture page.
-Future<Caches> getCacheLocations(String accessToken) async {
+Future<UserCaches> getCacheLocations(String accessToken, String username) async {
   final url = Uri.parse(buildPath("api/load_caches"));
 
   try {
@@ -79,11 +85,12 @@ Future<Caches> getCacheLocations(String accessToken) async {
       },
       body: jsonEncode({
         'accessToken': accessToken, // Adding the access token in the body
+        'username': username
       }),
     );
 
     if (response.statusCode == 200) {
-      return Caches.fromJson(
+      return UserCaches.fromJson(
           json.decode(response.body) as Map<String, dynamic>);
     } else {
       throw Exception('Failed to load caches');
@@ -93,7 +100,7 @@ Future<Caches> getCacheLocations(String accessToken) async {
   }
 
   // Fallback for when the above HTTP request fails.
-  return Caches.fromJson(
+  return UserCaches.fromJson(
     json.decode(
       await rootBundle.loadString('assets/cache-locations.json'),
     ) as Map<String, dynamic>,

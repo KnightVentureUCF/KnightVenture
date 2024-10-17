@@ -294,7 +294,9 @@ class _NavigationUIState extends State<NavigationUI> {
           // QuizPopup(cache: _allCaches[0]), // Testing with the first cache
           _destination == null
               ? VentureButton(
-                  allCaches: _allCaches,
+                  allCaches: _allCaches.where((cache) {
+                    return !_foundCaches.contains(cache.id);
+                  }).toList(),
                   currentLocation: _currentLocation,
                   beginCacheNavigation: beginCacheNavigation,
                   userLocatedAtUCF: _userLocatedAtUCF,

@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/caches.dart';
+import 'package:frontend/utils/pathbuilder.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class QuizPopup extends StatelessWidget {
   final Cache cache;
+  final String accessToken;
+  final String username;
 
-  const QuizPopup({super.key, required this.cache});
+  const QuizPopup(
+      {super.key,
+      required this.cache,
+      required this.accessToken,
+      required this.username});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +39,10 @@ class QuizPopup extends StatelessWidget {
                       topRight: Radius.circular(16.0),
                     ),
                   ),
-                  child: _QuestionWidget(cache: cache),
+                  child: _QuestionWidget(
+                      cache: cache,
+                      accessToken: accessToken,
+                      username: username),
                 ),
               );
             },
@@ -50,8 +62,11 @@ class QuizPopup extends StatelessWidget {
 
 class _QuestionWidget extends StatefulWidget {
   final Cache cache;
+  final String accessToken;
+  final String username;
 
-  const _QuestionWidget({required this.cache});
+  const _QuestionWidget(
+      {required this.cache, required this.accessToken, required this.username});
 
   @override
   State<_QuestionWidget> createState() => _QuestionWidgetState();
@@ -92,27 +107,83 @@ class _QuestionWidgetState extends State<_QuestionWidget> {
     }
   }
 
-  void _showResults() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Quiz Complete'),
-          content: Text(
-            'You got $correctAnswersCount out of ${widget.cache.questions!.length} correct!',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                Navigator.of(this.context).pop();
-              },
-              child: const Text('OK'),
-            ),
-          ],
+  Future<void> _showResults() async {
+    if (correctAnswersCount == widget.cache.questions!.length) {
+      // Call the API to confirm the cache find
+      String cacheId = widget.cache.id;
+      String username = widget.username; // Use the passed username
+      String accessToken = widget.accessToken; // Use the passed accessToken
+
+      // Prepare the API request with your live URL
+      // final url = Uri.parse(
+      //     'http://knightventure.us-east-1.elasticbeanstalk.com/api/confirm_cache');
+      final url = Uri.parse(buildPath("api/confirm_cache"));
+
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization':
+              'Bearer $accessToken', // Include the token in the header
+        },
+        body: jsonEncode({
+          'username': username,
+          'cacheId': cacheId,
+          'accessToken':
+              accessToken, // Send the token as part of the payload if required by your backend
+        }),
+      );
+
+      // Check the response from the server
+      if (response.statusCode == 200) {
+        // Successfully confirmed the cache find
+        final responseData = jsonDecode(response.body);
+        print(responseData['message']); // Show the success message in a dialog
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Cache Found!'),
+              content: Text(responseData['message']),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Navigator.of(this.context).pop();
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
         );
-      },
-    );
+      } else {
+        // Handle errors here
+        print('Error: ${response.body}');
+      }
+    } else {
+      // Show quiz results without cache confirmation
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Quiz Complete'),
+            content: Text(
+              'You got $correctAnswersCount out of ${widget.cache.questions!.length} correct!',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.of(this.context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
   @override

@@ -34,7 +34,7 @@ class _NavigationUIState extends State<NavigationUI> {
   // Variables for cache navigation and quiz popup
   caches.Cache? _destination;
   bool _reachedDestination = false;
-  static const double reachedDestinationThreshold = 10;
+  static const double reachedDestinationThreshold = 15;
 
   // Define UCF location data
   bool _userLocatedAtUCF = false;
@@ -57,13 +57,13 @@ class _NavigationUIState extends State<NavigationUI> {
     final foundCaches = cacheLocations.userCachesFound;
 
     final BitmapDescriptor unfoundIcon = await BitmapDescriptor.fromAssetImage(
-      const ImageConfiguration(size: Size(48, 48)),
-      'assets/knight_icon_small.png',
+      const ImageConfiguration(size: Size(24, 24)),
+      'assets/unfound_cache_marker.png',
     );
 
     final BitmapDescriptor foundIcon = await BitmapDescriptor.fromAssetImage(
-      const ImageConfiguration(size: Size(48, 48)),
-      'assets/default_cache_icon.png',
+      const ImageConfiguration(size: Size(24, 24)),
+      'assets/found_cache_marker.png',
     );
 
     setState(() {
@@ -294,14 +294,19 @@ class _NavigationUIState extends State<NavigationUI> {
           // QuizPopup(cache: _allCaches[0]), // Testing with the first cache
           _destination == null
               ? VentureButton(
-                  allCaches: _allCaches,
+                  allCaches: _allCaches.where((cache) {
+                    return !_foundCaches.contains(cache.id);
+                  }).toList(),
                   currentLocation: _currentLocation,
                   beginCacheNavigation: beginCacheNavigation,
                   userLocatedAtUCF: _userLocatedAtUCF,
                 )
               : const SizedBox.shrink(),
           _destination != null && _reachedDestination
-              ? QuizPopup(cache: _destination!)
+              ? QuizPopup(
+                  cache: _destination!,
+                  accessToken: widget.accessToken,
+                  username: widget.username)
               : const SizedBox.shrink()
         ],
       );

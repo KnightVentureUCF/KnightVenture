@@ -1,10 +1,8 @@
-//TODO: implement update cachesFound, distanceVentured, picture later
 const express = require('express');
 const router = express.Router();
 const AWS = require('aws-sdk');
 const admin = require('firebase-admin');
 
-// Assuming Firebase Admin SDK has been initialized elsewhere in your application
 const db = admin.firestore();
 
 // Configure AWS using environment variables
@@ -22,7 +20,6 @@ const cognitoIdentityServiceProvider = new AWS.CognitoIdentityServiceProvider({
 router.post('/', async (req, res) => {
   const { username, accessToken, fullName } = req.body;
 
-  // Validate accessToken with Cognito
   const params = {
     AccessToken: accessToken,
   };
@@ -33,21 +30,13 @@ router.post('/', async (req, res) => {
       return res.status(403).send({ message: 'Session token unrecognized.' });
     } else {
       try {
-        // User is authenticated, update Firestore data
-        const userId = data.Username; // Assuming Username is the userId in your Firestore
+        const userId = data.Username; 
         const userRef = db.collection('users').doc(userId);
 
-        // Create an object for the fields to update
         const updates = {};
-        // if (cachesFound !== undefined) updates.cachesFound = cachesFound;
-        // if (distanceVentured !== undefined)
-        //   updates.distanceVentured = distanceVentured;
+        
         updates.fullName = fullName;
-        // if (password !== undefined) updates.password = password; // Note: Storing passwords in Firestore is discouraged
-        // if (profilePicture !== undefined)
-        //   updates.profilePicture = profilePicture;
-
-        // Update the document
+        
         await userRef.update(updates);
         res.status(200).send({ message: 'Profile updated successfully.' });
       } catch (firebaseError) {

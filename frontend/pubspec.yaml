@@ -72,6 +72,7 @@ flutter:
     - assets/duck.png
     - assets/horseback.png
     - assets/knight_icon.png
+    - assets/knight_icon_small.png
     - assets/knight.png
     - assets/pawprint.png
     - assets/tree.png

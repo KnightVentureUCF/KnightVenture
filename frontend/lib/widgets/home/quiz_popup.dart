@@ -8,12 +8,14 @@ class QuizPopup extends StatelessWidget {
   final Cache cache;
   final String accessToken;
   final String username;
+  final Function(String id) updateCacheMarkerToFound;
 
   const QuizPopup(
       {super.key,
       required this.cache,
       required this.accessToken,
-      required this.username});
+      required this.username,
+      required this.updateCacheMarkerToFound});
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +44,8 @@ class QuizPopup extends StatelessWidget {
                   child: _QuestionWidget(
                       cache: cache,
                       accessToken: accessToken,
-                      username: username),
+                      username: username,
+                      updateCacheMarkerToFound: updateCacheMarkerToFound,),
                 ),
               );
             },
@@ -64,9 +67,13 @@ class _QuestionWidget extends StatefulWidget {
   final Cache cache;
   final String accessToken;
   final String username;
+  final Function(String id) updateCacheMarkerToFound;
 
   const _QuestionWidget(
-      {required this.cache, required this.accessToken, required this.username});
+      {required this.cache,
+      required this.accessToken,
+      required this.username,
+      required this.updateCacheMarkerToFound});
 
   @override
   State<_QuestionWidget> createState() => _QuestionWidgetState();
@@ -113,6 +120,8 @@ class _QuestionWidgetState extends State<_QuestionWidget> {
       String cacheId = widget.cache.id;
       String username = widget.username; // Use the passed username
       String accessToken = widget.accessToken; // Use the passed accessToken
+
+      widget.updateCacheMarkerToFound(cacheId);
 
       // Prepare the API request with your live URL
       // final url = Uri.parse(

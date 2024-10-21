@@ -44,6 +44,10 @@ class _NavigationUIState extends State<NavigationUI> {
   static const LatLng ucfSWCorner = LatLng(28.5900, -81.2130);
   static const double ucfCampusRadius = 2000; // Radius in meters (e.g., 2km)
 
+  late BitmapDescriptor _unfoundIcon;
+
+  late BitmapDescriptor _foundIcon;
+
   @override
   void initState() {
     super.initState();
@@ -56,26 +60,29 @@ class _NavigationUIState extends State<NavigationUI> {
         await caches.getCacheLocations(widget.accessToken, widget.username);
     final foundCaches = cacheLocations.userCachesFound;
 
-    final BitmapDescriptor unfoundIcon = await BitmapDescriptor.fromAssetImage(
+    final unfoundIcon = await BitmapDescriptor.fromAssetImage(
       const ImageConfiguration(size: Size(24, 24)),
       'assets/unfound_cache_marker.png',
     );
 
-    final BitmapDescriptor foundIcon = await BitmapDescriptor.fromAssetImage(
+    final foundIcon = await BitmapDescriptor.fromAssetImage(
       const ImageConfiguration(size: Size(24, 24)),
       'assets/found_cache_marker.png',
     );
 
     setState(() {
+      _unfoundIcon = unfoundIcon;
+      _foundIcon = foundIcon;
+
       _cacheMarkers.clear();
       _allCaches = cacheLocations.caches;
       _foundCaches = Set.from(foundCaches);
       for (final cache in _allCaches) {
         final coords = LatLng(cache.lat, cache.lng);
-        final marker = Marker(
+        var marker = Marker(
           markerId: MarkerId(cache.id),
           position: coords,
-          icon: _foundCaches.contains(cache.id) ? foundIcon : unfoundIcon,
+          icon: _foundCaches.contains(cache.id) ? _foundIcon : _unfoundIcon,
           onTap: () => {
             if (_destination != cache)
               {_showCacheInfo(cache, _foundCaches.contains(cache.id))}
@@ -90,6 +97,36 @@ class _NavigationUIState extends State<NavigationUI> {
         _cacheMarkers[cache.id] = marker;
       }
       _cacheLocationsLoaded = true;
+    });
+  }
+
+  void updateCacheMarkerToFound(String cacheId) {
+    final cache = _allCaches.firstWhere((cache) => cache.id == cacheId);
+    final coords = LatLng(cache.lat, cache.lng);
+
+    // Create a new marker with the updated icon
+    var updatedMarker = Marker(
+      markerId: MarkerId(cacheId),
+      position: coords,
+      icon: _foundIcon,
+      onTap: () => {
+        if (_destination != cache)
+          {_showCacheInfo(cache, _foundCaches.contains(cache.id))}
+        else if (!_foundCaches.contains(cache.id))
+          {
+            setState(() {
+              _destination = null;
+            })
+          }
+      },
+    );
+
+    // Replace the old marker with the updated marker
+    setState(() {
+      _destination = null;
+      _reachedDestination = false;
+      _foundCaches.add(cacheId);
+      _cacheMarkers[cacheId] = updatedMarker;
     });
   }
 
@@ -412,7 +449,8 @@ class _NavigationUIState extends State<NavigationUI> {
               ? QuizPopup(
                   cache: _destination!,
                   accessToken: widget.accessToken,
-                  username: widget.username)
+                  username: widget.username,
+                  updateCacheMarkerToFound: updateCacheMarkerToFound)
               : const SizedBox.shrink()
         ],
       );

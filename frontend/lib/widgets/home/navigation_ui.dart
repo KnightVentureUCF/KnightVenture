@@ -77,13 +77,15 @@ class _NavigationUIState extends State<NavigationUI> {
           position: coords,
           icon: _foundCaches.contains(cache.id) ? foundIcon : unfoundIcon,
           onTap: () => {
-            _foundCaches.contains(cache.id) ? {} : _showCacheInfo(cache)
-            // : beginCacheNavigation(_userLocatedAtUCF, cache)
+            if (_destination != cache)
+              {_showCacheInfo(cache, _foundCaches.contains(cache.id))}
+            else if (!_foundCaches.contains(cache.id))
+              {
+                setState(() {
+                  _destination = null;
+                })
+              }
           },
-          // TODO: Remove this once we add info windows to all caches
-          infoWindow: InfoWindow(
-            title: cache.name,
-          ),
         );
         _cacheMarkers[cache.id] = marker;
       }
@@ -229,7 +231,7 @@ class _NavigationUIState extends State<NavigationUI> {
     });
   }
 
-  void _showCacheInfo(caches.Cache cache) {
+  void _showCacheInfo(caches.Cache cache, bool cacheHasBeenFound) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -289,28 +291,30 @@ class _NavigationUIState extends State<NavigationUI> {
                 ),
                 const SizedBox(height: 16),
                 const Spacer(), // Add a spacer to push the button to the bottom
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 40.0),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        _destination = cache;
-                      });
-                      Navigator.pop(context);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 32, vertical: 16),
-                      foregroundColor: Colors.black,
-                      backgroundColor: Colors.yellow, // Text color
-                    ),
-                    child: const Text('Start!',
-                        style: TextStyle(
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold,
-                        )),
-                  ),
-                ),
+                !cacheHasBeenFound
+                    ? Padding(
+                        padding: const EdgeInsets.only(bottom: 40.0),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              _destination = cache;
+                            });
+                            Navigator.pop(context);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 32, vertical: 16),
+                            foregroundColor: Colors.black,
+                            backgroundColor: Colors.yellow, // Text color
+                          ),
+                          child: const Text('Start!',
+                              style: TextStyle(
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                              )),
+                        ),
+                      )
+                    : SizedBox.shrink(),
                 // Add more widgets here as needed
               ],
             ),
@@ -381,7 +385,6 @@ class _NavigationUIState extends State<NavigationUI> {
               child: const Icon(Icons.my_location),
             ),
           ),
-          // QuizPopup(cache: _allCaches[0]), // Testing with the first cache
           _destination == null
               ? VentureButton(
                   allCaches: _allCaches.where((cache) {

@@ -244,79 +244,92 @@ class _NavigationUIState extends State<NavigationUI> {
             width: double.infinity,
             padding: const EdgeInsets.all(16.0),
             decoration: BoxDecoration(
-              color: Colors.black
-                  .withOpacity(0.8), // Black with slight transparency
+              color: Colors.black.withOpacity(0.8),
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(16.0),
                 topRight: Radius.circular(16.0),
               ),
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Image.asset(
-                      "assets/default_cache_icon.png",
-                      width: 80,
-                      height: 80,
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Center(
-                        child: Text(
-                          cache.name,
-                          style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height * 0.7,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Image.asset(
+                        "assets/default_cache_icon.png",
+                        width: 80,
+                        height: 80,
+                      ),
+                      const SizedBox(width: 8),
+                      Flexible(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(
+                            maxHeight: 75, // Set the maximum height here
                           ),
-                          overflow: TextOverflow.visible,
+                          child: SingleChildScrollView(
+                            child: Center(
+                              child: Text(
+                                cache.name,
+                                style: const TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                                overflow: TextOverflow.visible,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Center(
-                  child: Text(
-                    cache.desc ?? 'No description available',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      color: Colors.white,
-                    ),
-                    textAlign: TextAlign.left,
+                    ],
                   ),
-                ),
-                const SizedBox(height: 16),
-                const Spacer(), // Add a spacer to push the button to the bottom
-                !cacheHasBeenFound
-                    ? Padding(
-                        padding: const EdgeInsets.only(bottom: 40.0),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            setState(() {
-                              _destination = cache;
-                            });
-                            Navigator.pop(context);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 32, vertical: 16),
-                            foregroundColor: Colors.black,
-                            backgroundColor: Colors.yellow, // Text color
-                          ),
-                          child: const Text('Start!',
-                              style: TextStyle(
-                                fontSize: 25,
-                                fontWeight: FontWeight.bold,
-                              )),
+                  const SizedBox(height: 16),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.4,
+                    child: SingleChildScrollView(
+                      child: Text(
+                        cache.desc ?? 'No description available',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          color: Colors.white,
                         ),
-                      )
-                    : SizedBox.shrink(),
-                // Add more widgets here as needed
-              ],
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  const Spacer(),
+                  !cacheHasBeenFound
+                      ? Padding(
+                          padding: const EdgeInsets.only(bottom: 40.0),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              setState(() {
+                                _destination = cache;
+                              });
+                              Navigator.pop(context);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 32, vertical: 16),
+                              foregroundColor: Colors.black,
+                              backgroundColor: Colors.yellow,
+                            ),
+                            child: const Text('Start!',
+                                style: TextStyle(
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold,
+                                )),
+                          ),
+                        )
+                      : SizedBox.shrink(),
+                ],
+              ),
             ),
           ),
         );

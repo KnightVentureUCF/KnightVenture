@@ -97,10 +97,12 @@ class _NavigationUIState extends State<NavigationUI> {
     if (_userLocatedAtUCF == true && _destination != cache) {
       setState(() {
         _destination = cache;
+        _reachedDestination = false;
       });
     } else if (_destination == cache) {
       setState(() {
         _destination = null;
+        _reachedDestination = false;
       });
     }
   }
@@ -309,9 +311,7 @@ class _NavigationUIState extends State<NavigationUI> {
                           padding: const EdgeInsets.only(bottom: 40.0),
                           child: ElevatedButton(
                             onPressed: () {
-                              setState(() {
-                                _destination = cache;
-                              });
+                              beginCacheNavigation(_userLocatedAtUCF, cache);
                               Navigator.pop(context);
                             },
                             style: ElevatedButton.styleFrom(

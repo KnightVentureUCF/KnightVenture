@@ -85,7 +85,10 @@ class _NavigationUIState extends State<NavigationUI> {
           position: coords,
           icon: _foundCaches.contains(cache.id) ? _foundIcon : _unfoundIcon,
           onTap: () => {
-            {_showCacheInfo(cache, _foundCaches.contains(cache.id))}
+            {
+              _showCacheInfo(cache,
+                  _foundCaches.contains(cache.id) || _destination == cache)
+            }
           },
         );
         _cacheMarkers[cache.id] = marker;
@@ -103,7 +106,10 @@ class _NavigationUIState extends State<NavigationUI> {
       markerId: MarkerId(cacheId),
       position: coords,
       icon: _foundIcon,
-      onTap: () => {_showCacheInfo(cache, _foundCaches.contains(cache.id))},
+      onTap: () => {
+        _showCacheInfo(
+            cache, _foundCaches.contains(cache.id) || _destination == cache)
+      },
     );
 
     // Replace the old marker with the updated marker

@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:frontend/widgets/home/navigation_button.dart";
 import "package:frontend/widgets/home/quiz_popup.dart";
 import "package:frontend/widgets/home/loading_screen.dart";
 import "package:frontend/widgets/home/venture_button.dart";
@@ -84,14 +85,10 @@ class _NavigationUIState extends State<NavigationUI> {
           position: coords,
           icon: _foundCaches.contains(cache.id) ? _foundIcon : _unfoundIcon,
           onTap: () => {
-            if (_destination != cache)
-              {_showCacheInfo(cache, _foundCaches.contains(cache.id))}
-            else if (!_foundCaches.contains(cache.id))
-              {
-                setState(() {
-                  _destination = null;
-                })
-              }
+            {
+              _showCacheInfo(cache,
+                  _foundCaches.contains(cache.id) || _destination == cache)
+            }
           },
         );
         _cacheMarkers[cache.id] = marker;
@@ -110,14 +107,8 @@ class _NavigationUIState extends State<NavigationUI> {
       position: coords,
       icon: _foundIcon,
       onTap: () => {
-        if (_destination != cache)
-          {_showCacheInfo(cache, _foundCaches.contains(cache.id))}
-        else if (!_foundCaches.contains(cache.id))
-          {
-            setState(() {
-              _destination = null;
-            })
-          }
+        _showCacheInfo(
+            cache, _foundCaches.contains(cache.id) || _destination == cache)
       },
     );
 
@@ -136,12 +127,14 @@ class _NavigationUIState extends State<NavigationUI> {
         _destination = cache;
         _reachedDestination = false;
       });
-    } else if (_destination == cache) {
-      setState(() {
-        _destination = null;
-        _reachedDestination = false;
-      });
     }
+  }
+
+  void exitCacheNavigation() {
+    setState(() {
+      _destination = null;
+      _reachedDestination = false;
+    });
   }
 
   bool userAtUCF(double userLat, double userLng) {
@@ -344,26 +337,12 @@ class _NavigationUIState extends State<NavigationUI> {
                   const SizedBox(height: 16),
                   const Spacer(),
                   !cacheHasBeenFound
-                      ? Padding(
-                          padding: const EdgeInsets.only(bottom: 40.0),
-                          child: ElevatedButton(
-                            onPressed: () {
-                              beginCacheNavigation(_userLocatedAtUCF, cache);
-                              Navigator.pop(context);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 32, vertical: 16),
-                              foregroundColor: Colors.black,
-                              backgroundColor: Colors.yellow,
-                            ),
-                            child: const Text('Start!',
-                                style: TextStyle(
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.bold,
-                                )),
-                          ),
-                        )
+                      ? NavigationButton(
+                          onPressed: () {
+                            beginCacheNavigation(_userLocatedAtUCF, cache);
+                            Navigator.pop(context);
+                          },
+                          buttonText: 'Start!')
                       : SizedBox.shrink(),
                 ],
               ),
@@ -420,39 +399,50 @@ class _NavigationUIState extends State<NavigationUI> {
         children: [
           createNavigationPanel(),
           Positioned(
-            bottom: 16,
-            right: 16,
-            child: FloatingActionButton(
-              onPressed: () {
-                // Recenter the map on the user's location if they're at UCF
-                var newLocation = _currentLocation;
-                if (userAtUCF(newLocation.latitude, newLocation.longitude) ==
-                    false) {
-                  newLocation = ucfCampusCenter;
-                }
-                _mapController.moveCamera(CameraUpdate.newLatLng(newLocation));
-              },
-              child: const Icon(Icons.my_location),
-            ),
-          ),
-          _destination == null
-              ? VentureButton(
-                  allCaches: _allCaches.where((cache) {
-                    return !_foundCaches.contains(cache.id);
-                  }).toList(),
-                  currentLocation: _currentLocation,
-                  beginCacheNavigation: beginCacheNavigation,
-                  userLocatedAtUCF: _userLocatedAtUCF,
-                  showCacheInfo: _showCacheInfo,
-                )
-              : const SizedBox.shrink(),
-          _destination != null && _reachedDestination
-              ? QuizPopup(
-                  cache: _destination!,
-                  accessToken: widget.accessToken,
-                  username: widget.username,
-                  updateCacheMarkerToFound: updateCacheMarkerToFound)
-              : const SizedBox.shrink()
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child:
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                if (_reachedDestination)
+                  QuizPopup(
+                      cache: _destination!,
+                      accessToken: widget.accessToken,
+                      username: widget.username,
+                      updateCacheMarkerToFound: updateCacheMarkerToFound),
+                if (_destination == null)
+                  VentureButton(
+                    allCaches: _allCaches.where((cache) {
+                      return !_foundCaches.contains(cache.id);
+                    }).toList(),
+                    currentLocation: _currentLocation,
+                    beginCacheNavigation: beginCacheNavigation,
+                    userLocatedAtUCF: _userLocatedAtUCF,
+                    showCacheInfo: _showCacheInfo,
+                  )
+                else
+                  NavigationButton(
+                      onPressed: exitCacheNavigation,
+                      buttonText: _reachedDestination ? "X" : "Exit"),
+              ])),
+          if (_reachedDestination == false)
+            Positioned(
+              bottom: 30,
+              right: 20,
+              child: FloatingActionButton(
+                onPressed: () {
+                  // Recenter the map on the user's location if they're at UCF
+                  var newLocation = _currentLocation;
+                  if (userAtUCF(newLocation.latitude, newLocation.longitude) ==
+                      false) {
+                    newLocation = ucfCampusCenter;
+                  }
+                  _mapController
+                      .moveCamera(CameraUpdate.newLatLng(newLocation));
+                },
+                child: const Icon(Icons.my_location),
+              ),
+            )
         ],
       );
     }

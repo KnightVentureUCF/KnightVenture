@@ -147,7 +147,6 @@ class _QuestionWidgetState extends State<_QuestionWidget> {
       if (response.statusCode == 200) {
         // Successfully confirmed the cache find
         final responseData = jsonDecode(response.body);
-        print(responseData['message']); // Show the success message in a dialog
         showDialog(
           context: context,
           builder: (BuildContext context) {

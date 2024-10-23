@@ -43,7 +43,6 @@ class VentureButton extends StatelessWidget {
               });
               showCacheInfo(closestCache, false);
             } else {
-              // Show a dialog saying "All caches are completed"
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
@@ -55,7 +54,7 @@ class VentureButton extends StatelessWidget {
                       TextButton(
                         child: const Text('OK'),
                         onPressed: () {
-                          Navigator.of(context).pop(); // Close the dialog
+                          Navigator.of(context).pop();
                         },
                       ),
                     ],

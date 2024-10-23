@@ -44,6 +44,10 @@ class _NavigationUIState extends State<NavigationUI> {
   static const LatLng ucfSWCorner = LatLng(28.5900, -81.2130);
   static const double ucfCampusRadius = 2000; // Radius in meters (e.g., 2km)
 
+  late BitmapDescriptor _unfoundIcon;
+
+  late BitmapDescriptor _foundIcon;
+
   @override
   void initState() {
     super.initState();
@@ -56,34 +60,39 @@ class _NavigationUIState extends State<NavigationUI> {
         await caches.getCacheLocations(widget.accessToken, widget.username);
     final foundCaches = cacheLocations.userCachesFound;
 
-    final BitmapDescriptor unfoundIcon = await BitmapDescriptor.fromAssetImage(
+    final unfoundIcon = await BitmapDescriptor.fromAssetImage(
       const ImageConfiguration(size: Size(24, 24)),
       'assets/unfound_cache_marker.png',
     );
 
-    final BitmapDescriptor foundIcon = await BitmapDescriptor.fromAssetImage(
+    final foundIcon = await BitmapDescriptor.fromAssetImage(
       const ImageConfiguration(size: Size(24, 24)),
       'assets/found_cache_marker.png',
     );
 
     setState(() {
+      _unfoundIcon = unfoundIcon;
+      _foundIcon = foundIcon;
+
       _cacheMarkers.clear();
       _allCaches = cacheLocations.caches;
       _foundCaches = Set.from(foundCaches);
       for (final cache in _allCaches) {
         final coords = LatLng(cache.lat, cache.lng);
-        final marker = Marker(
+        var marker = Marker(
           markerId: MarkerId(cache.id),
           position: coords,
-          icon: _foundCaches.contains(cache.id) ? foundIcon : unfoundIcon,
+          icon: _foundCaches.contains(cache.id) ? _foundIcon : _unfoundIcon,
           onTap: () => {
-            _foundCaches.contains(cache.id) ? {} : _showCacheInfo(cache)
-            // : beginCacheNavigation(_userLocatedAtUCF, cache)
+            if (_destination != cache)
+              {_showCacheInfo(cache, _foundCaches.contains(cache.id))}
+            else if (!_foundCaches.contains(cache.id))
+              {
+                setState(() {
+                  _destination = null;
+                })
+              }
           },
-          // TODO: Remove this once we add info windows to all caches
-          infoWindow: InfoWindow(
-            title: cache.name,
-          ),
         );
         _cacheMarkers[cache.id] = marker;
       }
@@ -91,14 +100,46 @@ class _NavigationUIState extends State<NavigationUI> {
     });
   }
 
+  void updateCacheMarkerToFound(String cacheId) {
+    final cache = _allCaches.firstWhere((cache) => cache.id == cacheId);
+    final coords = LatLng(cache.lat, cache.lng);
+
+    // Create a new marker with the updated icon
+    var updatedMarker = Marker(
+      markerId: MarkerId(cacheId),
+      position: coords,
+      icon: _foundIcon,
+      onTap: () => {
+        if (_destination != cache)
+          {_showCacheInfo(cache, _foundCaches.contains(cache.id))}
+        else if (!_foundCaches.contains(cache.id))
+          {
+            setState(() {
+              _destination = null;
+            })
+          }
+      },
+    );
+
+    // Replace the old marker with the updated marker
+    setState(() {
+      _destination = null;
+      _reachedDestination = false;
+      _foundCaches.add(cacheId);
+      _cacheMarkers[cacheId] = updatedMarker;
+    });
+  }
+
   void beginCacheNavigation(bool userLocatedAtUCF, caches.Cache cache) {
     if (_userLocatedAtUCF == true && _destination != cache) {
       setState(() {
         _destination = cache;
+        _reachedDestination = false;
       });
     } else if (_destination == cache) {
       setState(() {
         _destination = null;
+        _reachedDestination = false;
       });
     }
   }
@@ -229,7 +270,7 @@ class _NavigationUIState extends State<NavigationUI> {
     });
   }
 
-  void _showCacheInfo(caches.Cache cache) {
+  void _showCacheInfo(caches.Cache cache, bool cacheHasBeenFound) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -242,77 +283,90 @@ class _NavigationUIState extends State<NavigationUI> {
             width: double.infinity,
             padding: const EdgeInsets.all(16.0),
             decoration: BoxDecoration(
-              color: Colors.black
-                  .withOpacity(0.8), // Black with slight transparency
+              color: Colors.black.withOpacity(0.8),
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(16.0),
                 topRight: Radius.circular(16.0),
               ),
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Image.asset(
-                      "assets/default_cache_icon.png",
-                      width: 80,
-                      height: 80,
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Center(
-                        child: Text(
-                          cache.name,
-                          style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height * 0.7,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Image.asset(
+                        "assets/default_cache_icon.png",
+                        width: 80,
+                        height: 80,
+                      ),
+                      const SizedBox(width: 8),
+                      Flexible(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(
+                            maxHeight: 75, // Set the maximum height here
                           ),
-                          overflow: TextOverflow.visible,
+                          child: SingleChildScrollView(
+                            child: Center(
+                              child: Text(
+                                cache.name,
+                                style: const TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                                overflow: TextOverflow.visible,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Center(
-                  child: Text(
-                    cache.desc ?? 'No description available',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      color: Colors.white,
-                    ),
-                    textAlign: TextAlign.left,
+                    ],
                   ),
-                ),
-                const SizedBox(height: 16),
-                const Spacer(), // Add a spacer to push the button to the bottom
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 40.0),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        _destination = cache;
-                      });
-                      Navigator.pop(context);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 32, vertical: 16),
-                      foregroundColor: Colors.black,
-                      backgroundColor: Colors.yellow, // Text color
+                  const SizedBox(height: 16),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.4,
+                    child: SingleChildScrollView(
+                      child: Text(
+                        cache.desc ?? 'No description available',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          color: Colors.white,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
                     ),
-                    child: const Text('Start!',
-                        style: TextStyle(
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold,
-                        )),
                   ),
-                ),
-                // Add more widgets here as needed
-              ],
+                  const SizedBox(height: 16),
+                  const Spacer(),
+                  !cacheHasBeenFound
+                      ? Padding(
+                          padding: const EdgeInsets.only(bottom: 40.0),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              beginCacheNavigation(_userLocatedAtUCF, cache);
+                              Navigator.pop(context);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 32, vertical: 16),
+                              foregroundColor: Colors.black,
+                              backgroundColor: Colors.yellow,
+                            ),
+                            child: const Text('Start!',
+                                style: TextStyle(
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold,
+                                )),
+                          ),
+                        )
+                      : SizedBox.shrink(),
+                ],
+              ),
             ),
           ),
         );
@@ -381,7 +435,6 @@ class _NavigationUIState extends State<NavigationUI> {
               child: const Icon(Icons.my_location),
             ),
           ),
-          // QuizPopup(cache: _allCaches[0]), // Testing with the first cache
           _destination == null
               ? VentureButton(
                   allCaches: _allCaches.where((cache) {
@@ -390,13 +443,15 @@ class _NavigationUIState extends State<NavigationUI> {
                   currentLocation: _currentLocation,
                   beginCacheNavigation: beginCacheNavigation,
                   userLocatedAtUCF: _userLocatedAtUCF,
+                  showCacheInfo: _showCacheInfo,
                 )
               : const SizedBox.shrink(),
           _destination != null && _reachedDestination
               ? QuizPopup(
                   cache: _destination!,
                   accessToken: widget.accessToken,
-                  username: widget.username)
+                  username: widget.username,
+                  updateCacheMarkerToFound: updateCacheMarkerToFound)
               : const SizedBox.shrink()
         ],
       );

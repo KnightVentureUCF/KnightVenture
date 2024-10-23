@@ -443,6 +443,7 @@ class _NavigationUIState extends State<NavigationUI> {
                   currentLocation: _currentLocation,
                   beginCacheNavigation: beginCacheNavigation,
                   userLocatedAtUCF: _userLocatedAtUCF,
+                  showCacheInfo: _showCacheInfo,
                 )
               : const SizedBox.shrink(),
           _destination != null && _reachedDestination

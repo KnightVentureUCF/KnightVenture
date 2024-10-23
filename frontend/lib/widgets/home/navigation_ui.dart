@@ -399,33 +399,6 @@ class _NavigationUIState extends State<NavigationUI> {
         children: [
           createNavigationPanel(),
           Positioned(
-            bottom: 16,
-            right: 16,
-            child: FloatingActionButton(
-              onPressed: () {
-                // Recenter the map on the user's location if they're at UCF
-                var newLocation = _currentLocation;
-                if (userAtUCF(newLocation.latitude, newLocation.longitude) ==
-                    false) {
-                  newLocation = ucfCampusCenter;
-                }
-                _mapController.moveCamera(CameraUpdate.newLatLng(newLocation));
-              },
-              child: const Icon(Icons.my_location),
-            ),
-          ),
-          if (_destination == null)
-            VentureButton(
-              allCaches: _allCaches.where((cache) {
-                return !_foundCaches.contains(cache.id);
-              }).toList(),
-              currentLocation: _currentLocation,
-              beginCacheNavigation: beginCacheNavigation,
-              userLocatedAtUCF: _userLocatedAtUCF,
-              showCacheInfo: _showCacheInfo,
-            )
-          else
-            Positioned(
               bottom: 0,
               left: 0,
               right: 0,
@@ -437,10 +410,38 @@ class _NavigationUIState extends State<NavigationUI> {
                       accessToken: widget.accessToken,
                       username: widget.username,
                       updateCacheMarkerToFound: updateCacheMarkerToFound),
-                NavigationButton(
-                    onPressed: exitCacheNavigation,
-                    buttonText: _reachedDestination ? "X" : "Exit"),
-              ]),
+                if (_destination == null)
+                  VentureButton(
+                    allCaches: _allCaches.where((cache) {
+                      return !_foundCaches.contains(cache.id);
+                    }).toList(),
+                    currentLocation: _currentLocation,
+                    beginCacheNavigation: beginCacheNavigation,
+                    userLocatedAtUCF: _userLocatedAtUCF,
+                    showCacheInfo: _showCacheInfo,
+                  )
+                else
+                  NavigationButton(
+                      onPressed: exitCacheNavigation,
+                      buttonText: _reachedDestination ? "X" : "Exit"),
+              ])),
+          if (_reachedDestination == false)
+            Positioned(
+              bottom: 30,
+              right: 20,
+              child: FloatingActionButton(
+                onPressed: () {
+                  // Recenter the map on the user's location if they're at UCF
+                  var newLocation = _currentLocation;
+                  if (userAtUCF(newLocation.latitude, newLocation.longitude) ==
+                      false) {
+                    newLocation = ucfCampusCenter;
+                  }
+                  _mapController
+                      .moveCamera(CameraUpdate.newLatLng(newLocation));
+                },
+                child: const Icon(Icons.my_location),
+              ),
             )
         ],
       );

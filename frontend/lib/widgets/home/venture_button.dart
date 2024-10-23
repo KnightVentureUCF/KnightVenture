@@ -42,6 +42,26 @@ class VentureButton extends StatelessWidget {
                 return distanceA < distanceB ? a : b;
               });
               showCacheInfo(closestCache, false);
+            } else {
+              // Show a dialog saying "All caches are completed"
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text('All Caches Completed'),
+                    content:
+                        const Text('You have completed all available caches.'),
+                    actions: <Widget>[
+                      TextButton(
+                        child: const Text('OK'),
+                        onPressed: () {
+                          Navigator.of(context).pop(); // Close the dialog
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
             }
           },
           child: Image.asset(

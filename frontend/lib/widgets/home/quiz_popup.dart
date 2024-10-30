@@ -42,10 +42,11 @@ class QuizPopup extends StatelessWidget {
                     ),
                   ),
                   child: _QuestionWidget(
-                      cache: cache,
-                      accessToken: accessToken,
-                      username: username,
-                      updateCacheMarkerToFound: updateCacheMarkerToFound,),
+                    cache: cache,
+                    accessToken: accessToken,
+                    username: username,
+                    updateCacheMarkerToFound: updateCacheMarkerToFound,
+                  ),
                 ),
               );
             },

@@ -1,7 +1,5 @@
 import 'dart:convert';
 import 'package:frontend/utils/pathbuilder.dart';
-import "package:google_maps_flutter/google_maps_flutter.dart";
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:http/http.dart' as http;
 import 'package:json_annotation/json_annotation.dart';
@@ -58,12 +56,10 @@ class Cache {
 // Takes in all Cache data, along with a user's found caches
 @JsonSerializable()
 class UserCaches {
-  UserCaches({
-    required this.caches,
-    required this.userCachesFound
-  });
+  UserCaches({required this.caches, required this.userCachesFound});
 
-  factory UserCaches.fromJson(Map<String, dynamic> json) => _$UserCachesFromJson(json);
+  factory UserCaches.fromJson(Map<String, dynamic> json) =>
+      _$UserCachesFromJson(json);
   Map<String, dynamic> toJson() => _$UserCachesToJson(this);
 
   @JsonKey(name: 'foundCaches')
@@ -73,7 +69,8 @@ class UserCaches {
 }
 
 // function to call load caches API for venture page.
-Future<UserCaches> getCacheLocations(String accessToken, String username) async {
+Future<UserCaches> getCacheLocations(
+    String accessToken, String username) async {
   final url = Uri.parse(buildPath("api/load_caches"));
 
   try {

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:frontend/models/login_response.dart';
 import 'package:frontend/widgets/credentials/forgot_password_screen.dart';
 import 'dart:convert';
-import 'forgot_something_screen.dart';
 import 'package:frontend/widgets/home/home_screen.dart';
 import 'package:frontend/utils/pathbuilder.dart';
 import 'package:frontend/widgets/styling/theme.dart';
@@ -195,5 +194,6 @@ class LoginScreen extends StatelessWidget {
         ),
       );
     }
+    return null;
   }
 }

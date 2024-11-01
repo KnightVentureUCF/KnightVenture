@@ -35,7 +35,7 @@ class _NavigationUIState extends State<NavigationUI> {
   // Variables for cache navigation and quiz popup
   caches.Cache? _destination;
   bool _reachedDestination = false;
-  static const double reachedDestinationThreshold = 15;
+  static const double reachedDestinationThreshold = 20;
 
   // Define UCF location data
   bool _userLocatedAtUCF = false;

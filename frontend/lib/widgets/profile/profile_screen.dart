@@ -205,6 +205,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           _buildAchievementItem("Completed 5 Geocaches", Icons.check_circle));
     }
 
+    if (achievements.isEmpty) {
+      achievements.add(
+          _buildAchievementItem("Find more caches to unlock achievements!"));
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -221,9 +226,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildAchievementItem(String title, IconData icon) {
+  Widget _buildAchievementItem(String title, [IconData? icon]) {
     return ListTile(
-      leading: Icon(icon, color: Colors.black),
+      leading: icon != null ? Icon(icon, color: Colors.black) : null,
       title: Text(title),
     );
   }

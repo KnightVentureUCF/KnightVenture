@@ -67,6 +67,14 @@ class SignUpScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
+            const Text(
+              'Password must be at least 8 characters, contain one lowercase letter, one uppercase letter, and one special character.',
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.black,
+              ),
+            ),
+            const SizedBox(height: 20),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(

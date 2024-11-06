@@ -318,7 +318,9 @@ class _NavigationUIState extends State<NavigationUI> {
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  cache.difficulty,
+                  cache.difficulty != null
+                      ? "Difficulty: ${cache.difficulty}"
+                      : "Difficulty: Unknown",
                   style: const TextStyle(
                     color: Colors.white70,
                     fontSize: 16,

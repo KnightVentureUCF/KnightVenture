@@ -53,7 +53,9 @@ class Cache {
   @JsonKey(name: 'Image')
   final String? imgUrl;
   final List<QuizQuestion>? questions;
+  @JsonKey(name: 'Difficulty')
   final int? difficulty;
+  @JsonKey(name: 'Size')
   final int? points;
 }
 

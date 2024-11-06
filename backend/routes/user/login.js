@@ -28,8 +28,17 @@ router.post('/', (req, res) => {
   };
 
   client.initiateAuth(params, (err, authData) => {
-    if (err) res.status(500).send(err);
-    else res.send(authData);
+    if (err) {
+      if (err.code === 'NotAuthorizedException') {
+        res.status(401).send({ message: 'Incorrect username or password' });
+      } else {
+        res
+          .status(500)
+          .send({ message: 'An error occurred', details: err.message });
+      }
+    } else {
+      res.send(authData);
+    }
   });
 });
 

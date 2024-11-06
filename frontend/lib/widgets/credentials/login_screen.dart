@@ -177,7 +177,22 @@ class LoginScreen extends StatelessWidget {
             LoginResponse.fromJson(data['AuthenticationResult']);
         return loginResponse;
       } else {
-        throw Exception('Failed to log in.');
+        final Map<String, dynamic> errorData = jsonDecode(response.body);
+        final String errorMessage = errorData['message'] ?? 'Failed to log in.';
+
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text("Error"),
+            content: Text(errorMessage),
+            actions: <Widget>[
+              TextButton(
+                child: const Text("OK"),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ],
+          ),
+        );
       }
     } catch (e) {
       showDialog(

@@ -35,6 +35,7 @@ class Cache {
     required this.lat,
     required this.lng,
     this.imgUrl,
+    this.iconUrl,
     this.questions,
     this.difficulty,
     this.points,
@@ -52,6 +53,8 @@ class Cache {
   final double lng;
   @JsonKey(name: 'Image')
   final String? imgUrl;
+  @JsonKey(name: 'Icon')
+  final String? iconUrl;
   final List<QuizQuestion>? questions;
   @JsonKey(name: 'Difficulty')
   final int? difficulty;

@@ -36,6 +36,8 @@ class Cache {
     required this.lng,
     this.imgUrl,
     this.questions,
+    this.difficulty,
+    this.points,
   });
 
   factory Cache.fromJson(Map<String, dynamic> json) => _$CacheFromJson(json);
@@ -51,6 +53,8 @@ class Cache {
   @JsonKey(name: 'Image')
   final String? imgUrl;
   final List<QuizQuestion>? questions;
+  final int? difficulty;
+  final int? points;
 }
 
 // Takes in all Cache data, along with a user's found caches

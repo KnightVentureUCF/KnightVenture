@@ -282,7 +282,7 @@ class _NavigationUIState extends State<NavigationUI> {
           child: Padding(
             padding: const EdgeInsets.all(20.0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Center(
                   child: Container(
@@ -315,6 +315,14 @@ class _NavigationUIState extends State<NavigationUI> {
                       ),
                     )
                   ],
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  cache.difficulty,
+                  style: const TextStyle(
+                    color: Colors.white70,
+                    fontSize: 16,
+                  ),
                 ),
                 const SizedBox(height: 20),
                 Expanded(

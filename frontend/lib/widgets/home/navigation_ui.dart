@@ -267,85 +267,104 @@ class _NavigationUIState extends State<NavigationUI> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor:
-          Colors.transparent, // This makes the entire sheet transparent
+      backgroundColor: Colors.black.withOpacity(0.9),
       builder: (BuildContext context) {
         return FractionallySizedBox(
-          heightFactor: 0.7,
-          child: Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(16.0),
-            decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.8),
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(16.0),
-                topRight: Radius.circular(16.0),
-              ),
-            ),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                maxHeight: MediaQuery.of(context).size.height * 0.7,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Image.asset(
-                        "assets/default_cache_icon.png",
-                        width: 80,
-                        height: 80,
-                      ),
-                      const SizedBox(width: 8),
-                      Flexible(
-                        child: ConstrainedBox(
-                          constraints: const BoxConstraints(
-                            maxHeight: 75, // Set the maximum height here
-                          ),
-                          child: SingleChildScrollView(
-                            child: Center(
-                              child: Text(
-                                cache.name,
-                                style: const TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                                overflow: TextOverflow.visible,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+          heightFactor: 0.75,
+          widthFactor: 1.0,
+          child: Padding(
+            padding: const EdgeInsets.all(30.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Center(
+                  child: Container(
+                    width: 50,
+                    height: 5,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[600],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
-                  const SizedBox(height: 16),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.4,
-                    child: SingleChildScrollView(
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    // ############# CHANGE TO CACHE ICON #############
+                    Image.asset(
+                      "assets/default_cache_icon.png",
+                      width: 80,
+                      height: 80,
+                    ),
+                    const SizedBox(width: 20),
+                    Expanded(
                       child: Text(
-                        cache.desc ?? 'No description available',
+                        cache.name,
                         style: const TextStyle(
-                          fontSize: 18,
                           color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
                         ),
-                        textAlign: TextAlign.left,
+                      ),
+                    )
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Text(
+                      cache.desc ?? 'No description available',
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 16,
                       ),
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  const Spacer(),
-                  !cacheHasBeenFound
-                      ? NavigationButton(
-                          onPressed: () {
-                            beginCacheNavigation(_userLocatedAtUCF, cache);
-                            Navigator.pop(context);
-                          },
-                          buttonText: 'Start!')
-                      : SizedBox.shrink(),
-                ],
-              ),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.security,
+                      color: Colors.white70,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Difficulty: ${cache.difficulty ?? 'Unknown'}',
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 16,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                if (!cacheHasBeenFound)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 40.0),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        beginCacheNavigation(_userLocatedAtUCF, cache);
+                        Navigator.pop(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 32, vertical: 16),
+                        foregroundColor: Colors.black,
+                        backgroundColor: Colors.yellow,
+                      ),
+                      child: const Text(
+                        'Start!',
+                        style: TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
             ),
           ),
         );

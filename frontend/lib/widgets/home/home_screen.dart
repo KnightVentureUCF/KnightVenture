@@ -7,8 +7,7 @@ class HomeScreen extends StatelessWidget {
   final String username;
 
   const HomeScreen(
-      {Key? key, required this.accessToken, required this.username})
-      : super(key: key);
+      {super.key, required this.accessToken, required this.username});
 
   @override
   Widget build(BuildContext context) {

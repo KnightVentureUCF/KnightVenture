@@ -27,6 +27,8 @@ Cache _$CacheFromJson(Map<String, dynamic> json) => Cache(
       questions: (json['questions'] as List<dynamic>?)
           ?.map((e) => QuizQuestion.fromJson(e as Map<String, dynamic>))
           .toList(),
+      difficulty: (json['Difficulty'] as num?)?.toInt(),
+      points: (json['Size'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$CacheToJson(Cache instance) => <String, dynamic>{
@@ -37,6 +39,8 @@ Map<String, dynamic> _$CacheToJson(Cache instance) => <String, dynamic>{
       'lng': instance.lng,
       'Image': instance.imgUrl,
       'questions': instance.questions,
+      'Difficulty': instance.difficulty,
+      'Size': instance.points,
     };
 
 UserCaches _$UserCachesFromJson(Map<String, dynamic> json) => UserCaches(

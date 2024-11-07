@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:frontend/utils/pathbuilder.dart';
 import 'package:frontend/widgets/credentials/credentials_screen.dart';

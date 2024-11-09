@@ -291,8 +291,13 @@ class _NavigationUIState extends State<NavigationUI> {
                 Row(
                   children: [
                     // ############# CHANGE TO CACHE ICON #############
-                    Image.asset(
-                      "assets/default_cache_icon.png",
+                    // Image.asset(
+                    //   "assets/default_cache_icon.png",
+                    //   width: 80,
+                    //   height: 80,
+                    // ),
+                    Image.network(
+                      cache.iconUrl ?? 'assets/default_cache_icon.png',
                       width: 80,
                       height: 80,
                     ),

@@ -24,6 +24,7 @@ Cache _$CacheFromJson(Map<String, dynamic> json) => Cache(
       lat: (json['lat'] as num).toDouble(),
       lng: (json['lng'] as num).toDouble(),
       imgUrl: json['Image'] as String?,
+      iconUrl: json['Icon'] as String?,
       questions: (json['questions'] as List<dynamic>?)
           ?.map((e) => QuizQuestion.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -38,6 +39,7 @@ Map<String, dynamic> _$CacheToJson(Cache instance) => <String, dynamic>{
       'lat': instance.lat,
       'lng': instance.lng,
       'Image': instance.imgUrl,
+      'Icon': instance.iconUrl,
       'questions': instance.questions,
       'Difficulty': instance.difficulty,
       'Size': instance.points,

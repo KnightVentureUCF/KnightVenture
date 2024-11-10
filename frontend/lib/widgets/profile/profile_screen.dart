@@ -227,6 +227,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         );
       },
     );
-    dataProvider.updateUserFullName(fullName, widget.accessToken);
+    dataProvider.updateUserFullName(newName ?? fullName, widget.accessToken);
   }
 }

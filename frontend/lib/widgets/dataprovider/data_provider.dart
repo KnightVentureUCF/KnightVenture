@@ -31,11 +31,11 @@ class DataProvider with ChangeNotifier {
       final response = await http.post(
         Uri.parse(apiUrl),
         headers: {
-          'Authorization': 'Bearer $accessToken',
           'Content-Type': 'application/json',
         },
         body: jsonEncode({
           'fullName': fullName,
+          'accessToken': accessToken,
         }),
       );
 

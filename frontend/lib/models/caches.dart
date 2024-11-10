@@ -78,7 +78,7 @@ class UserCaches {
 }
 
 // function to call load caches API for venture page.
-Future<UserCaches> getCacheLocations(
+Future<UserCaches?> getCacheLocations(
     String accessToken, String username) async {
   final url = Uri.parse(buildPath("api/load_caches"));
 
@@ -103,12 +103,6 @@ Future<UserCaches> getCacheLocations(
     }
   } catch (e) {
     print('Error: $e');
+    return null;
   }
-
-  // Fallback for when the above HTTP request fails.
-  return UserCaches.fromJson(
-    json.decode(
-      await rootBundle.loadString('assets/cache-locations.json'),
-    ) as Map<String, dynamic>,
-  );
 }

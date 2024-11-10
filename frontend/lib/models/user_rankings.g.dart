@@ -20,7 +20,7 @@ UserRanking _$UserRankingFromJson(Map<String, dynamic> json) => UserRanking(
       sortedUserRankings: (json['users'] as List<dynamic>)
           .map((e) => User.fromJson(e as Map<String, dynamic>))
           .toList(),
-      userPoints: (json['userpoints'] as num).toInt(),
+      userPoints: (json['userpoints'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$UserRankingToJson(UserRanking instance) =>

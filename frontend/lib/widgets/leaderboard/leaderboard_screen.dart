@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/models/user_rankings.dart';
 import 'package:frontend/utils/pathbuilder.dart';
+import 'package:frontend/widgets/credentials/loading_screen.dart';
+import 'package:frontend/widgets/dataprovider/data_provider.dart';
+import 'package:frontend/widgets/home/loading_screen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert'; // For converting JSON response to a map
 import 'package:frontend/widgets/styling/theme.dart';
+import 'package:provider/provider.dart';
 
 class LeaderboardScreen extends StatefulWidget {
   const LeaderboardScreen({Key? key}) : super(key: key);
@@ -11,20 +16,6 @@ class LeaderboardScreen extends StatefulWidget {
 }
 
 class _LeaderboardScreenState extends State<LeaderboardScreen> {
-  static const nameList = [
-    "bob",
-    "henry",
-    "todd",
-    "paul",
-    "reggie",
-    "hermoine",
-    "matie",
-    "ryan",
-    "todd",
-    "nancy",
-  ];
-  static const points = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-  static const userPoints = 10;
   static const normalFontSize = 14.0;
   static const largeFontSize = 16.0;
   static const mediumFontWeight = FontWeight.w500;
@@ -99,6 +90,13 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final dataProvider = Provider.of<DataProvider>(context);
+    if (dataProvider.isLoading) {
+      return const VentureLoadingScreen();
+    }
+    final List<User> ranks = dataProvider.userRanking?.sortedUserRankings ?? [];
+    final int userPoints = dataProvider.userRanking?.userPoints ?? 0;
+
     return Scaffold(
       backgroundColor: brightGold,
       appBar: AppBar(
@@ -144,7 +142,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                         height: 75,
                       ),
                       Text(
-                        "1st",
+                        "2nd",
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           fontSize: normalFontSize,
@@ -152,7 +150,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                         ),
                       ),
                       Text(
-                        nameList.length >= 1 ? nameList[0] : "",
+                        ranks.length >= 2 ? ranks[1].id : "",
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           fontSize: normalFontSize,
@@ -160,7 +158,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                         ),
                       ),
                       Text(
-                        points.length >= 1 ? points[0].toString() : "",
+                        ranks.length >= 2 ? ranks[1].points.toString() : "",
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           fontSize: largeFontSize,
@@ -186,7 +184,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                         ),
                       ),
                       Text(
-                        nameList.length >= 2 ? nameList[1] : "",
+                        ranks.length >= 1 ? ranks[0].id : "",
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           fontSize: normalFontSize,
@@ -194,7 +192,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                         ),
                       ),
                       Text(
-                        points.length >= 2 ? points[1].toString() : "",
+                        ranks.length >= 1 ? ranks[0].points.toString() : "",
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           fontSize: largeFontSize,
@@ -220,7 +218,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                         ),
                       ),
                       Text(
-                        nameList.length >= 3 ? nameList[2] : "",
+                        ranks.length >= 3 ? ranks[2].id : "",
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           fontSize: normalFontSize,
@@ -228,7 +226,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                         ),
                       ),
                       Text(
-                        points.length >= 3 ? points[2].toString() : "",
+                        ranks.length >= 3 ? ranks[2].points.toString() : "",
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           fontSize: largeFontSize,
@@ -246,8 +244,9 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      for (var i = 3; i < nameList.length; i++)
-                        createLeaderboardEntry(i + 1, nameList[i], points[i]),
+                      for (var i = 3; i < ranks.length; i++)
+                        createLeaderboardEntry(
+                            i + 1, ranks[i].id, ranks[i].points ?? 0),
                     ],
                   ),
                 ),

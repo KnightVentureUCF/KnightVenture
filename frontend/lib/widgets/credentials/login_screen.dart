@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/login_response.dart';
 import 'package:frontend/widgets/credentials/forgot_password_screen.dart';
+import 'package:frontend/widgets/dataprovider/data_provider.dart';
 import 'dart:convert';
 import 'package:frontend/widgets/home/home_screen.dart';
 import 'package:frontend/utils/pathbuilder.dart';
 import 'package:frontend/widgets/styling/theme.dart';
 import 'package:http/http.dart' as http;
 import 'signup_screen.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatelessWidget {
   // Define text controllers to get the username and password
@@ -69,6 +71,12 @@ class LoginScreen extends StatelessWidget {
                           // Navigate to HomeScreen only if the login was successful
                           if (loginResponse != null &&
                               loginResponse.accessToken.isNotEmpty) {
+                            // Data provider for initial API calls
+                            final dataProvider = Provider.of<DataProvider>(
+                                context,
+                                listen: false);
+                            await dataProvider.loadUserData(loginResponse.accessToken,
+                                _usernameController.text);
                             Navigator.push(
                               context,
                               MaterialPageRoute(

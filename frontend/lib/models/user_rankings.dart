@@ -34,11 +34,11 @@ class UserRanking {
   @JsonKey(name: 'users')
   final List<User> sortedUserRankings;
   @JsonKey(name: 'userpoints')
-  final int userPoints;
+  final int? userPoints;
 }
 
 // function to call load caches API for venture page.
-Future<UserRanking?> getUserRankings(String accessToken) async {
+Future<UserRanking?> getUserRankings(String accessToken, String username) async {
   final url = Uri.parse(buildPath("api/read_ranking"));
 
   try {
@@ -50,6 +50,7 @@ Future<UserRanking?> getUserRankings(String accessToken) async {
       },
       body: jsonEncode({
         'accessToken': accessToken, // Adding the access token in the body
+        // 'username': username,
       }),
     );
 

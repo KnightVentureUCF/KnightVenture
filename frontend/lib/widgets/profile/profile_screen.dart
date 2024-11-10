@@ -127,7 +127,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             SizedBox(height: 30),
             // Achievements
-            _buildAchievements(cachesFound),
+            _buildAchievements(cachesFound ?? 0),
             //Spacer(),
             // Logout Button
           ],

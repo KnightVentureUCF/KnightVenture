@@ -62,20 +62,26 @@ class Cache {
   final int? points;
 }
 
-// Takes in all Cache data, along with a user's found caches
 @JsonSerializable()
 class UserCaches {
-  UserCaches({required this.caches, required this.userCachesFound});
+  UserCaches({
+    required this.caches,
+    required Set<String> foundCaches,
+  }) : _foundCaches = foundCaches.toList();
 
   factory UserCaches.fromJson(Map<String, dynamic> json) =>
       _$UserCachesFromJson(json);
   Map<String, dynamic> toJson() => _$UserCachesToJson(this);
 
   @JsonKey(name: 'foundCaches')
-  final List<String> userCachesFound;
+  final List<String> _foundCaches;
+
   @JsonKey(name: 'allCaches')
   final List<Cache> caches;
+
+  Set<String> get foundCaches => _foundCaches.toSet();
 }
+
 
 // function to call load caches API for venture page.
 Future<UserCaches?> getCacheLocations(

@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/caches.dart';
 import 'package:frontend/utils/pathbuilder.dart';
+import 'package:frontend/widgets/dataprovider/data_provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+
+import 'package:provider/provider.dart';
 
 class QuizPopup extends StatelessWidget {
   final Cache cache;
   final String accessToken;
   final String username;
-  final Function(String id) updateCacheMarkerToFound;
 
   const QuizPopup(
       {super.key,
       required this.cache,
       required this.accessToken,
-      required this.username,
-      required this.updateCacheMarkerToFound});
+      required this.username});
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +46,6 @@ class QuizPopup extends StatelessWidget {
                     cache: cache,
                     accessToken: accessToken,
                     username: username,
-                    updateCacheMarkerToFound: updateCacheMarkerToFound,
                   ),
                 ),
               );
@@ -68,13 +68,11 @@ class _QuestionWidget extends StatefulWidget {
   final Cache cache;
   final String accessToken;
   final String username;
-  final Function(String id) updateCacheMarkerToFound;
 
   const _QuestionWidget(
       {required this.cache,
       required this.accessToken,
-      required this.username,
-      required this.updateCacheMarkerToFound});
+      required this.username,});
 
   @override
   State<_QuestionWidget> createState() => _QuestionWidgetState();
@@ -97,7 +95,7 @@ class _QuestionWidgetState extends State<_QuestionWidget> {
     shuffledAnswers.shuffle();
   }
 
-  void _checkAnswer(String selectedAnswer) {
+  void _checkAnswer(String selectedAnswer, DataProvider dataProvider) {
     final question = widget.cache.questions![currentQuestionIndex];
     bool isCorrect = (selectedAnswer == question.answers[0]);
 
@@ -111,65 +109,19 @@ class _QuestionWidgetState extends State<_QuestionWidget> {
         _shuffleAnswers();
       });
     } else {
-      _showResults();
+      _showResults(dataProvider);
     }
   }
 
-  Future<void> _showResults() async {
+  Future<void> _showResults(DataProvider dataProvider) async {
     if (correctAnswersCount == widget.cache.questions!.length) {
       // Call the API to confirm the cache find
       String cacheId = widget.cache.id;
       String username = widget.username; // Use the passed username
       String accessToken = widget.accessToken; // Use the passed accessToken
+      int points = widget.cache.points ?? 0;
 
-      widget.updateCacheMarkerToFound(cacheId);
-
-      // Prepare the API request with your live URL
-      // final url = Uri.parse(
-      //     'http://knightventure.us-east-1.elasticbeanstalk.com/api/confirm_cache');
-      final url = Uri.parse(buildPath("api/confirm_cache"));
-
-      final response = await http.post(
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization':
-              'Bearer $accessToken', // Include the token in the header
-        },
-        body: jsonEncode({
-          'username': username,
-          'cacheId': cacheId,
-          'accessToken':
-              accessToken, // Send the token as part of the payload if required by your backend
-        }),
-      );
-
-      // Check the response from the server
-      if (response.statusCode == 200) {
-        // Successfully confirmed the cache find
-        final responseData = jsonDecode(response.body);
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('Cache Found!'),
-              content: Text(responseData['message']),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    Navigator.of(this.context).pop();
-                  },
-                  child: const Text('OK'),
-                ),
-              ],
-            );
-          },
-        );
-      } else {
-        // Handle errors here
-        print('Error: ${response.body}');
-      }
+      dataProvider.confirmCacheFind(cacheId, points, username, accessToken, context);
     } else {
       // Show quiz results without cache confirmation
       showDialog(
@@ -197,6 +149,7 @@ class _QuestionWidgetState extends State<_QuestionWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final dataProvider = Provider.of<DataProvider>(context);
     final question = widget.cache.questions![currentQuestionIndex];
 
     return Container(
@@ -240,7 +193,7 @@ class _QuestionWidgetState extends State<_QuestionWidget> {
                   minimumSize: const Size.fromHeight(50),
                 ),
                 onPressed: () {
-                  _checkAnswer(answer);
+                  _checkAnswer(answer, dataProvider);
                 },
                 child: Text(
                   answer,

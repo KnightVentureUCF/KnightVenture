@@ -33,7 +33,7 @@ class UserRanking {
   Map<String, dynamic> toJson() => _$UserRankingToJson(this);
 
   @JsonKey(name: 'users')
-  final List<User> sortedUserRankings;
+  List<User> sortedUserRankings;
 }
 
 // function to call load caches API for venture page.

@@ -49,13 +49,13 @@ UserCaches _$UserCachesFromJson(Map<String, dynamic> json) => UserCaches(
       caches: (json['allCaches'] as List<dynamic>)
           .map((e) => Cache.fromJson(e as Map<String, dynamic>))
           .toList(),
-      userCachesFound: (json['foundCaches'] as List<dynamic>)
+      foundCaches: (json['foundCaches'] as List<dynamic>)
           .map((e) => e as String)
-          .toList(),
+          .toSet(),
     );
 
 Map<String, dynamic> _$UserCachesToJson(UserCaches instance) =>
     <String, dynamic>{
-      'foundCaches': instance.userCachesFound,
       'allCaches': instance.caches,
+      'foundCaches': instance.foundCaches.toList(),
     };

@@ -247,7 +247,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                   child: Column(
                     children: [
                       for (var i = 3; i < nameList.length; i++)
-                        createLeaderboardEntry(i, nameList[i], points[i]),
+                        createLeaderboardEntry(i + 1, nameList[i], points[i]),
                     ],
                   ),
                 ),

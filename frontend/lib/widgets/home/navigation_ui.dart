@@ -64,7 +64,8 @@ class _NavigationUIState extends State<NavigationUI> {
         markerId: MarkerId(cache.id),
         position: coords,
         icon: icon,
-        onTap: () => _showCacheInfo(cache, foundCaches.contains(cache.id)),
+        onTap: () => _showCacheInfo(
+            cache, foundCaches.contains(cache.id) || _destination == cache),
       );
     }).toList();
   }

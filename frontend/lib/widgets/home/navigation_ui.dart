@@ -59,7 +59,7 @@ class _NavigationUIState extends State<NavigationUI> {
   void _loadCacheMarkers() async {
     final cacheLocations =
         await caches.getCacheLocations(widget.accessToken, widget.username);
-    final foundCaches = cacheLocations.userCachesFound;
+    final foundCaches = cacheLocations?.userCachesFound ?? [];
 
     final unfoundIcon = await BitmapDescriptor.fromAssetImage(
       const ImageConfiguration(size: Size(24, 24)),
@@ -76,7 +76,7 @@ class _NavigationUIState extends State<NavigationUI> {
       _foundIcon = foundIcon;
 
       _cacheMarkers.clear();
-      _allCaches = cacheLocations.caches;
+      _allCaches = cacheLocations?.caches ?? [];
       _foundCaches = Set.from(foundCaches);
       for (final cache in _allCaches) {
         final coords = LatLng(cache.lat, cache.lng);

@@ -10,22 +10,23 @@ part 'user_rankings.g.dart';
 @JsonSerializable()
 class User {
   User({
-    required this.id,
-    this.points,
+    required this.username,
+    this.points = 0,
   });
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
   Map<String, dynamic> toJson() => _$UserToJson(this);
 
   @JsonKey(name: 'userid')
-  final String id;
-  final int? points;
+  final String username;
+  @JsonKey(defaultValue: 0)
+  int points;
 }
 
 // Takes in all Cache data, along with a user's found caches
 @JsonSerializable()
 class UserRanking {
-  UserRanking({required this.sortedUserRankings, required this.userPoints});
+  UserRanking({required this.sortedUserRankings});
 
   factory UserRanking.fromJson(Map<String, dynamic> json) =>
       _$UserRankingFromJson(json);
@@ -33,8 +34,6 @@ class UserRanking {
 
   @JsonKey(name: 'users')
   final List<User> sortedUserRankings;
-  @JsonKey(name: 'userpoints')
-  final int? userPoints;
 }
 
 // function to call load caches API for venture page.
@@ -50,7 +49,6 @@ Future<UserRanking?> getUserRankings(String accessToken, String username) async 
       },
       body: jsonEncode({
         'accessToken': accessToken, // Adding the access token in the body
-        // 'username': username,
       }),
     );
 

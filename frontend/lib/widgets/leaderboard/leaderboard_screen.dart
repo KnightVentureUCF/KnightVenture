@@ -91,11 +91,8 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
   @override
   Widget build(BuildContext context) {
     final dataProvider = Provider.of<DataProvider>(context);
-    if (dataProvider.isLoading) {
-      return const VentureLoadingScreen();
-    }
     final List<User> ranks = dataProvider.userRanking?.sortedUserRankings ?? [];
-    final int userPoints = dataProvider.userRanking?.userPoints ?? 0;
+    final int userPoints = dataProvider.userProfile?.points ?? 0;
 
     return Scaffold(
       backgroundColor: brightGold,
@@ -150,7 +147,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                         ),
                       ),
                       Text(
-                        ranks.length >= 2 ? ranks[1].id : "",
+                        ranks.length >= 2 ? ranks[1].username : "",
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           fontSize: normalFontSize,
@@ -184,7 +181,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                         ),
                       ),
                       Text(
-                        ranks.length >= 1 ? ranks[0].id : "",
+                        ranks.length >= 1 ? ranks[0].username : "",
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           fontSize: normalFontSize,
@@ -218,7 +215,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                         ),
                       ),
                       Text(
-                        ranks.length >= 3 ? ranks[2].id : "",
+                        ranks.length >= 3 ? ranks[2].username : "",
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           fontSize: normalFontSize,
@@ -246,7 +243,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                     children: [
                       for (var i = 3; i < ranks.length; i++)
                         createLeaderboardEntry(
-                            i + 1, ranks[i].id, ranks[i].points ?? 0),
+                            i + 1, ranks[i].username, ranks[i].points ?? 0),
                     ],
                   ),
                 ),

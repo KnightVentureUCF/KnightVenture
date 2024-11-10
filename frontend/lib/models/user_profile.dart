@@ -6,28 +6,36 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'user_profile.g.dart';
 
+const defaultFullName = "Full Name";
+const defaultEmail = "xxx@gmail.com";
+const defaultPoints = 0;
+const defaultCachesFound = 0;
+
 // Takes in user profile data from API calls
 @JsonSerializable()
 class UserProfile {
   UserProfile({
-    this.fullName,
-    this.email,
-    this.points,
-    this.cachesFound,
+    this.fullName = defaultFullName,
+    this.email = defaultEmail,
+    this.points = defaultPoints,
+    this.cachesFound = defaultCachesFound,
   });
 
   factory UserProfile.fromJson(Map<String, dynamic> json) =>
       _$UserProfileFromJson(json);
   Map<String, dynamic> toJson() => _$UserProfileToJson(this);
 
-  String? fullName;
-  @JsonKey(name: 'point')
-  int? points;
-  final String? email;
-  int? cachesFound;
+  @JsonKey(defaultValue: defaultFullName)
+  String fullName;
+  @JsonKey(name: 'point', defaultValue: defaultPoints)
+  int points;
+  @JsonKey(defaultValue: defaultEmail)
+  final String email;
+  @JsonKey(defaultValue: defaultCachesFound)
+  int cachesFound;
 }
 
-Future<UserProfile?> fetchUserProfile(String accessToken) async {
+Future<UserProfile?> getUserProfile(String accessToken) async {
   try {
     final String apiUrl = buildPath("api/get_profile");
 

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/user_profile.dart';
 import 'package:frontend/utils/pathbuilder.dart';
+import 'package:frontend/widgets/dataprovider/data_provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert'; // For converting JSON response to a map
 import 'package:frontend/widgets/styling/theme.dart';
+import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
   final String accessToken;
@@ -17,26 +19,14 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  UserProfile? profileInfo;
-
-  @override
-  void initState() {
-    super.initState();
-    setProfileInfo();
-  }
-
-  void setProfileInfo() async {
-    UserProfile? profileInfo = await fetchUserProfile(widget.accessToken);
-
-    setState(() => this.profileInfo = profileInfo);
-  }
-
   @override
   Widget build(BuildContext context) {
-    String fullName = profileInfo?.fullName ?? "Full Name";
-    String email = profileInfo?.email ?? "xxx@gmail.com";
-    int point = profileInfo?.points ?? 0;
-    int cachesFound = profileInfo?.cachesFound ?? 0;
+    final dataProvider = Provider.of<DataProvider>(context);
+    String fullName = dataProvider.userProfile?.fullName ?? defaultFullName;
+    String email = dataProvider.userProfile?.email ?? defaultEmail;
+    int point = dataProvider.userProfile?.points ?? defaultPoints;
+    int cachesFound =
+        dataProvider.userProfile?.cachesFound ?? defaultCachesFound;
 
     return Scaffold(
       appBar: AppBar(
@@ -66,7 +56,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 IconButton(
                   icon: Icon(Icons.edit, color: Colors.black),
                   onPressed: () {
-                    _editFullName(context, fullName);
+                    _editFullName(context, fullName, dataProvider);
                   },
                 ),
               ],
@@ -208,7 +198,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   // TODO: Change this to update provider as well.
-  Future<void> _editFullName(BuildContext context, String fullName) async {
+  Future<void> _editFullName(
+      BuildContext context, String fullName, DataProvider dataProvider) async {
     String? newName = await showDialog(
       context: context,
       builder: (context) {
@@ -236,39 +227,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         );
       },
     );
-
-    if (profileInfo?.fullName != null) {
-      setState(() {
-        profileInfo?.fullName = newName;
-      });
-
-      // Call the update profile API to update the user's full name
-      final String apiUrl = buildPath("api/update_profile");
-      try {
-        final response = await http.post(
-          Uri.parse(apiUrl),
-          headers: {
-            'Authorization': 'Bearer ${widget.accessToken}',
-            'Content-Type': 'application/json',
-          },
-          body: jsonEncode({
-            'fullName': newName,
-            'accessToken': widget.accessToken,
-          }),
-        );
-
-        if (response.statusCode != 200) {
-          // Handle error response here
-          print('Failed to update profile: ${response.statusCode}');
-        }
-
-        if (response.statusCode == 200) {
-          print("Profile updated successfully");
-        }
-      } catch (e) {
-        // Handle any exceptions here
-        print('Error updating profile: $e');
-      }
-    }
+    dataProvider.updateUserFullName(fullName, widget.accessToken);
   }
 }

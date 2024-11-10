@@ -1,6 +1,21 @@
 # Created by https://www.toptal.com/developers/gitignore/api/flutter
 # Edit at https://www.toptal.com/developers/gitignore?templates=flutter
 
+# Ignore IDE files
+.idea/
+.vscode/
+
+# Ignore build files
+frontend/android/frontend_android.iml
+frontend/frontend.iml
+
+# Ignore specific files or directories in your project
+frontend/lib/widgets/leaderboard/
+frontend/lib/widgets/main_menu/main_menu_screen.dart
+frontend/macos/Podfile.lock
+frontend/macos/Runner.xcodeproj/project.pbxproj
+frontend/pubspec.lock
+
 ## environment variables ##
 .env
 
@@ -20,7 +35,6 @@ lib/generated_plugin_registrant.dart
 # For library packages, don’t commit the pubspec.lock file.
 # Regenerating the pubspec.lock file lets you test your package against the latest compatible versions of its dependencies.
 # See https://dart.dev/guides/libraries/private-files#pubspeclock
-#pubspec.lock
 
 # Android related
 **/android/**/gradle-wrapper.jar

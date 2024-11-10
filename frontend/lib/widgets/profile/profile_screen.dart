@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/models/user_profile.dart';
 import 'package:frontend/utils/pathbuilder.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert'; // For converting JSON response to a map
@@ -16,54 +17,27 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  String fullName = "Full Name";
-  String userName = "@username";
-  String email = "xxx@gmail.com";
-  int point = 0;
-  int cachesFound = 0;
+  UserProfile? profileInfo;
 
   @override
   void initState() {
     super.initState();
-    _fetchUserProfile();
+    setProfileInfo();
   }
 
-  Future<void> _fetchUserProfile() async {
-    try {
-      final String apiUrl = buildPath("api/get_profile");
+  void setProfileInfo() async {
+    UserProfile? profileInfo = await fetchUserProfile(widget.accessToken);
 
-      final response = await http.post(
-        Uri.parse(apiUrl),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(<String, String>{
-          'accessToken': widget.accessToken,
-        }),
-      );
-
-      if (response.statusCode == 200) {
-        print("Profile fetched successfully");
-        final data = jsonDecode(response.body);
-
-        setState(() {
-          fullName = data['profileData']['fullName'] ?? fullName;
-          email = data['profileData']['email'] ?? email;
-          point = data['profileData']['point'] ?? point;
-          cachesFound = data['profileData']['cachesFound'] ?? cachesFound;
-        });
-      } else {
-        // Handle error response here
-        print('Failed to fetch profile: ${response.statusCode}');
-      }
-    } catch (e) {
-      // Handle any exceptions here
-      print('Error fetching profile: $e');
-    }
+    setState(() => this.profileInfo = profileInfo);
   }
 
   @override
   Widget build(BuildContext context) {
+    String fullName = profileInfo?.fullName ?? "Full Name";
+    String email = profileInfo?.email ?? "xxx@gmail.com";
+    int point = profileInfo?.points ?? 0;
+    int cachesFound = profileInfo?.cachesFound ?? 0;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: brightGold,
@@ -92,7 +66,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 IconButton(
                   icon: Icon(Icons.edit, color: Colors.black),
                   onPressed: () {
-                    _editFullName(context);
+                    _editFullName(context, fullName);
                   },
                 ),
               ],
@@ -163,7 +137,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             SizedBox(height: 30),
             // Achievements
-            _buildAchievements(),
+            _buildAchievements(cachesFound),
             //Spacer(),
             // Logout Button
           ],
@@ -188,7 +162,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildAchievements() {
+  Widget _buildAchievements(int cachesFound) {
     List<Widget> achievements = [];
 
     // Logic to add achievements based on cachesFound
@@ -233,7 +207,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Future<void> _editFullName(BuildContext context) async {
+  // TODO: Change this to update provider as well.
+  Future<void> _editFullName(BuildContext context, String fullName) async {
     String? newName = await showDialog(
       context: context,
       builder: (context) {
@@ -262,9 +237,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       },
     );
 
-    if (newName != null && newName.isNotEmpty) {
+    if (profileInfo?.fullName != null) {
       setState(() {
-        fullName = newName;
+        profileInfo?.fullName = newName;
       });
 
       // Call the update profile API to update the user's full name

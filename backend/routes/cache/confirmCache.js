@@ -42,10 +42,15 @@ router.post('/', verifyAccessTokenMiddleware, async (req, res) => {
     // Increment the cachesFound count
     const updatedCachesFound = (userData.cachesFound || 0) + 1;
 
-    // Update the user's data in Firestore - increment cachesFound and add cacheId to foundCaches
+    // Calculate the new points by adding the cache's Difficulty to the user's current points
+    const difficultyPoints = cacheData.Difficulty || 0;
+    const updatedPoints = (userData.point || 0) + difficultyPoints;
+
+    // Update the user's data in Firestore - increment cachesFound, add cacheId to foundCaches, and update points
     await usersCollectionRef.doc(username).update({
       cachesFound: updatedCachesFound,
-      foundCaches: admin.firestore.FieldValue.arrayUnion(cacheId) // Add cacheId to foundCaches array
+      foundCaches: admin.firestore.FieldValue.arrayUnion(cacheId), // Add cacheId to foundCaches array
+      point: updatedPoints // Update points with the added difficulty
     });
 
     // Respond with success message and updated user data
@@ -55,6 +60,7 @@ router.post('/', verifyAccessTokenMiddleware, async (req, res) => {
       cacheId: cacheId,
       cacheName: cacheData.Name,
       description: cacheData.Description,
+      points: updatedPoints // Return updated points to the client
     });
 
   } catch (error) {

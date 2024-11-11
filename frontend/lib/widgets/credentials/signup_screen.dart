@@ -122,6 +122,52 @@ class SignUpScreen extends StatelessWidget {
       return;
     }
 
+    // try {
+    //   final String apiUrl = buildPath("api/register");
+    //   final response = await http.post(
+    //     Uri.parse(apiUrl),
+    //     headers: <String, String>{
+    //       'Content-Type': 'application/json; charset=UTF-8',
+    //     },
+    //     body: jsonEncode(<String, String>{
+    //       'username': username,
+    //       'email': email,
+    //       'password': password,
+    //     }),
+    //   );
+
+    //   if (response.statusCode == 200) {
+    //     // Navigate to the confirmation screen
+    //     Navigator.push(
+    //       context,
+    //       MaterialPageRoute(
+    //         builder: (context) => ConfirmWidget(
+    //           username: username,
+    //           email: email,
+    //           password: password,
+    //         ),
+    //       ),
+    //     );
+    //   } else {
+    //     throw Exception('Failed to register.');
+    //   }
+    // } catch (e) {
+    //   // Handle errors
+    //   showDialog(
+    //     context: context,
+    //     builder: (context) => AlertDialog(
+    //       title: const Text("Error"),
+    //       content: Text("Registration failed: ${e.toString()}"),
+    //       actions: <Widget>[
+    //         TextButton(
+    //           child: const Text("OK"),
+    //           onPressed: () => Navigator.of(context).pop(),
+    //         ),
+    //       ],
+    //     ),
+    //   );
+    // }
+
     try {
       final String apiUrl = buildPath("api/register");
       final response = await http.post(
@@ -137,7 +183,6 @@ class SignUpScreen extends StatelessWidget {
       );
 
       if (response.statusCode == 200) {
-        // Navigate to the confirmation screen
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -148,24 +193,38 @@ class SignUpScreen extends StatelessWidget {
             ),
           ),
         );
+      } else if (response.statusCode == 409) {
+        _showErrorDialog(context, 'Username already exists.');
+      } else if (response.statusCode == 400) {
+        _showErrorDialog(context,
+            'Invalid input parameters. Please check username, email, and password.');
+      } else if (response.statusCode == 500) {
+        final errorResponse = jsonDecode(response.body);
+        final errorMessage = errorResponse['message'] ??
+            'An unexpected error occurred during registration.';
+        _showErrorDialog(context, errorMessage);
       } else {
-        throw Exception('Failed to register.');
+        _showErrorDialog(
+            context, 'An unexpected error occurred during registration.');
       }
     } catch (e) {
-      // Handle errors
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text("Error"),
-          content: Text("Registration failed: ${e.toString()}"),
-          actions: <Widget>[
-            TextButton(
-              child: const Text("OK"),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ],
-        ),
-      );
+      _showErrorDialog(context, 'Registration failed: ${e.toString()}');
     }
+  }
+
+  void _showErrorDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Error"),
+        content: Text(message),
+        actions: <Widget>[
+          TextButton(
+            child: const Text("OK"),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ],
+      ),
+    );
   }
 }

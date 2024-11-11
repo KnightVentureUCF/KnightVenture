@@ -17,7 +17,7 @@ class CacheDetails extends StatelessWidget {
     }
 
     return Padding(
-      padding: const EdgeInsets.only(left: 36, right: 36, top: 72),
+      padding: const EdgeInsets.only(left: 36, right: 36, top: 20),
       child: Column(
         children: [
           Container(

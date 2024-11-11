@@ -37,7 +37,6 @@ class Cache {
     this.imgUrl,
     this.iconUrl,
     this.questions,
-    this.difficulty,
     this.points,
   });
 
@@ -57,28 +56,44 @@ class Cache {
   final String? iconUrl;
   final List<QuizQuestion>? questions;
   @JsonKey(name: 'Difficulty')
-  final int? difficulty;
-  @JsonKey(name: 'Size')
   final int? points;
 }
 
-// Takes in all Cache data, along with a user's found caches
 @JsonSerializable()
 class UserCaches {
-  UserCaches({required this.caches, required this.userCachesFound});
+  UserCaches({
+    required this.caches,
+    required Set<String> foundCaches,
+  }) : _foundCaches = foundCaches.toList();
 
   factory UserCaches.fromJson(Map<String, dynamic> json) =>
       _$UserCachesFromJson(json);
   Map<String, dynamic> toJson() => _$UserCachesToJson(this);
 
   @JsonKey(name: 'foundCaches')
-  final List<String> userCachesFound;
+  final List<String> _foundCaches;
+
   @JsonKey(name: 'allCaches')
   final List<Cache> caches;
+
+  // Provide a Set view of _foundCaches for easy use
+  Set<String> get foundCaches => _foundCaches.toSet();
+
+  // Method to add a cache ID to the _foundCaches list
+  void addFoundCache(String cacheId) {
+    if (!_foundCaches.contains(cacheId)) {
+      _foundCaches.add(cacheId);
+    }
+  }
+
+  // Method to remove a cache ID from the _foundCaches list
+  void removeFoundCache(String cacheId) {
+    _foundCaches.remove(cacheId);
+  }
 }
 
 // function to call load caches API for venture page.
-Future<UserCaches> getCacheLocations(
+Future<UserCaches?> getCacheLocations(
     String accessToken, String username) async {
   final url = Uri.parse(buildPath("api/load_caches"));
 
@@ -103,12 +118,6 @@ Future<UserCaches> getCacheLocations(
     }
   } catch (e) {
     print('Error: $e');
+    return null;
   }
-
-  // Fallback for when the above HTTP request fails.
-  return UserCaches.fromJson(
-    json.decode(
-      await rootBundle.loadString('assets/cache-locations.json'),
-    ) as Map<String, dynamic>,
-  );
 }

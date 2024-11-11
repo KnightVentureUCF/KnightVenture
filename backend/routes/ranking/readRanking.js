@@ -19,14 +19,14 @@ router.post('/', async (req, res) => {
     // Query Firestore for the top 10 users ranked by caches found
     const querySnapshot = await db
       .collection('users')
-      .orderBy('cachesFound', 'desc')
-      .limit(3) //TODO: Change to 10 later
+      .orderBy('point', 'desc')
+      .limit(10) //TODO: Change to 10 later
       .get();
 
     const users = querySnapshot.docs.map((doc) => ({
       userid: doc.id,
       username: doc.data().username,
-      cachesFound: doc.data().cachesFound,
+      points: doc.data().point,
     }));
 
     res.status(200).send({

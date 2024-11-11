@@ -91,6 +91,11 @@ flutter:
     - assets/default_cache_icon.png
     - assets/unfound_cache_marker.png
     - assets/found_cache_marker.png
+    - assets/Bronze Knight.png
+    - assets/Silver Knight.png
+    - assets/Nameless Knight.png
+    - assets/Gold Knight.png
+    - assets/Crown.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

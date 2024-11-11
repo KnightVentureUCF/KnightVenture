@@ -53,7 +53,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                   Container(
                     height: 54,
                     child: Image.asset(
-                      "assets/logo.png",
+                      "assets/Nameless Knight.png",
                       width: 37.84,
                       height: 50.29,
                     ),
@@ -121,7 +121,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.start, children: [
               Image.asset(
-                "assets/logo.png",
+                "assets/Crown.png",
                 width: 92,
                 height: 62,
               ),
@@ -140,7 +140,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                   Column(
                     children: [
                       Image.asset(
-                        "assets/logo.png",
+                        "assets/Silver Knight.png",
                         width: 75,
                         height: 75,
                       ),
@@ -183,7 +183,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                   Column(
                     children: [
                       Image.asset(
-                        "assets/logo.png",
+                        "assets/Gold Knight.png",
                         width: 110,
                         height: 110,
                       ),
@@ -220,7 +220,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                   Column(
                     children: [
                       Image.asset(
-                        "assets/logo.png",
+                        "assets/Bronze Knight.png",
                         width: 75,
                         height: 75,
                       ),

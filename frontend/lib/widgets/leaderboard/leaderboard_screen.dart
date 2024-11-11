@@ -19,6 +19,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
   static const normalFontSize = 14.0;
   static const largeFontSize = 16.0;
   static const mediumFontWeight = FontWeight.w500;
+  static const double podiumWidth = 100.0;
 
   Future<void> _refreshLeaderboard() async {
     final dataProvider = Provider.of<DataProvider>(context, listen: false);
@@ -132,7 +133,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 49),
+              const SizedBox(height: 49),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -143,25 +144,34 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                         width: 75,
                         height: 75,
                       ),
-                      Text(
+                      const Text(
                         "2nd",
                         textAlign: TextAlign.center,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: normalFontSize,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Text(
-                        ranks.length >= 2 ? ranks[1].username : "",
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: normalFontSize,
-                          fontWeight: mediumFontWeight,
+                      SizedBox(
+                        width: podiumWidth,
+                        child: Text(
+                          ranks.length >= 2 ? ranks[1].username : "",
+                          textAlign: TextAlign.center,
+                          maxLines: 1, // Limit to a single line
+                          overflow: TextOverflow
+                              .ellipsis, // Show ellipsis on overflow
+                          style: const TextStyle(
+                            fontSize: normalFontSize,
+                            fontWeight: mediumFontWeight,
+                          ),
                         ),
                       ),
                       Text(
                         ranks.length >= 2 ? ranks[1].points.toString() : "",
                         textAlign: TextAlign.center,
+                        maxLines: 1, // Limit to a single line
+                        overflow:
+                            TextOverflow.ellipsis, // Show ellipsis on overflow
                         style: const TextStyle(
                           fontSize: largeFontSize,
                           color: Colors.purple,
@@ -177,20 +187,23 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                         width: 110,
                         height: 110,
                       ),
-                      Text(
+                      const Text(
                         "1st",
                         textAlign: TextAlign.center,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: normalFontSize,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Text(
-                        ranks.length >= 1 ? ranks[0].username : "",
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: normalFontSize,
-                          fontWeight: mediumFontWeight,
+                      SizedBox(
+                        width: podiumWidth,
+                        child: Text(
+                          ranks.length >= 1 ? ranks[0].username : "",
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: normalFontSize,
+                            fontWeight: mediumFontWeight,
+                          ),
                         ),
                       ),
                       Text(
@@ -211,20 +224,23 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                         width: 75,
                         height: 75,
                       ),
-                      Text(
+                      const Text(
                         "1st",
                         textAlign: TextAlign.center,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: normalFontSize,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Text(
-                        ranks.length >= 3 ? ranks[2].username : "",
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: normalFontSize,
-                          fontWeight: mediumFontWeight,
+                      SizedBox(
+                        width: podiumWidth,
+                        child: Text(
+                          ranks.length >= 3 ? ranks[2].username : "",
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: normalFontSize,
+                            fontWeight: mediumFontWeight,
+                          ),
                         ),
                       ),
                       Text(
@@ -240,7 +256,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                   ),
                 ],
               ),
-              SizedBox(height: 41),
+              const SizedBox(height: 41),
               SizedBox(
                 height: MediaQuery.of(context).size.width * 0.75,
                 child: RefreshIndicator(
@@ -267,7 +283,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         "Your Points",
                         textAlign: TextAlign.center,
                         style: TextStyle(
@@ -276,13 +292,13 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                           color: Colors.white,
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 10,
                       ),
                       Text(
                         userPoints.toString(),
                         textAlign: TextAlign.center,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: largeFontSize,
                           fontWeight: mediumFontWeight,
                           color: Colors.amber,

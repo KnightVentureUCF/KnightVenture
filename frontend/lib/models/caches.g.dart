@@ -24,11 +24,11 @@ Cache _$CacheFromJson(Map<String, dynamic> json) => Cache(
       lat: (json['lat'] as num).toDouble(),
       lng: (json['lng'] as num).toDouble(),
       imgUrl: json['Image'] as String?,
+      iconUrl: json['Icon'] as String?,
       questions: (json['questions'] as List<dynamic>?)
           ?.map((e) => QuizQuestion.fromJson(e as Map<String, dynamic>))
           .toList(),
-      difficulty: (json['Difficulty'] as num?)?.toInt(),
-      points: (json['Size'] as num?)?.toInt(),
+      points: (json['Difficulty'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$CacheToJson(Cache instance) => <String, dynamic>{
@@ -38,22 +38,22 @@ Map<String, dynamic> _$CacheToJson(Cache instance) => <String, dynamic>{
       'lat': instance.lat,
       'lng': instance.lng,
       'Image': instance.imgUrl,
+      'Icon': instance.iconUrl,
       'questions': instance.questions,
-      'Difficulty': instance.difficulty,
-      'Size': instance.points,
+      'Difficulty': instance.points,
     };
 
 UserCaches _$UserCachesFromJson(Map<String, dynamic> json) => UserCaches(
       caches: (json['allCaches'] as List<dynamic>)
           .map((e) => Cache.fromJson(e as Map<String, dynamic>))
           .toList(),
-      userCachesFound: (json['foundCaches'] as List<dynamic>)
+      foundCaches: (json['foundCaches'] as List<dynamic>)
           .map((e) => e as String)
-          .toList(),
+          .toSet(),
     );
 
 Map<String, dynamic> _$UserCachesToJson(UserCaches instance) =>
     <String, dynamic>{
-      'foundCaches': instance.userCachesFound,
       'allCaches': instance.caches,
+      'foundCaches': instance.foundCaches.toList(),
     };

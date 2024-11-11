@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:frontend/widgets/dataprovider/data_provider.dart";
 import "package:frontend/widgets/home/navigation_button.dart";
 import "package:frontend/widgets/home/quiz_popup.dart";
 import "package:frontend/widgets/home/loading_screen.dart";
@@ -7,6 +8,7 @@ import "package:google_maps_flutter/google_maps_flutter.dart";
 import "package:geolocator/geolocator.dart";
 import "package:frontend/models/caches.dart" as caches;
 import "package:frontend/constants.dart" show initialMapZoomOnVentureScreen;
+import "package:provider/provider.dart";
 
 class NavigationUI extends StatefulWidget {
   final String accessToken; // Add accessToken as a final field
@@ -26,11 +28,7 @@ class _NavigationUIState extends State<NavigationUI> {
 
   // Used to load and store user and cache locations
   late LatLng _currentLocation;
-  bool _cacheLocationsLoaded = false;
   bool _userLocationLoaded = false;
-  final Map<String, Marker> _cacheMarkers = {};
-  List<caches.Cache> _allCaches = [];
-  Set<String> _foundCaches = {};
 
   // Variables for cache navigation and quiz popup
   caches.Cache? _destination;
@@ -45,80 +43,31 @@ class _NavigationUIState extends State<NavigationUI> {
   static const LatLng ucfSWCorner = LatLng(28.5900, -81.2130);
   static const double ucfCampusRadius = 2000; // Radius in meters (e.g., 2km)
 
-  late BitmapDescriptor _unfoundIcon;
-
-  late BitmapDescriptor _foundIcon;
-
   @override
   void initState() {
     super.initState();
     _getCurrentLocation();
-    _loadCacheMarkers();
   }
 
-  void _loadCacheMarkers() async {
-    final cacheLocations =
-        await caches.getCacheLocations(widget.accessToken, widget.username);
-    final foundCaches = cacheLocations.userCachesFound;
+  List<Marker> _createCacheMarkers(DataProvider dataProvider) {
+    final cacheLocations = dataProvider.userCaches;
+    final foundCaches = cacheLocations?.foundCaches ?? {};
+    final caches = cacheLocations?.caches ?? [];
 
-    final unfoundIcon = await BitmapDescriptor.fromAssetImage(
-      const ImageConfiguration(size: Size(24, 24)),
-      'assets/unfound_cache_marker.png',
-    );
+    return caches.map((cache) {
+      final coords = LatLng(cache.lat, cache.lng);
+      final icon = foundCaches.contains(cache.id)
+          ? dataProvider.foundIcon
+          : dataProvider.unfoundIcon;
 
-    final foundIcon = await BitmapDescriptor.fromAssetImage(
-      const ImageConfiguration(size: Size(24, 24)),
-      'assets/found_cache_marker.png',
-    );
-
-    setState(() {
-      _unfoundIcon = unfoundIcon;
-      _foundIcon = foundIcon;
-
-      _cacheMarkers.clear();
-      _allCaches = cacheLocations.caches;
-      _foundCaches = Set.from(foundCaches);
-      for (final cache in _allCaches) {
-        final coords = LatLng(cache.lat, cache.lng);
-        var marker = Marker(
-          markerId: MarkerId(cache.id),
-          position: coords,
-          icon: _foundCaches.contains(cache.id) ? _foundIcon : _unfoundIcon,
-          onTap: () => {
-            {
-              _showCacheInfo(cache,
-                  _foundCaches.contains(cache.id) || _destination == cache)
-            }
-          },
-        );
-        _cacheMarkers[cache.id] = marker;
-      }
-      _cacheLocationsLoaded = true;
-    });
-  }
-
-  void updateCacheMarkerToFound(String cacheId) {
-    final cache = _allCaches.firstWhere((cache) => cache.id == cacheId);
-    final coords = LatLng(cache.lat, cache.lng);
-
-    // Create a new marker with the updated icon
-    var updatedMarker = Marker(
-      markerId: MarkerId(cacheId),
-      position: coords,
-      icon: _foundIcon,
-      onTap: () => {
-        _showCacheInfo(
-            cache, _foundCaches.contains(cache.id) || _destination == cache)
-      },
-    );
-
-    // Replace the old marker with the updated marker
-    setState(() {
-      _destination = null;
-      _reachedDestination = false;
-      _foundCaches.add(cacheId);
-      _cacheMarkers[cacheId] = updatedMarker;
-    });
+      return Marker(
+        markerId: MarkerId(cache.id),
+        position: coords,
+        icon: icon,
+        onTap: () => _showCacheInfo(
+            cache, foundCaches.contains(cache.id) || _destination == cache),
+      );
+    }).toList();
   }
 
   void beginCacheNavigation(bool userLocatedAtUCF, caches.Cache cache) {
@@ -331,7 +280,7 @@ class _NavigationUIState extends State<NavigationUI> {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      'Difficulty: ${cache.difficulty ?? 'Unknown'}',
+                      'Difficulty: ${cache.points ?? 'Unknown'}',
                       style: const TextStyle(
                         color: Colors.white70,
                         fontSize: 16,
@@ -341,7 +290,7 @@ class _NavigationUIState extends State<NavigationUI> {
                   ],
                 ),
                 const SizedBox(height: 20),
-                if (!cacheHasBeenFound)
+                if (!cacheHasBeenFound && _userLocatedAtUCF)
                   Padding(
                     padding: const EdgeInsets.only(bottom: 40.0),
                     child: ElevatedButton(
@@ -377,7 +326,7 @@ class _NavigationUIState extends State<NavigationUI> {
         target: _currentLocation, zoom: initialMapZoomOnVentureScreen);
   }
 
-  GoogleMap createNavigationPanel() {
+  GoogleMap createNavigationPanel(DataProvider dataProvider) {
     return GoogleMap(
       onMapCreated: _onMapCreated,
       myLocationButtonEnabled: false,
@@ -398,7 +347,7 @@ class _NavigationUIState extends State<NavigationUI> {
             }
           : {},
       initialCameraPosition: getUserLocationCameraView(),
-      markers: _cacheMarkers.values.toSet(),
+      markers: _createCacheMarkers(dataProvider).toSet(),
       minMaxZoomPreference: const MinMaxZoomPreference(16, 20),
       cameraTargetBounds: CameraTargetBounds(
         LatLngBounds(
@@ -411,12 +360,13 @@ class _NavigationUIState extends State<NavigationUI> {
 
   @override
   Widget build(BuildContext context) {
+    final dataProvider = Provider.of<DataProvider>(context);
     // Shows loading screen until user location and all the caches load.
     Widget content = const VentureLoadingScreen();
-    if (_userLocationLoaded && _cacheLocationsLoaded) {
+    if (_userLocationLoaded) {
       content = Stack(
         children: [
-          createNavigationPanel(),
+          createNavigationPanel(dataProvider),
           Positioned(
               bottom: 0,
               left: 0,
@@ -425,15 +375,18 @@ class _NavigationUIState extends State<NavigationUI> {
                   Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 if (_reachedDestination)
                   QuizPopup(
-                      cache: _destination!,
-                      accessToken: widget.accessToken,
-                      username: widget.username,
-                      updateCacheMarkerToFound: updateCacheMarkerToFound),
+                    cache: _destination!,
+                    accessToken: widget.accessToken,
+                    username: widget.username,
+                    exitCacheNavigation: exitCacheNavigation,
+                  ),
                 if (_destination == null)
                   VentureButton(
-                    allCaches: _allCaches.where((cache) {
-                      return !_foundCaches.contains(cache.id);
-                    }).toList(),
+                    allCaches: dataProvider.userCaches?.caches.where((cache) {
+                          return !dataProvider.userCaches!.foundCaches
+                              .contains(cache.id);
+                        }).toList() ??
+                        [],
                     currentLocation: _currentLocation,
                     beginCacheNavigation: beginCacheNavigation,
                     userLocatedAtUCF: _userLocatedAtUCF,

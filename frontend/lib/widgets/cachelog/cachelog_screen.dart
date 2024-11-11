@@ -24,11 +24,20 @@ class _CacheLogScreenState extends State<CacheLogScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 232, 234, 72),
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.bottomLeft,
             end: Alignment.topRight,
+            stops: [.2, .8],
             colors: [brightGold, Color.fromARGB(255, 232, 234, 72)],
           ),
         ),

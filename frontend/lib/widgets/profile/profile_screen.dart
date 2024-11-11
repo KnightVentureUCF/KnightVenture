@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/models/user_profile.dart';
 import 'package:frontend/utils/pathbuilder.dart';
+import 'package:frontend/widgets/dataprovider/data_provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert'; // For converting JSON response to a map
 import 'package:frontend/widgets/styling/theme.dart';
+import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
   final String accessToken;
@@ -16,54 +19,15 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  String fullName = "Full Name";
-  String userName = "@username";
-  String email = "xxx@gmail.com";
-  int point = 0;
-  int cachesFound = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchUserProfile();
-  }
-
-  Future<void> _fetchUserProfile() async {
-    try {
-      final String apiUrl = buildPath("api/get_profile");
-
-      final response = await http.post(
-        Uri.parse(apiUrl),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(<String, String>{
-          'accessToken': widget.accessToken,
-        }),
-      );
-
-      if (response.statusCode == 200) {
-        print("Profile fetched successfully");
-        final data = jsonDecode(response.body);
-
-        setState(() {
-          fullName = data['profileData']['fullName'] ?? fullName;
-          email = data['profileData']['email'] ?? email;
-          point = data['profileData']['point'] ?? point;
-          cachesFound = data['profileData']['cachesFound'] ?? cachesFound;
-        });
-      } else {
-        // Handle error response here
-        print('Failed to fetch profile: ${response.statusCode}');
-      }
-    } catch (e) {
-      // Handle any exceptions here
-      print('Error fetching profile: $e');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    final dataProvider = Provider.of<DataProvider>(context);
+    String fullName = dataProvider.userProfile?.fullName ?? defaultFullName;
+    String email = dataProvider.userProfile?.email ?? defaultEmail;
+    int point = dataProvider.userProfile?.points ?? defaultPoints;
+    int cachesFound =
+        dataProvider.userProfile?.cachesFound ?? defaultCachesFound;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: brightGold,
@@ -92,7 +56,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 IconButton(
                   icon: Icon(Icons.edit, color: Colors.black),
                   onPressed: () {
-                    _editFullName(context);
+                    _editFullName(context, fullName, dataProvider);
                   },
                 ),
               ],
@@ -163,7 +127,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             SizedBox(height: 30),
             // Achievements
-            _buildAchievements(),
+            _buildAchievements(cachesFound ?? 0),
             //Spacer(),
             // Logout Button
           ],
@@ -188,7 +152,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildAchievements() {
+  Widget _buildAchievements(int cachesFound) {
     List<Widget> achievements = [];
 
     // Logic to add achievements based on cachesFound
@@ -233,7 +197,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Future<void> _editFullName(BuildContext context) async {
+  // TODO: Change this to update provider as well.
+  Future<void> _editFullName(
+      BuildContext context, String fullName, DataProvider dataProvider) async {
     String? newName = await showDialog(
       context: context,
       builder: (context) {
@@ -261,39 +227,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         );
       },
     );
-
-    if (newName != null && newName.isNotEmpty) {
-      setState(() {
-        fullName = newName;
-      });
-
-      // Call the update profile API to update the user's full name
-      final String apiUrl = buildPath("api/update_profile");
-      try {
-        final response = await http.post(
-          Uri.parse(apiUrl),
-          headers: {
-            'Authorization': 'Bearer ${widget.accessToken}',
-            'Content-Type': 'application/json',
-          },
-          body: jsonEncode({
-            'fullName': newName,
-            'accessToken': widget.accessToken,
-          }),
-        );
-
-        if (response.statusCode != 200) {
-          // Handle error response here
-          print('Failed to update profile: ${response.statusCode}');
-        }
-
-        if (response.statusCode == 200) {
-          print("Profile updated successfully");
-        }
-      } catch (e) {
-        // Handle any exceptions here
-        print('Error updating profile: $e');
-      }
-    }
+    dataProvider.updateUserFullName(newName ?? fullName, widget.accessToken);
   }
 }

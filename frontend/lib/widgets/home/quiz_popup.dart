@@ -121,7 +121,7 @@ class _QuestionWidgetState extends State<_QuestionWidget> {
       String accessToken = widget.accessToken; // Use the passed accessToken
       int points = widget.cache.points ?? 0;
 
-      dataProvider.confirmCacheFind(cacheId, points, username, accessToken, context);
+      dataProvider.confirmCacheFind(cacheId, points, username, accessToken, context, this.context);
     } else {
       // Show quiz results without cache confirmation
       showDialog(

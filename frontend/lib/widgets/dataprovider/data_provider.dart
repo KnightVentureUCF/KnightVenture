@@ -73,14 +73,14 @@ class DataProvider with ChangeNotifier {
 
   void _updateUserPoints(String username, int points) {
     if (_userProfile != null) {
-      _userProfile!.points = points;
+      _userProfile!.points += points;
     }
     // Update points in the user ranking and resort
     if (_userRanking != null) {
       for (var entry in _userRanking!.sortedUserRankings) {
         // Assuming _userRanking is a list of user entries
         if (entry.username == username) {
-          entry.points = points; // Update points for the matching user
+          entry.points += points; // Update points for the matching user
           break;
         }
       }
@@ -91,7 +91,7 @@ class DataProvider with ChangeNotifier {
   }
 
   void confirmCacheFind(String cacheId, int points, String username,
-      String accessToken, BuildContext context) async {
+      String accessToken, BuildContext buildContext, BuildContext quizContext) async {
     final previousUserRanking = userRanking?.sortedUserRankings ?? [];
     final previousUserPoints = userProfile?.points ?? 0;
 
@@ -100,9 +100,14 @@ class DataProvider with ChangeNotifier {
     // Optimistically update cachesFound locally
     if (_userProfile != null) {
       _userProfile!.cachesFound += 1;
-      _updateUserPoints(username, points);
-      notifyListeners();
     }
+
+    if (_userCaches != null) {
+      _userCaches!.addFoundCache(cacheId);
+    }
+
+    _updateUserPoints(username, points);
+    notifyListeners();
 
     try {
       final response = await http.post(
@@ -123,7 +128,7 @@ class DataProvider with ChangeNotifier {
 
         // Show success dialog
         showDialog(
-          context: context,
+          context: buildContext,
           builder: (BuildContext context) {
             return AlertDialog(
               title: const Text('Cache Found!'),
@@ -132,6 +137,7 @@ class DataProvider with ChangeNotifier {
                 TextButton(
                   onPressed: () {
                     Navigator.pop(context);
+                    Navigator.of(quizContext).pop();
                   },
                   child: const Text('OK'),
                 ),
@@ -143,9 +149,16 @@ class DataProvider with ChangeNotifier {
         // If there's an error, revert the optimistic update
         print('Error: ${response.body}');
         if (_userProfile != null) {
-          _userProfile!.cachesFound -= 1; // Revert count change
-          notifyListeners();
+          _userProfile!.cachesFound -= 1;
+          _userProfile!.points = previousUserPoints;
         }
+        if (_userCaches != null) {
+          _userCaches!.foundCaches.remove(cacheId);
+        }
+        if (_userRanking != null) {
+          _userRanking!.sortedUserRankings = previousUserRanking;
+        }
+        notifyListeners();
       }
     } catch (e) {
       print('Error confirming cache find: $e');
@@ -153,6 +166,9 @@ class DataProvider with ChangeNotifier {
       if (_userProfile != null) {
         _userProfile!.cachesFound -= 1;
         _userProfile!.points = previousUserPoints;
+      }
+      if (_userCaches != null) {
+        _userCaches!.removeFoundCache(cacheId);
       }
       if (_userRanking != null) {
         _userRanking!.sortedUserRankings = previousUserRanking;

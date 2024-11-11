@@ -79,9 +79,21 @@ class UserCaches {
   @JsonKey(name: 'allCaches')
   final List<Cache> caches;
 
+  // Provide a Set view of _foundCaches for easy use
   Set<String> get foundCaches => _foundCaches.toSet();
-}
 
+  // Method to add a cache ID to the _foundCaches list
+  void addFoundCache(String cacheId) {
+    if (!_foundCaches.contains(cacheId)) {
+      _foundCaches.add(cacheId);
+    }
+  }
+
+  // Method to remove a cache ID from the _foundCaches list
+  void removeFoundCache(String cacheId) {
+    _foundCaches.remove(cacheId);
+  }
+}
 
 // function to call load caches API for venture page.
 Future<UserCaches?> getCacheLocations(

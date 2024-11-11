@@ -20,6 +20,11 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
   static const largeFontSize = 16.0;
   static const mediumFontWeight = FontWeight.w500;
 
+  Future<void> _refreshLeaderboard() async {
+    final dataProvider = Provider.of<DataProvider>(context, listen: false);
+    await dataProvider.refreshLeaderboard();
+  }
+
   Widget createLeaderboardEntry(int place, String name, int points) {
     return Column(
       children: [
@@ -238,12 +243,13 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
               SizedBox(height: 41),
               SizedBox(
                 height: MediaQuery.of(context).size.width * 0.75,
-                child: SingleChildScrollView(
-                  child: Column(
+                child: RefreshIndicator(
+                  onRefresh: _refreshLeaderboard,
+                  child: ListView(
                     children: [
                       for (var i = 3; i < ranks.length; i++)
                         createLeaderboardEntry(
-                            i + 1, ranks[i].username, ranks[i].points ?? 0),
+                            i + 1, ranks[i].username, ranks[i].points),
                     ],
                   ),
                 ),

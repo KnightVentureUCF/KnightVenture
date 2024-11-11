@@ -75,6 +75,7 @@ class LoginScreen extends StatelessWidget {
                             final dataProvider = Provider.of<DataProvider>(
                                 context,
                                 listen: false);
+                            dataProvider.setAccessToken(loginResponse.accessToken);
                             await dataProvider.loadUserData(loginResponse.accessToken,
                                 _usernameController.text);
                             Navigator.push(

@@ -37,7 +37,7 @@ class UserRanking {
 }
 
 // function to call load caches API for venture page.
-Future<UserRanking?> getUserRankings(String accessToken, String username) async {
+Future<UserRanking?> getUserRankings(String accessToken) async {
   final url = Uri.parse(buildPath("api/read_ranking"));
 
   try {

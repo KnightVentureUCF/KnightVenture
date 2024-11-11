@@ -16,6 +16,7 @@ class DataProvider with ChangeNotifier {
   UserCaches? _userCaches;
   BitmapDescriptor _unfoundIcon = BitmapDescriptor.defaultMarker;
   BitmapDescriptor _foundIcon = BitmapDescriptor.defaultMarker;
+  String? _accessToken;
 
   bool get isLoading => _isLoading;
   UserRanking? get userRanking => _userRanking;
@@ -23,6 +24,12 @@ class DataProvider with ChangeNotifier {
   UserCaches? get userCaches => _userCaches;
   BitmapDescriptor get unfoundIcon => _unfoundIcon;
   BitmapDescriptor get foundIcon => _foundIcon;
+  String? get accessToken => _accessToken;
+
+  void setAccessToken(String token) {
+    _accessToken = token;
+    notifyListeners(); // Optional if other widgets depend on token updates
+  }
 
   void updateUserFullName(String fullName, String accessToken) async {
     // Store the current full name to revert in case of an error
@@ -75,24 +82,15 @@ class DataProvider with ChangeNotifier {
     if (_userProfile != null) {
       _userProfile!.points += points;
     }
-    // Update points in the user ranking and resort
-    if (_userRanking != null) {
-      for (var entry in _userRanking!.sortedUserRankings) {
-        // Assuming _userRanking is a list of user entries
-        if (entry.username == username) {
-          entry.points += points; // Update points for the matching user
-          break;
-        }
-      }
-      // Resort rankings based on points, in descending order
-      _userRanking!.sortedUserRankings
-          .sort((a, b) => b.points.compareTo(a.points));
-    }
   }
 
-  void confirmCacheFind(String cacheId, int points, String username,
-      String accessToken, BuildContext buildContext, BuildContext quizContext) async {
-    final previousUserRanking = userRanking?.sortedUserRankings ?? [];
+  void confirmCacheFind(
+      String cacheId,
+      int points,
+      String username,
+      String accessToken,
+      BuildContext buildContext,
+      BuildContext quizContext) async {
     final previousUserPoints = userProfile?.points ?? 0;
 
     final url = Uri.parse(buildPath("api/confirm_cache"));
@@ -155,9 +153,6 @@ class DataProvider with ChangeNotifier {
         if (_userCaches != null) {
           _userCaches!.foundCaches.remove(cacheId);
         }
-        if (_userRanking != null) {
-          _userRanking!.sortedUserRankings = previousUserRanking;
-        }
         notifyListeners();
       }
     } catch (e) {
@@ -169,9 +164,6 @@ class DataProvider with ChangeNotifier {
       }
       if (_userCaches != null) {
         _userCaches!.removeFoundCache(cacheId);
-      }
-      if (_userRanking != null) {
-        _userRanking!.sortedUserRankings = previousUserRanking;
       }
       notifyListeners();
     }
@@ -197,6 +189,27 @@ class DataProvider with ChangeNotifier {
     }
   }
 
+  Future<void> refreshLeaderboard() async {
+    if (_accessToken == null) {
+      return;
+    }
+
+    UserRanking? newRanking;
+    String accessToken = _accessToken ?? '';
+
+    try {
+      newRanking = await getUserRankings(accessToken);
+    } catch (e) {
+      print("Error fetching data: $e");
+      return;
+    }
+
+    if (newRanking != null) {
+      _userRanking = newRanking;
+      notifyListeners();
+    }
+  }
+
   Future<void> loadUserData(String accessToken, String username) async {
     _isLoading = true;
     notifyListeners(); // Notifying listeners to show loading state
@@ -204,7 +217,7 @@ class DataProvider with ChangeNotifier {
     try {
       // Run both calls concurrently
       final results = await Future.wait([
-        getUserRankings(accessToken, username),
+        getUserRankings(accessToken),
         getUserProfile(accessToken),
         getCacheLocations(accessToken, username),
       ]);

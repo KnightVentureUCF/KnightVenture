@@ -290,7 +290,7 @@ class _NavigationUIState extends State<NavigationUI> {
                   ],
                 ),
                 const SizedBox(height: 20),
-                if (!cacheHasBeenFound)
+                if (!cacheHasBeenFound && _userLocatedAtUCF)
                   Padding(
                     padding: const EdgeInsets.only(bottom: 40.0),
                     child: ElevatedButton(

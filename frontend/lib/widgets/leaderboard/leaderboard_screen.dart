@@ -225,7 +225,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                         height: 75,
                       ),
                       const Text(
-                        "1st",
+                        "3rd",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: normalFontSize,

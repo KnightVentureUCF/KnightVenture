@@ -37,7 +37,6 @@ class Cache {
     this.imgUrl,
     this.iconUrl,
     this.questions,
-    this.difficulty,
     this.points,
   });
 
@@ -57,8 +56,6 @@ class Cache {
   final String? iconUrl;
   final List<QuizQuestion>? questions;
   @JsonKey(name: 'Difficulty')
-  final int? difficulty;
-  @JsonKey(name: 'Size')
   final int? points;
 }
 

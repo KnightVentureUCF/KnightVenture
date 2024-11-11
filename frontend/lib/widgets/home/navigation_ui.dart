@@ -280,7 +280,7 @@ class _NavigationUIState extends State<NavigationUI> {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      'Difficulty: ${cache.difficulty ?? 'Unknown'}',
+                      'Difficulty: ${cache.points ?? 'Unknown'}',
                       style: const TextStyle(
                         color: Colors.white70,
                         fontSize: 16,
@@ -378,6 +378,7 @@ class _NavigationUIState extends State<NavigationUI> {
                     cache: _destination!,
                     accessToken: widget.accessToken,
                     username: widget.username,
+                    exitCacheNavigation: exitCacheNavigation,
                   ),
                 if (_destination == null)
                   VentureButton(

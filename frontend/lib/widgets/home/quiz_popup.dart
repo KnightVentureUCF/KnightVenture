@@ -11,12 +11,14 @@ class QuizPopup extends StatelessWidget {
   final Cache cache;
   final String accessToken;
   final String username;
+  final void Function() exitCacheNavigation;
 
   const QuizPopup(
       {super.key,
       required this.cache,
       required this.accessToken,
-      required this.username});
+      required this.username,
+      required this.exitCacheNavigation});
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +48,7 @@ class QuizPopup extends StatelessWidget {
                     cache: cache,
                     accessToken: accessToken,
                     username: username,
+                    exitCacheNavigation: exitCacheNavigation,
                   ),
                 ),
               );
@@ -68,11 +71,13 @@ class _QuestionWidget extends StatefulWidget {
   final Cache cache;
   final String accessToken;
   final String username;
+  final void Function() exitCacheNavigation;
 
   const _QuestionWidget(
       {required this.cache,
       required this.accessToken,
-      required this.username,});
+      required this.username,
+      required this.exitCacheNavigation});
 
   @override
   State<_QuestionWidget> createState() => _QuestionWidgetState();
@@ -121,6 +126,7 @@ class _QuestionWidgetState extends State<_QuestionWidget> {
       String accessToken = widget.accessToken; // Use the passed accessToken
       int points = widget.cache.points ?? 0;
 
+      widget.exitCacheNavigation();
       dataProvider.confirmCacheFind(cacheId, points, username, accessToken, context, this.context);
     } else {
       // Show quiz results without cache confirmation

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/models/caches.dart' as caches;
+
 import 'package:frontend/models/test_cache.dart';
 import 'package:frontend/widgets/styling/theme.dart';
 import 'package:frontend/data/deprecated_all_caches.dart';
@@ -6,19 +8,21 @@ import 'cache_details.dart';
 import 'caches_grid.dart';
 
 class CacheLogScreen extends StatefulWidget {
-  const CacheLogScreen({super.key});
+  final List<caches.Cache> allCaches;
+
+  const CacheLogScreen({super.key, required this.allCaches});
 
   @override
   _CacheLogScreenState createState() => _CacheLogScreenState();
 }
 
 class _CacheLogScreenState extends State<CacheLogScreen> {
-  TestCache? selectedCache;
+  caches.Cache? selectedCache;
 
   @override
   void initState() {
     super.initState();
-    selectedCache = deprecatedAllCaches[0];
+    selectedCache = widget.allCaches[0];
   }
 
   @override
@@ -52,7 +56,7 @@ class _CacheLogScreenState extends State<CacheLogScreen> {
             Expanded(
               flex: 1,
               child: CachesGrid(
-                allCaches: deprecatedAllCaches,
+                allCaches: widget.allCaches,
                 onCacheSelected: (cache) {
                   setState(() {
                     selectedCache = cache;

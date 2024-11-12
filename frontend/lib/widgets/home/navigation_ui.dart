@@ -5,6 +5,7 @@ import "package:frontend/widgets/home/quiz_popup.dart";
 import "package:frontend/widgets/home/loading_screen.dart";
 import "package:frontend/widgets/home/venture_button.dart";
 import "package:frontend/widgets/main_menu/main_menu_screen.dart";
+import "package:frontend/widgets/styling/theme.dart";
 import "package:google_maps_flutter/google_maps_flutter.dart";
 import "package:geolocator/geolocator.dart";
 import "package:frontend/models/caches.dart" as caches;
@@ -240,16 +241,29 @@ class _NavigationUIState extends State<NavigationUI> {
                 const SizedBox(height: 20),
                 Row(
                   children: [
-                    // ############# CHANGE TO CACHE ICON #############
-                    // Image.asset(
-                    //   "assets/default_cache_icon.png",
+                    // Image.network(
+                    //   cache.iconUrl ?? 'assets/default_cache_icon.png',
                     //   width: 80,
                     //   height: 80,
                     // ),
-                    Image.network(
-                      cache.iconUrl ?? 'assets/default_cache_icon.png',
-                      width: 80,
-                      height: 80,
+                    Container(
+                      width: 90,
+                      height: 90,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: brightGold,
+                        border: Border.all(
+                          color: Colors.white,
+                          width: 3,
+                        ),
+                      ),
+                      child: Center(
+                        child: Image.network(
+                          cache.iconUrl ?? 'assets/default_cache_icon.png',
+                          width: 55,
+                          height: 55,
+                        ),
+                      ),
                     ),
                     const SizedBox(width: 20),
                     Expanded(

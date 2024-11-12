@@ -50,25 +50,43 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 CircleAvatar(
                   radius: 50,
                   backgroundColor: Colors.grey[200],
-                  // Placeholder image for user avatar
-                  backgroundImage: AssetImage('assets/avatar.png'),
-                ),
-                IconButton(
-                  icon: Icon(Icons.edit, color: Colors.black),
-                  onPressed: () {
-                    _editFullName(context, fullName, dataProvider);
-                  },
+                  backgroundImage: const AssetImage('assets/avatar.png'),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Colors.black,
+                        width: 3.0,
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             // Display full name and username
-            Text(
-              fullName,
-              style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SizedBox(width: 30),
+                Text(
+                  fullName,
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(
+                  width: 30,
+                  child: IconButton(
+                    iconSize: 22,
+                    icon: const Icon(Icons.edit, color: Colors.black),
+                    onPressed: () {
+                      _editFullName(context, fullName, dataProvider);
+                    },
+                  ),
+                ),
+              ],
             ),
             Text(
               widget.username,

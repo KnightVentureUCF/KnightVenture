@@ -22,25 +22,25 @@ class HomeScreen extends StatelessWidget {
       body: Stack(
         children: [
           NavigationUI(accessToken: accessToken, username: username),
-          Positioned(
-            top: 75,
-            right: 35,
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => MainMenuScreen(
-                          accessToken: accessToken, username: username)),
-                );
-              },
-              child: const Icon(
-                Icons.menu,
-                size: 48,
-                color: Colors.black,
-              ),
-            ),
-          ),
+          // Positioned(
+          //   top: 75,
+          //   right: 35,
+          //   child: GestureDetector(
+          //     onTap: () {
+          //       Navigator.push(
+          //         context,
+          //         MaterialPageRoute(
+          //             builder: (context) => MainMenuScreen(
+          //                 accessToken: accessToken, username: username)),
+          //       );
+          //     },
+          //     child: const Icon(
+          //       Icons.menu,
+          //       size: 48,
+          //       color: Colors.black,
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );

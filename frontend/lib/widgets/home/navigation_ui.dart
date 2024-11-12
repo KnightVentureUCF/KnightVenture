@@ -4,6 +4,8 @@ import "package:frontend/widgets/home/navigation_button.dart";
 import "package:frontend/widgets/home/quiz_popup.dart";
 import "package:frontend/widgets/home/loading_screen.dart";
 import "package:frontend/widgets/home/venture_button.dart";
+import "package:frontend/widgets/main_menu/main_menu_screen.dart";
+import "package:frontend/widgets/styling/theme.dart";
 import "package:google_maps_flutter/google_maps_flutter.dart";
 import "package:geolocator/geolocator.dart";
 import "package:frontend/models/caches.dart" as caches;
@@ -239,11 +241,29 @@ class _NavigationUIState extends State<NavigationUI> {
                 const SizedBox(height: 20),
                 Row(
                   children: [
-                    // ############# CHANGE TO CACHE ICON #############
-                    Image.asset(
-                      "assets/default_cache_icon.png",
-                      width: 80,
-                      height: 80,
+                    // Image.network(
+                    //   cache.iconUrl ?? 'assets/default_cache_icon.png',
+                    //   width: 80,
+                    //   height: 80,
+                    // ),
+                    Container(
+                      width: 90,
+                      height: 90,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: brightGold,
+                        border: Border.all(
+                          color: Colors.white,
+                          width: 3,
+                        ),
+                      ),
+                      child: Center(
+                        child: Image.network(
+                          cache.iconUrl ?? 'assets/default_cache_icon.png',
+                          width: 55,
+                          height: 55,
+                        ),
+                      ),
                     ),
                     const SizedBox(width: 20),
                     Expanded(
@@ -363,10 +383,34 @@ class _NavigationUIState extends State<NavigationUI> {
     final dataProvider = Provider.of<DataProvider>(context);
     // Shows loading screen until user location and all the caches load.
     Widget content = const VentureLoadingScreen();
+
     if (_userLocationLoaded) {
       content = Stack(
         children: [
           createNavigationPanel(dataProvider),
+          Positioned(
+            top: 75,
+            right: 35,
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MainMenuScreen(
+                      accessToken: widget.accessToken,
+                      username: widget.username,
+                      allCaches: dataProvider.userCaches?.caches ?? [],
+                    ),
+                  ),
+                );
+              },
+              child: const Icon(
+                Icons.menu,
+                size: 48,
+                color: Colors.black,
+              ),
+            ),
+          ),
           Positioned(
               bottom: 0,
               left: 0,

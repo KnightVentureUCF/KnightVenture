@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/models/test_cache.dart';
+import 'package:frontend/models/caches.dart' as caches;
+
+// import 'package:frontend/models/test_cache.dart';
 
 class CacheDetails extends StatelessWidget {
   const CacheDetails({super.key, required this.selectedCache});
 
-  final TestCache? selectedCache;
+  final caches.Cache? selectedCache;
 
   @override
   Widget build(BuildContext context) {
@@ -30,12 +32,18 @@ class CacheDetails extends StatelessWidget {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(9.0),
-              child: Image.asset(
-                selectedCache!.imgUrl,
-                fit: BoxFit.cover,
-                width: 200,
-                height: 200,
-              ),
+              child: selectedCache!.imgUrl != null
+                  ? Image.network(
+                      selectedCache!.imgUrl!,
+                      fit: BoxFit.cover,
+                      width: 200,
+                      height: 200,
+                    )
+                  : const SizedBox(
+                      width: 200,
+                      height: 200,
+                      child: Center(child: Text('No Image')),
+                    ),
             ),
           ),
           const SizedBox(height: 16),
@@ -51,7 +59,7 @@ class CacheDetails extends StatelessWidget {
           Expanded(
             child: SingleChildScrollView(
               child: Text(
-                selectedCache!.desc,
+                selectedCache!.desc ?? 'No description available',
                 style: const TextStyle(
                   fontSize: 16,
                 ),

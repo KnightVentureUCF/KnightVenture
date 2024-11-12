@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/models/caches.dart' as caches;
+
 import 'package:frontend/widgets/cachelog/cachelog_screen.dart';
 import 'package:frontend/widgets/leaderboard/leaderboard_screen.dart';
 import 'package:frontend/widgets/profile/profile_screen.dart';
@@ -8,9 +10,14 @@ import 'package:frontend/widgets/about/about_screen.dart';
 class MainMenuScreen extends StatelessWidget {
   final String accessToken;
   final String username;
+  final List<caches.Cache> allCaches;
 
-  MainMenuScreen({Key? key, required this.accessToken, required this.username})
-      : super(key: key);
+  const MainMenuScreen({
+    super.key,
+    required this.accessToken,
+    required this.username,
+    required this.allCaches,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +46,10 @@ class MainMenuScreen extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => CacheLogScreen()),
+                    MaterialPageRoute(
+                        builder: (context) => CacheLogScreen(
+                              allCaches: allCaches,
+                            )),
                   );
                 },
                 child: const Text('Caches'),

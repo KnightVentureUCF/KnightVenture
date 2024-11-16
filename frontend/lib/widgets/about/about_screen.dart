@@ -78,35 +78,30 @@ class AboutScreen extends StatelessWidget {
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 15),
-              const TeamMember(
-                name: 'Hung Tran',
-                role: 'Project Manager',
-                bio:
-                    'Experienced leader with a knack for project management and ensuring timely delivery of high-quality software solutions.',
+              _buildTeamMember(
+                'Hung Tran',
+                'Project Manager',
+                'Experienced leader with a knack for project management and ensuring timely delivery of high-quality software solutions.',
               ),
-              const TeamMember(
-                name: 'Omar Alshafei',
-                role: 'Main Backend Developer',
-                bio:
-                    'Expert in backend development, ensuring robust and scalable server-side applications for seamless user experiences.',
+              _buildTeamMember(
+                'Omar Alshafei',
+                'Main Backend Developer',
+                'Expert in backend development, ensuring robust and scalable server-side applications for seamless user experiences.',
               ),
-              const TeamMember(
-                name: 'Nawfal Cherkaoui Elmalki',
-                role: 'Backend/Frontend Developer',
-                bio:
-                    'Dedicated developer focused on creating efficient and reliable backend systems to support frontend functionalities.',
+              _buildTeamMember(
+                'Nawfal Cherkaoui Elmalki',
+                'Backend/Frontend Developer',
+                'Dedicated developer focused on creating efficient and reliable backend systems to support frontend functionalities.',
               ),
-              const TeamMember(
-                name: 'Hong T Nguyen',
-                role: 'Backend/Frontend Developer',
-                bio:
-                    'Versatile developer skilled in both backend and frontend technologies, ensuring cohesive and functional applications.',
+              _buildTeamMember(
+                'Hong T Nguyen',
+                'Backend/Frontend Developer',
+                'Versatile developer skilled in both backend and frontend technologies, ensuring cohesive and functional applications.',
               ),
-              const TeamMember(
-                name: 'Eduardo Vila',
-                role: 'UX/UI Designer',
-                bio:
-                    'Creative designer focused on crafting intuitive and engaging user interfaces with a user-centered design approach.',
+              _buildTeamMember(
+                'Eduardo Vila',
+                'UX/UI Designer',
+                'Creative designer focused on crafting intuitive and engaging user interfaces with a user-centered design approach.',
               ),
             ],
           ),
@@ -114,22 +109,8 @@ class AboutScreen extends StatelessWidget {
       ),
     );
   }
-}
 
-class TeamMember extends StatelessWidget {
-  final String name;
-  final String role;
-  final String bio;
-
-  const TeamMember({
-    super.key,
-    required this.name,
-    required this.role,
-    required this.bio,
-  });
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildTeamMember(String name, String role, String bio) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10),
       child: Row(

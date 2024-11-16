@@ -75,16 +75,18 @@ class LoginScreen extends StatelessWidget {
                             final dataProvider = Provider.of<DataProvider>(
                                 context,
                                 listen: false);
-                            dataProvider.setAccessToken(loginResponse.accessToken);
-                            await dataProvider.loadUserData(loginResponse.accessToken,
+                            dataProvider
+                                .setAccessToken(loginResponse.accessToken);
+                            await dataProvider.loadUserData(
+                                loginResponse.accessToken,
                                 _usernameController.text);
-                            Navigator.push(
+                            Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => HomeScreen(
-                                    accessToken: loginResponse.accessToken,
-                                    username: _usernameController
-                                        .text), // Pass the accessToken
+                                  accessToken: loginResponse.accessToken,
+                                  username: _usernameController.text,
+                                ),
                               ),
                             );
                           }

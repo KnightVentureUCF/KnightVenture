@@ -241,11 +241,6 @@ class _NavigationUIState extends State<NavigationUI> {
                 const SizedBox(height: 20),
                 Row(
                   children: [
-                    // Image.network(
-                    //   cache.iconUrl ?? 'assets/default_cache_icon.png',
-                    //   width: 80,
-                    //   height: 80,
-                    // ),
                     Container(
                       width: 90,
                       height: 90,

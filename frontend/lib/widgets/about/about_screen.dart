@@ -7,17 +7,26 @@ class AboutScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 232, 234, 72),
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.centerLeft,
-            end: Alignment.bottomRight,
-            colors: [brightGold, Color.fromARGB(255, 250, 255, 148)],
+            begin: Alignment.bottomLeft,
+            end: Alignment.topRight,
+            stops: [.2, .8],
+            colors: [brightGold, Color.fromARGB(255, 232, 234, 72)],
           ),
         ),
         child: SingleChildScrollView(
           padding:
-              const EdgeInsets.only(left: 16, right: 16, top: 55, bottom: 36),
+              const EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 36),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -77,87 +86,144 @@ class AboutScreen extends StatelessWidget {
                 'Meet the Team',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 15),
-              const TeamMember(
-                name: 'Hung Tran',
-                role: 'Project Manager',
-                bio:
-                    'Experienced leader with a knack for project management and ensuring timely delivery of high-quality software solutions.',
+              const Row(
+                children: [
+                  CircleAvatar(
+                    radius: 36,
+                    backgroundImage:
+                        AssetImage('assets/team_pictures/thai.webp'),
+                  ),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Hung Tran - Project Manager',
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: 5),
+                        Text(
+                          'Experienced leader with a knack for project management and ensuring timely delivery of high-quality software solutions.',
+                          style: TextStyle(fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              const TeamMember(
-                name: 'Omar Alshafei',
-                role: 'Main Backend Developer',
-                bio:
-                    'Expert in backend development, ensuring robust and scalable server-side applications for seamless user experiences.',
+              const Row(
+                children: [
+                  CircleAvatar(
+                    radius: 36,
+                    backgroundImage:
+                        AssetImage('assets/team_pictures/omar.webp'),
+                  ),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Omar Alshafei - Main Backend Developer',
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          'Expert in backend development, ensuring robust and scalable server-side applications for seamless user experiences',
+                          style: const TextStyle(fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              const TeamMember(
-                name: 'Nawfal Cherkaoui Elmalki',
-                role: 'Backend/Frontend Developer',
-                bio:
-                    'Dedicated developer focused on creating efficient and reliable backend systems to support frontend functionalities.',
+              const Row(
+                children: [
+                  CircleAvatar(
+                    radius: 36,
+                    backgroundImage:
+                        AssetImage('assets/team_pictures/nawfal.webp'),
+                  ),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Nawfal Cherkaoui Elmalki - Backend/Frontend Developer',
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          'Dedicated developer focused on creating efficient and reliable backend systems to support frontend functionalities.',
+                          style: const TextStyle(fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              const TeamMember(
-                name: 'Hong T Nguyen',
-                role: 'Backend/Frontend Developer',
-                bio:
-                    'Versatile developer skilled in both backend and frontend technologies, ensuring cohesive and functional applications.',
+              const Row(
+                children: [
+                  CircleAvatar(
+                    radius: 36,
+                    backgroundImage:
+                        AssetImage('assets/team_pictures/amy.webp'),
+                  ),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Hong T Nguyen - Backend/Frontend Developer',
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          'Versatile developer skilled in both backend and frontend technologies, ensuring cohesive and functional applications.',
+                          style: const TextStyle(fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              const TeamMember(
-                name: 'Eduardo Vila',
-                role: 'UX/UI Designer',
-                bio:
-                    'Creative designer focused on crafting intuitive and engaging user interfaces with a user-centered design approach.',
+              const Row(
+                children: [
+                  CircleAvatar(
+                    radius: 36,
+                    backgroundImage:
+                        AssetImage('assets/team_pictures/eddy.webp'),
+                  ),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Eduardo Vila - UX/UI Designer',
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          'Creative designer focused on crafting intuitive and engaging user interfaces with a user-centered design approach.',
+                          style: const TextStyle(fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class TeamMember extends StatelessWidget {
-  final String name;
-  final String role;
-  final String bio;
-
-  const TeamMember({
-    super.key,
-    required this.name,
-    required this.role,
-    required this.bio,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10),
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 36,
-            backgroundImage:
-                AssetImage('assets/team_pictures/${name.toLowerCase()}.png'),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '$name - $role',
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 5),
-                Text(
-                  bio,
-                  style: const TextStyle(fontSize: 14),
-                ),
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:frontend/widgets/styling/theme.dart';
 import 'package:http/http.dart' as http;
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'login_screen.dart';
 import 'package:frontend/utils/pathbuilder.dart';
 
@@ -68,7 +69,7 @@ class ConfirmWidget extends StatelessWidget {
             const SizedBox(height: 20),
             GestureDetector(
               onTap: () async {
-                await _confirmRegistration(context);
+                await _resendConfirmationCode(context);
               },
               child: const Text(
                 "If you didn't receive a code, Resend",
@@ -95,25 +96,61 @@ class ConfirmWidget extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 20),
-            const SizedBox(height: 20),
-            // GestureDetector(
-            //   onTap: () {
-            //     // Navigate to login screen
-            //     Navigator.pop(context);
-            //   },
-            //   child: const Text(
-            //     "Do you have an account?",
-            //     style: TextStyle(
-            //       decoration: TextDecoration.underline,
-            //       color: Colors.black,
-            //     ),
-            //   ),
-            // ),
           ],
         ),
       ),
     );
+  }
+
+  // Function to resend the confirmation code
+  Future<void> _resendConfirmationCode(BuildContext context) async {
+    final String username = _usernameController.text;
+
+    if (username.isEmpty) {
+      // Handle empty username
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text("Error"),
+          content: const Text(
+              "Username is required to resend the confirmation code."),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("OK"),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
+    try {
+      // Call Cognito to resend the confirmation code
+      await Amplify.Auth.resendSignUpCode(username: username);
+
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Verification code resent successfully.'),
+        ),
+      );
+    } catch (e) {
+      // Handle errors
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text("Error"),
+          content: Text("Failed to resend confirmation code: ${e.toString()}"),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("OK"),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   // Function to handle confirmation

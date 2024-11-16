@@ -44,6 +44,8 @@ dependencies:
   json_serializable: ^6.8.0
   open_settings: ^2.0.2
   json_annotation: ^4.9.0
+  amplify_auth_cognito: ^2.5.0
+  amplify_flutter: ^2.5.0
 
 dev_dependencies:
   flutter_test:

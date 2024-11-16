@@ -33,7 +33,7 @@ class ConfirmWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text(
-              'Verification Code For New Account',
+              'Confirm Verification Code',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -67,14 +67,13 @@ class ConfirmWidget extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             GestureDetector(
-              onTap: () {
-                // Resend logic here
+              onTap: () async {
+                await _confirmRegistration(context);
               },
               child: const Text(
                 "If you didn't receive a code, Resend",
                 style: TextStyle(
                   color: Colors.red,
-                  decoration: TextDecoration.underline,
                 ),
               ),
             ),
@@ -97,33 +96,20 @@ class ConfirmWidget extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                IconButton(
-                  icon: const Icon(Icons.facebook),
-                  onPressed: () {},
-                ),
-                IconButton(
-                  icon: const Icon(Icons.apple),
-                  onPressed: () {},
-                ),
-              ],
-            ),
             const SizedBox(height: 20),
-            GestureDetector(
-              onTap: () {
-                // Navigate to login screen
-                Navigator.pop(context);
-              },
-              child: const Text(
-                "Do you have an account?",
-                style: TextStyle(
-                  decoration: TextDecoration.underline,
-                  color: Colors.black,
-                ),
-              ),
-            ),
+            // GestureDetector(
+            //   onTap: () {
+            //     // Navigate to login screen
+            //     Navigator.pop(context);
+            //   },
+            //   child: const Text(
+            //     "Do you have an account?",
+            //     style: TextStyle(
+            //       decoration: TextDecoration.underline,
+            //       color: Colors.black,
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       ),

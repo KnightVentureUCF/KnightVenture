@@ -66,18 +66,18 @@ class ConfirmWidget extends StatelessWidget {
                 labelText: 'Enter verification code',
               ),
             ),
-            const SizedBox(height: 20),
-            GestureDetector(
-              onTap: () async {
-                await _resendConfirmationCode(context);
-              },
-              child: const Text(
-                "If you didn't receive a code, Resend",
-                style: TextStyle(
-                  color: Colors.red,
-                ),
-              ),
-            ),
+            // const SizedBox(height: 20),
+            // GestureDetector(
+            //   onTap: () async {
+            //     await _resendConfirmationCode(context);
+            //   },
+            //   child: const Text(
+            //     "If you didn't receive a code, Resend",
+            //     style: TextStyle(
+            //       color: Colors.red,
+            //     ),
+            //   ),
+            // ),
             const SizedBox(height: 20),
             SizedBox(
               width: double.infinity,

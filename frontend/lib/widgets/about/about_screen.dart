@@ -77,68 +77,144 @@ class AboutScreen extends StatelessWidget {
                 'Meet the Team',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 15),
-              _buildTeamMember(
-                'Hung Tran',
-                'Project Manager',
-                'Experienced leader with a knack for project management and ensuring timely delivery of high-quality software solutions.',
+              const Row(
+                children: [
+                  CircleAvatar(
+                    radius: 36,
+                    backgroundImage:
+                        AssetImage('assets/team_pictures/thai.webp'),
+                  ),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Hung Tran - Project Manager',
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: 5),
+                        Text(
+                          'Experienced leader with a knack for project management and ensuring timely delivery of high-quality software solutions.',
+                          style: TextStyle(fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              _buildTeamMember(
-                'Omar Alshafei',
-                'Main Backend Developer',
-                'Expert in backend development, ensuring robust and scalable server-side applications for seamless user experiences.',
+              const Row(
+                children: [
+                  CircleAvatar(
+                    radius: 36,
+                    backgroundImage:
+                        AssetImage('assets/team_pictures/omar.webp'),
+                  ),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Omar Alshafei - Main Backend Developer',
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          'Expert in backend development, ensuring robust and scalable server-side applications for seamless user experiences',
+                          style: const TextStyle(fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              _buildTeamMember(
-                'Nawfal Cherkaoui Elmalki',
-                'Backend/Frontend Developer',
-                'Dedicated developer focused on creating efficient and reliable backend systems to support frontend functionalities.',
+              const Row(
+                children: [
+                  CircleAvatar(
+                    radius: 36,
+                    backgroundImage:
+                        AssetImage('assets/team_pictures/nawfal.webp'),
+                  ),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Nawfal Cherkaoui Elmalki - Backend/Frontend Developer',
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          'Dedicated developer focused on creating efficient and reliable backend systems to support frontend functionalities.',
+                          style: const TextStyle(fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              _buildTeamMember(
-                'Hong T Nguyen',
-                'Backend/Frontend Developer',
-                'Versatile developer skilled in both backend and frontend technologies, ensuring cohesive and functional applications.',
+              const Row(
+                children: [
+                  CircleAvatar(
+                    radius: 36,
+                    backgroundImage:
+                        AssetImage('assets/team_pictures/amy.webp'),
+                  ),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Hong T Nguyen - Backend/Frontend Developer',
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          'Versatile developer skilled in both backend and frontend technologies, ensuring cohesive and functional applications.',
+                          style: const TextStyle(fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              _buildTeamMember(
-                'Eduardo Vila',
-                'UX/UI Designer',
-                'Creative designer focused on crafting intuitive and engaging user interfaces with a user-centered design approach.',
+              const Row(
+                children: [
+                  CircleAvatar(
+                    radius: 36,
+                    backgroundImage:
+                        AssetImage('assets/team_pictures/eddy.webp'),
+                  ),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Eduardo Vila - UX/UI Designer',
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          'Creative designer focused on crafting intuitive and engaging user interfaces with a user-centered design approach.',
+                          style: const TextStyle(fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildTeamMember(String name, String role, String bio) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10),
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 36,
-            backgroundImage:
-                AssetImage('assets/team_pictures/${name.toLowerCase()}.png'),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '$name - $role',
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 5),
-                Text(
-                  bio,
-                  style: const TextStyle(fontSize: 14),
-                ),
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }

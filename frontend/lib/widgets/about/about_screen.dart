@@ -7,17 +7,26 @@ class AboutScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 232, 234, 72),
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.centerLeft,
-            end: Alignment.bottomRight,
-            colors: [brightGold, Color.fromARGB(255, 250, 255, 148)],
+            begin: Alignment.bottomLeft,
+            end: Alignment.topRight,
+            stops: [.2, .8],
+            colors: [brightGold, Color.fromARGB(255, 232, 234, 72)],
           ),
         ),
         child: SingleChildScrollView(
           padding:
-              const EdgeInsets.only(left: 16, right: 16, top: 55, bottom: 36),
+              const EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 36),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [

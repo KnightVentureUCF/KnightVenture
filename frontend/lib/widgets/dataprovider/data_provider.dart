@@ -1,6 +1,6 @@
 import 'dart:convert';
+import 'dart:math';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/models/caches.dart';
 import 'package:frontend/models/user_profile.dart';
@@ -8,6 +8,7 @@ import 'package:frontend/models/user_rankings.dart';
 import 'package:frontend/utils/pathbuilder.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:confetti/confetti.dart';
 
 class DataProvider with ChangeNotifier {
   bool _isLoading = true;
@@ -107,6 +108,15 @@ class DataProvider with ChangeNotifier {
     _updateUserPoints(username, points);
     notifyListeners();
 
+    final controllerTopLeft =
+        ConfettiController(duration: const Duration(seconds: 3));
+    final controllerTopRight =
+        ConfettiController(duration: const Duration(seconds: 3));
+    final controllerBottomLeft =
+        ConfettiController(duration: const Duration(seconds: 3));
+    final controllerBottomRight =
+        ConfettiController(duration: const Duration(seconds: 3));
+
     try {
       final response = await http.post(
         url,
@@ -124,25 +134,97 @@ class DataProvider with ChangeNotifier {
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
 
+        controllerTopLeft.play();
+        controllerTopRight.play();
+        controllerBottomLeft.play();
+        controllerBottomRight.play();
+
         // Show success dialog
         showDialog(
           context: buildContext,
           builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('Cache Found!'),
-              content: Text(responseData['message']),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    Navigator.of(quizContext).pop();
-                  },
-                  child: const Text('OK'),
+            return Stack(
+              alignment: Alignment.center,
+              children: [
+                AlertDialog(
+                  title: const Text('Cache Found!'),
+                  content: Text(responseData['message']),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        Navigator.of(quizContext).pop();
+                      },
+                      child: const Text('OK'),
+                    ),
+                  ],
+                ),
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: ConfettiWidget(
+                    confettiController: controllerTopLeft,
+                    blastDirection: pi / 4,
+                    blastDirectionality: BlastDirectionality.explosive,
+                    shouldLoop: false,
+                    numberOfParticles: 45,
+                    colors: const [
+                      Colors.black,
+                      Colors.white,
+                      Colors.yellow,
+                    ],
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.topRight,
+                  child: ConfettiWidget(
+                    confettiController: controllerTopLeft,
+                    blastDirection: 3 * pi / 4,
+                    blastDirectionality: BlastDirectionality.explosive,
+                    shouldLoop: false,
+                    numberOfParticles: 45,
+                    colors: const [
+                      Colors.black,
+                      Colors.white,
+                      Colors.yellow,
+                    ],
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.bottomLeft,
+                  child: ConfettiWidget(
+                    confettiController: controllerTopLeft,
+                    blastDirection: 5 * pi / 4,
+                    blastDirectionality: BlastDirectionality.explosive,
+                    shouldLoop: false,
+                    numberOfParticles: 45,
+                    colors: const [
+                      Colors.black,
+                      Colors.white,
+                      Colors.yellow,
+                    ],
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: ConfettiWidget(
+                    confettiController: controllerTopLeft,
+                    blastDirection: 7 * pi / 4,
+                    blastDirectionality: BlastDirectionality.explosive,
+                    shouldLoop: false,
+                    numberOfParticles: 45,
+                    colors: const [
+                      Colors.black,
+                      Colors.white,
+                      Colors.yellow,
+                    ],
+                  ),
                 ),
               ],
             );
           },
-        );
+        ).then((_) {
+          controllerTopLeft.dispose();
+        });
       } else {
         // If there's an error, revert the optimistic update
         print('Error: ${response.body}');

@@ -44,6 +44,7 @@ dependencies:
   json_serializable: ^6.8.0
   open_settings: ^2.0.2
   json_annotation: ^4.9.0
+  confetti: ^0.8.0
 
 dev_dependencies:
   flutter_test:
